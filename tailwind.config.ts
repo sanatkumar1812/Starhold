@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Space Grotesk"', 'sans-serif'],
-        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans: ['"Inter"', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -52,11 +52,14 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         cosmic: {
+          gold: "hsl(var(--gold))",
+          "gold-light": "hsl(var(--gold-light))",
+          copper: "hsl(var(--copper))",
           purple: "hsl(var(--cosmic-purple))",
           blue: "hsl(var(--cosmic-blue))",
           cyan: "hsl(var(--cosmic-cyan))",
           pink: "hsl(var(--nebula-pink))",
-          gold: "hsl(var(--star-gold))",
+          deep: "hsl(var(--deep-space))",
         },
       },
       borderRadius: {
@@ -73,15 +76,10 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        shimmer: "shimmer 3s linear infinite",
       },
     },
   },
