@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { StarMap } from '@/components/StarMap';
 import { generateCoordinates, formatRA, formatDec, getTimeUntilUnlock } from '@/lib/coordinates';
-import { Calendar, Lock, Star, Sparkles, ArrowRight, ArrowLeft, Check } from 'lucide-react';
+import { Calendar, Lock, Star, Sparkles, ArrowRight, ArrowLeft, Check, ImagePlus, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface MemoryData {
@@ -13,6 +13,7 @@ interface MemoryData {
   message: string;
   unlockDate: Date;
   senderName: string;
+  mediaFiles: File[];
 }
 
 export const MemoryCreator = () => {
@@ -22,7 +23,27 @@ export const MemoryCreator = () => {
     message: '',
     unlockDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
     senderName: '',
+    mediaFiles: [],
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newFiles = Array.from(files);
+      setMemoryData(prev => ({
+        ...prev,
+        mediaFiles: [...prev.mediaFiles, ...newFiles].slice(0, 10) // Max 10 files
+      }));
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setMemoryData(prev => ({
+      ...prev,
+      mediaFiles: prev.mediaFiles.filter((_, i) => i !== index)
+    }));
+  };
 
   const coordinates = memoryData.message && memoryData.recipientName
     ? generateCoordinates(memoryData.message, memoryData.unlockDate, memoryData.recipientName)
@@ -145,11 +166,68 @@ export const MemoryCreator = () => {
                 value={memoryData.message}
                 onChange={(e) => setMemoryData({ ...memoryData, message: e.target.value })}
                 placeholder="Dear future self... / To my beloved... / When you read this..."
-                className="min-h-[250px] text-lg bg-background/50 border-border/50 resize-none leading-relaxed"
+                className="min-h-[200px] text-lg bg-background/50 border-border/50 resize-none leading-relaxed"
               />
               <p className="text-right text-sm text-muted-foreground">
                 {memoryData.message.length} characters
               </p>
+
+              {/* Media Upload Section */}
+              <div className="space-y-3 pt-4 border-t border-border/30">
+                <Label className="text-sm text-muted-foreground">
+                  Attach Photos or Videos (optional)
+                </Label>
+                
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                
+                <div className="flex flex-wrap gap-3">
+                  {memoryData.mediaFiles.map((file, index) => (
+                    <div
+                      key={index}
+                      className="relative group w-20 h-20 rounded-lg overflow-hidden bg-background/50 border border-border/50"
+                    >
+                      {file.type.startsWith('image/') ? (
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={file.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                          <span className="text-xs text-center px-1">{file.name.slice(0, 10)}...</span>
+                        </div>
+                      )}
+                      <button
+                        onClick={() => removeFile(index)}
+                        className="absolute top-1 right-1 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {memoryData.mediaFiles.length < 10 && (
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-20 h-20 rounded-lg border-2 border-dashed border-border/50 hover:border-primary/50 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <ImagePlus className="w-5 h-5" />
+                      <span className="text-xs">Add</span>
+                    </button>
+                  )}
+                </div>
+                
+                <p className="text-xs text-muted-foreground">
+                  {memoryData.mediaFiles.length}/10 files attached
+                </p>
+              </div>
             </div>
           </div>
         )}
