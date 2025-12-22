@@ -189,8 +189,8 @@ export const StarMap = ({
 
     // Create a new canvas for the download with extra space for text
     const downloadCanvas = document.createElement('canvas');
-    const padding = 60;
-    const textHeight = 180;
+    const padding = 80;
+    const textHeight = 220;
     const totalWidth = size + padding * 2;
     const totalHeight = size + padding * 2 + textHeight;
     
@@ -203,77 +203,140 @@ export const StarMap = ({
     
     ctx.scale(dpr, dpr);
     
-    // Background
-    ctx.fillStyle = '#0a0c14';
+    // Background with subtle gradient
+    const bgGradient = ctx.createLinearGradient(0, 0, 0, totalHeight);
+    bgGradient.addColorStop(0, '#0d0f18');
+    bgGradient.addColorStop(1, '#070810');
+    ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, totalWidth, totalHeight);
     
-    // Draw decorative border
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+    // Draw decorative double border
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(12, 12, totalWidth - 24, totalHeight - 24);
+    
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
     ctx.lineWidth = 2;
-    ctx.strokeRect(15, 15, totalWidth - 30, totalHeight - 30);
+    ctx.strokeRect(20, 20, totalWidth - 40, totalHeight - 40);
+    
+    // Corner accents
+    const cornerSize = 20;
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.6)';
+    ctx.lineWidth = 2;
+    
+    // Top-left corner
+    ctx.beginPath();
+    ctx.moveTo(20, 20 + cornerSize);
+    ctx.lineTo(20, 20);
+    ctx.lineTo(20 + cornerSize, 20);
+    ctx.stroke();
+    
+    // Top-right corner
+    ctx.beginPath();
+    ctx.moveTo(totalWidth - 20 - cornerSize, 20);
+    ctx.lineTo(totalWidth - 20, 20);
+    ctx.lineTo(totalWidth - 20, 20 + cornerSize);
+    ctx.stroke();
+    
+    // Bottom-left corner
+    ctx.beginPath();
+    ctx.moveTo(20, totalHeight - 20 - cornerSize);
+    ctx.lineTo(20, totalHeight - 20);
+    ctx.lineTo(20 + cornerSize, totalHeight - 20);
+    ctx.stroke();
+    
+    // Bottom-right corner
+    ctx.beginPath();
+    ctx.moveTo(totalWidth - 20 - cornerSize, totalHeight - 20);
+    ctx.lineTo(totalWidth - 20, totalHeight - 20);
+    ctx.lineTo(totalWidth - 20, totalHeight - 20 - cornerSize);
+    ctx.stroke();
     
     // Draw the star map from original canvas
     ctx.drawImage(canvas, padding, padding, size, size);
     
     // Text styling
-    const textStartY = size + padding + 30;
+    const textStartY = size + padding + 40;
+    const centerX = totalWidth / 2;
     
-    // Brand name - Starhold
-    ctx.font = 'bold 28px Georgia, serif';
+    // Brand name - Starhold with elegant font
+    ctx.font = '600 32px Cinzel, Georgia, serif';
     ctx.fillStyle = 'rgba(212, 175, 55, 1)';
     ctx.textAlign = 'center';
-    ctx.fillText('STARHOLD', totalWidth / 2, textStartY);
+    ctx.letterSpacing = '8px';
+    ctx.fillText('S T A R H O L D', centerX, textStartY);
     
     // Tagline
-    ctx.font = 'italic 12px Georgia, serif';
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.7)';
-    ctx.fillText('memories among the stars', totalWidth / 2, textStartY + 20);
+    ctx.font = 'italic 11px Georgia, serif';
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
+    ctx.fillText('memories among the stars', centerX, textStartY + 22);
     
-    // Divider line
+    // Decorative divider with diamond
     ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(totalWidth / 2 - 80, textStartY + 35);
-    ctx.lineTo(totalWidth / 2 + 80, textStartY + 35);
+    ctx.moveTo(centerX - 100, textStartY + 42);
+    ctx.lineTo(centerX - 8, textStartY + 42);
     ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(centerX + 8, textStartY + 42);
+    ctx.lineTo(centerX + 100, textStartY + 42);
+    ctx.stroke();
+    
+    // Diamond in center
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.5)';
+    ctx.beginPath();
+    ctx.moveTo(centerX, textStartY + 38);
+    ctx.lineTo(centerX + 5, textStartY + 42);
+    ctx.lineTo(centerX, textStartY + 46);
+    ctx.lineTo(centerX - 5, textStartY + 42);
+    ctx.closePath();
+    ctx.fill();
+    
+    let currentY = textStartY + 70;
     
     // Constellation name
     if (constellation) {
-      ctx.font = 'italic 16px Georgia, serif';
-      ctx.fillStyle = 'rgba(212, 175, 55, 0.9)';
-      ctx.fillText(constellation, totalWidth / 2, textStartY + 55);
+      ctx.font = 'italic 18px Georgia, serif';
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.95)';
+      ctx.fillText(constellation, centerX, currentY);
+      currentY += 28;
     }
     
     // Celestial coordinates
-    ctx.font = '14px monospace';
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.8)';
-    ctx.fillText(`α ${formatRA(ra)}  ·  δ ${formatDec(dec)}`, totalWidth / 2, textStartY + (constellation ? 78 : 60));
+    ctx.font = '13px monospace';
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.7)';
+    ctx.fillText(`α ${formatRA(ra)}   ·   δ ${formatDec(dec)}`, centerX, currentY);
+    currentY += 35;
     
-    // Recipient name
+    // Recipient section
     if (recipientName) {
-      ctx.font = '12px Georgia, serif';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-      ctx.fillText('For', totalWidth / 2, textStartY + 90);
+      ctx.font = '10px Georgia, serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.fillText('— FOR —', centerX, currentY);
+      currentY += 22;
       
-      ctx.font = '20px Georgia, serif';
+      ctx.font = '500 22px Cinzel, Georgia, serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      ctx.fillText(recipientName, totalWidth / 2, textStartY + 115);
+      ctx.fillText(recipientName, centerX, currentY);
+      currentY += 30;
     }
     
     // Unlock date
     if (unlockDate) {
-      ctx.font = '12px Georgia, serif';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-      ctx.fillText('Unlocks', totalWidth / 2, textStartY + 145);
+      ctx.font = '10px Georgia, serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.fillText('— UNLOCKS —', centerX, currentY);
+      currentY += 20;
       
-      ctx.font = '16px Georgia, serif';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.font = '15px Georgia, serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       const formattedDate = unlockDate.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
       });
-      ctx.fillText(formattedDate, totalWidth / 2, textStartY + 165);
+      ctx.fillText(formattedDate, centerX, currentY);
     }
 
     const link = document.createElement('a');
