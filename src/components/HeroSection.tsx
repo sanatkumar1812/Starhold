@@ -39,7 +39,7 @@ export const HeroSection = ({ onStartCreating }: HeroSectionProps) => {
         {/* CTA buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up stagger-3">
           <Button variant="gold" size="xl" onClick={onStartCreating}>
-            Create Your Stellar Vault
+            Create Your Starhold
           </Button>
           <Button variant="glass" size="lg">
             Learn how it works

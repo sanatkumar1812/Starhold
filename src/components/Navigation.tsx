@@ -16,7 +16,7 @@ export const Navigation = ({ onStartCreating }: NavigationProps) => {
           </div>
           <div>
             <h1 className="font-serif text-xl font-semibold text-foreground">
-              Stellar Vault
+              Starhold
             </h1>
             <p className="text-xs text-muted-foreground hidden sm:block">
               Cosmic Memory Archive

@@ -11,7 +11,7 @@ export const Footer = () => {
               <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center">
                 <Star className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-serif text-xl text-foreground">Stellar Vault</span>
+              <span className="font-serif text-xl text-foreground">Starhold</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-sm">
               Encode your most precious memories into the cosmos. A unique gift that transcends space and time.
@@ -43,7 +43,7 @@ export const Footer = () => {
         {/* Bottom */}
         <div className="pt-8 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Stellar Vault. All rights reserved.
+            © {new Date().getFullYear()} Starhold. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             Imagery courtesy of NASA/ESA/CSA
