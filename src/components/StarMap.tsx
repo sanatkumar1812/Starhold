@@ -8,10 +8,21 @@ interface StarMapProps {
   size?: number;
   showCoordinates?: boolean;
   showDownload?: boolean;
+  recipientName?: string;
+  unlockDate?: Date;
   className?: string;
 }
 
-export const StarMap = ({ ra, dec, size = 300, showCoordinates = true, showDownload = false, className = '' }: StarMapProps) => {
+export const StarMap = ({ 
+  ra, 
+  dec, 
+  size = 300, 
+  showCoordinates = true, 
+  showDownload = false, 
+  recipientName,
+  unlockDate,
+  className = '' 
+}: StarMapProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -174,9 +185,91 @@ export const StarMap = ({ ra, dec, size = 300, showCoordinates = true, showDownl
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Create a new canvas for the download with extra space for text
+    const downloadCanvas = document.createElement('canvas');
+    const padding = 60;
+    const textHeight = 180;
+    const totalWidth = size + padding * 2;
+    const totalHeight = size + padding * 2 + textHeight;
+    
+    const dpr = 2; // Fixed high resolution for download
+    downloadCanvas.width = totalWidth * dpr;
+    downloadCanvas.height = totalHeight * dpr;
+    
+    const ctx = downloadCanvas.getContext('2d');
+    if (!ctx) return;
+    
+    ctx.scale(dpr, dpr);
+    
+    // Background
+    ctx.fillStyle = '#0a0c14';
+    ctx.fillRect(0, 0, totalWidth, totalHeight);
+    
+    // Draw decorative border
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(15, 15, totalWidth - 30, totalHeight - 30);
+    
+    // Draw the star map from original canvas
+    ctx.drawImage(canvas, padding, padding, size, size);
+    
+    // Text styling
+    const textStartY = size + padding + 30;
+    
+    // Brand name - Starhold
+    ctx.font = 'bold 28px Georgia, serif';
+    ctx.fillStyle = 'rgba(212, 175, 55, 1)';
+    ctx.textAlign = 'center';
+    ctx.fillText('STARHOLD', totalWidth / 2, textStartY);
+    
+    // Tagline
+    ctx.font = 'italic 12px Georgia, serif';
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.7)';
+    ctx.fillText('memories among the stars', totalWidth / 2, textStartY + 20);
+    
+    // Divider line
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(totalWidth / 2 - 80, textStartY + 35);
+    ctx.lineTo(totalWidth / 2 + 80, textStartY + 35);
+    ctx.stroke();
+    
+    // Celestial coordinates
+    ctx.font = '14px monospace';
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.9)';
+    ctx.fillText(`α ${formatRA(ra)}  ·  δ ${formatDec(dec)}`, totalWidth / 2, textStartY + 60);
+    
+    // Recipient name
+    if (recipientName) {
+      ctx.font = '12px Georgia, serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.fillText('For', totalWidth / 2, textStartY + 90);
+      
+      ctx.font = '20px Georgia, serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.fillText(recipientName, totalWidth / 2, textStartY + 115);
+    }
+    
+    // Unlock date
+    if (unlockDate) {
+      ctx.font = '12px Georgia, serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.fillText('Unlocks', totalWidth / 2, textStartY + 145);
+      
+      ctx.font = '16px Georgia, serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      const formattedDate = unlockDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      ctx.fillText(formattedDate, totalWidth / 2, textStartY + 165);
+    }
+
     const link = document.createElement('a');
     link.download = `starhold-${formatRA(ra).replace(/\s/g, '')}-${formatDec(dec).replace(/\s/g, '')}.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.href = downloadCanvas.toDataURL('image/png');
     link.click();
   };
 
