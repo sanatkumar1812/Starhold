@@ -324,7 +324,7 @@ export const MemoryCreator = () => {
             </div>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-              <StarMap ra={coordinates.ra} dec={coordinates.dec} size={280} />
+              <StarMap ra={coordinates.ra} dec={coordinates.dec} size={280} showDownload />
 
               <div className="space-y-6 text-center md:text-left">
                 <div className="space-y-1">

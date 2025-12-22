@@ -1,14 +1,17 @@
 import { useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 
 interface StarMapProps {
   ra: number; // Right Ascension in degrees (0-360)
   dec: number; // Declination in degrees (-90 to 90)
   size?: number;
   showCoordinates?: boolean;
+  showDownload?: boolean;
   className?: string;
 }
 
-export const StarMap = ({ ra, dec, size = 300, showCoordinates = true, className = '' }: StarMapProps) => {
+export const StarMap = ({ ra, dec, size = 300, showCoordinates = true, showDownload = false, className = '' }: StarMapProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -167,6 +170,16 @@ export const StarMap = ({ ra, dec, size = 300, showCoordinates = true, className
     return `${sign}${degrees}° ${minutes}' ${seconds.toFixed(1)}"`;
   };
 
+  const handleDownload = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const link = document.createElement('a');
+    link.download = `starhold-${formatRA(ra).replace(/\s/g, '')}-${formatDec(dec).replace(/\s/g, '')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
   return (
     <div className={`flex flex-col items-center ${className}`}>
       <canvas
@@ -181,6 +194,12 @@ export const StarMap = ({ ra, dec, size = 300, showCoordinates = true, className
             α {formatRA(ra)} · δ {formatDec(dec)}
           </p>
         </div>
+      )}
+      {showDownload && (
+        <Button variant="outline" size="sm" onClick={handleDownload} className="mt-4 gap-2">
+          <Download className="w-4 h-4" />
+          Download Star Map
+        </Button>
       )}
     </div>
   );
