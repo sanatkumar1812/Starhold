@@ -331,6 +331,7 @@ export const MemoryCreator = () => {
                 showDownload 
                 recipientName={memoryData.recipientName}
                 unlockDate={memoryData.unlockDate}
+                constellation={coordinates.constellation}
               />
 
               <div className="space-y-6 text-center md:text-left">

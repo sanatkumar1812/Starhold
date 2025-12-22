@@ -10,6 +10,7 @@ interface StarMapProps {
   showDownload?: boolean;
   recipientName?: string;
   unlockDate?: Date;
+  constellation?: string;
   className?: string;
 }
 
@@ -21,6 +22,7 @@ export const StarMap = ({
   showDownload = false, 
   recipientName,
   unlockDate,
+  constellation,
   className = '' 
 }: StarMapProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -235,10 +237,17 @@ export const StarMap = ({
     ctx.lineTo(totalWidth / 2 + 80, textStartY + 35);
     ctx.stroke();
     
+    // Constellation name
+    if (constellation) {
+      ctx.font = 'italic 16px Georgia, serif';
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.9)';
+      ctx.fillText(constellation, totalWidth / 2, textStartY + 55);
+    }
+    
     // Celestial coordinates
     ctx.font = '14px monospace';
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.9)';
-    ctx.fillText(`α ${formatRA(ra)}  ·  δ ${formatDec(dec)}`, totalWidth / 2, textStartY + 60);
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.8)';
+    ctx.fillText(`α ${formatRA(ra)}  ·  δ ${formatDec(dec)}`, totalWidth / 2, textStartY + (constellation ? 78 : 60));
     
     // Recipient name
     if (recipientName) {
