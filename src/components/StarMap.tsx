@@ -10,6 +10,7 @@ interface StarMapProps {
   showDownload?: boolean;
   recipientName?: string;
   unlockDate?: Date;
+  unlockTime?: string;
   constellation?: string;
   className?: string;
 }
@@ -22,6 +23,7 @@ export const StarMap = ({
   showDownload = false, 
   recipientName,
   unlockDate,
+  unlockTime,
   constellation,
   className = '' 
 }: StarMapProps) => {
@@ -322,7 +324,7 @@ export const StarMap = ({
       currentY += 30;
     }
     
-    // Unlock date
+    // Unlock date and time
     if (unlockDate) {
       ctx.font = '10px Georgia, serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
@@ -336,7 +338,18 @@ export const StarMap = ({
         month: 'long',
         day: 'numeric',
       });
-      ctx.fillText(formattedDate, centerX, currentY);
+      
+      // Format time if provided
+      let formattedTime = '';
+      if (unlockTime) {
+        const [hours, minutes] = unlockTime.split(':');
+        const hour = parseInt(hours, 10);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        formattedTime = ` at ${hour12}:${minutes} ${ampm}`;
+      }
+      
+      ctx.fillText(`${formattedDate}${formattedTime}`, centerX, currentY);
     }
 
     const link = document.createElement('a');
