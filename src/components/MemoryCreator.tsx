@@ -12,6 +12,7 @@ interface MemoryData {
   recipientName: string;
   message: string;
   unlockDate: Date;
+  unlockTime: string;
   senderName: string;
   mediaFiles: File[];
 }
@@ -22,6 +23,7 @@ export const MemoryCreator = () => {
     recipientName: '',
     message: '',
     unlockDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+    unlockTime: '00:00',
     senderName: '',
     mediaFiles: [],
   });
@@ -245,18 +247,32 @@ export const MemoryCreator = () => {
             </div>
 
             <div className="max-w-md mx-auto space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="unlockDate" className="text-sm text-muted-foreground">
-                  Unlock Date
-                </Label>
-                <Input
-                  id="unlockDate"
-                  type="date"
-                  value={memoryData.unlockDate.toISOString().split('T')[0]}
-                  onChange={(e) => setMemoryData({ ...memoryData, unlockDate: new Date(e.target.value) })}
-                  min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                  className="h-14 text-lg bg-background/50 border-border/50 text-center"
-                />
+              <div className="flex gap-4">
+                <div className="flex-1 space-y-2">
+                  <Label htmlFor="unlockDate" className="text-sm text-muted-foreground">
+                    Unlock Date
+                  </Label>
+                  <Input
+                    id="unlockDate"
+                    type="date"
+                    value={memoryData.unlockDate.toISOString().split('T')[0]}
+                    onChange={(e) => setMemoryData({ ...memoryData, unlockDate: new Date(e.target.value) })}
+                    min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                    className="h-14 text-lg bg-background/50 border-border/50 text-center"
+                  />
+                </div>
+                <div className="w-32 space-y-2">
+                  <Label htmlFor="unlockTime" className="text-sm text-muted-foreground">
+                    Time
+                  </Label>
+                  <Input
+                    id="unlockTime"
+                    type="time"
+                    value={memoryData.unlockTime}
+                    onChange={(e) => setMemoryData({ ...memoryData, unlockTime: e.target.value })}
+                    className="h-14 text-lg bg-background/50 border-border/50 text-center"
+                  />
+                </div>
               </div>
 
               {/* Time countdown preview */}
@@ -331,6 +347,7 @@ export const MemoryCreator = () => {
                 showDownload 
                 recipientName={memoryData.recipientName}
                 unlockDate={memoryData.unlockDate}
+                unlockTime={memoryData.unlockTime}
                 constellation={coordinates.constellation}
               />
 
