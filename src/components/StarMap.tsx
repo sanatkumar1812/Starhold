@@ -189,9 +189,9 @@ export const StarMap = ({
 
     // Create a new canvas for the download with extra space for text
     const downloadCanvas = document.createElement('canvas');
-    const padding = 80;
-    const textHeight = 220;
-    const totalWidth = size + padding * 2;
+    const padding = 100;
+    const textHeight = 240;
+    const totalWidth = Math.max(size + padding * 2, 500); // Minimum width to fit coordinates
     const totalHeight = size + padding * 2 + textHeight;
     
     const dpr = 2; // Fixed high resolution for download
@@ -252,8 +252,9 @@ export const StarMap = ({
     ctx.lineTo(totalWidth - 20, totalHeight - 20 - cornerSize);
     ctx.stroke();
     
-    // Draw the star map from original canvas
-    ctx.drawImage(canvas, padding, padding, size, size);
+    // Draw the star map from original canvas centered
+    const mapX = (totalWidth - size) / 2;
+    ctx.drawImage(canvas, mapX, padding, size, size);
     
     // Text styling
     const textStartY = size + padding + 40;
@@ -263,7 +264,6 @@ export const StarMap = ({
     ctx.font = '600 32px Cinzel, Georgia, serif';
     ctx.fillStyle = 'rgba(212, 175, 55, 1)';
     ctx.textAlign = 'center';
-    ctx.letterSpacing = '8px';
     ctx.fillText('S T A R H O L D', centerX, textStartY);
     
     // Tagline
@@ -303,10 +303,10 @@ export const StarMap = ({
       currentY += 28;
     }
     
-    // Celestial coordinates
-    ctx.font = '13px monospace';
+    // Celestial coordinates - split into two lines for better fit
+    ctx.font = '12px monospace';
     ctx.fillStyle = 'rgba(212, 175, 55, 0.7)';
-    ctx.fillText(`α ${formatRA(ra)}   ·   δ ${formatDec(dec)}`, centerX, currentY);
+    ctx.fillText(`α  ${formatRA(ra)}   ·   δ  ${formatDec(dec)}`, centerX, currentY);
     currentY += 35;
     
     // Recipient section
