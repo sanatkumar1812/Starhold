@@ -5,8 +5,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { StarMap } from '@/components/StarMap';
 import { generateCoordinates, formatRA, formatDec, getTimeUntilUnlock } from '@/lib/coordinates';
-import { Calendar, Lock, Star, Sparkles, ArrowRight, ArrowLeft, Check, ImagePlus, X } from 'lucide-react';
+import { Calendar, Lock, Star, Sparkles, ArrowRight, ArrowLeft, Check, ImagePlus, X, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { useMemories } from '@/hooks/useMemories';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface MemoryData {
   recipientName: string;
@@ -27,7 +30,11 @@ export const MemoryCreator = () => {
     senderName: '',
     mediaFiles: [],
   });
+  const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { createMemory } = useMemories();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -77,6 +84,44 @@ export const MemoryCreator = () => {
     toast.success('Your cosmic memory has been encoded!', {
       description: 'The star map is ready for download.',
     });
+  };
+
+  const handleSaveMemory = async () => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to save your memory', {
+        action: {
+          label: 'Log in',
+          onClick: () => navigate('/auth'),
+        },
+      });
+      return;
+    }
+
+    if (!coordinates) return;
+
+    setIsSaving(true);
+    
+    const success = await createMemory({
+      recipient_name: memoryData.recipientName,
+      title: memoryData.senderName ? `From ${memoryData.senderName}` : undefined,
+      message: memoryData.message,
+      constellation: coordinates.constellation,
+      star_coordinates: { ra: coordinates.ra, dec: coordinates.dec },
+      unlock_date: memoryData.unlockDate.toISOString().split('T')[0],
+      unlock_time: memoryData.unlockTime + ':00',
+    });
+
+    setIsSaving(false);
+
+    if (success) {
+      toast.success('Memory saved to the cosmos!', {
+        description: 'View it in your dashboard anytime.',
+        action: {
+          label: 'View Dashboard',
+          onClick: () => navigate('/dashboard'),
+        },
+      });
+    }
   };
 
   return (
@@ -396,6 +441,30 @@ export const MemoryCreator = () => {
               <Button variant="outline" size="lg">
                 Order Physical Print
               </Button>
+            </div>
+
+            {/* Save Memory Button */}
+            <div className="border-t border-border/30 pt-6 mt-6">
+              <div className="text-center space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Save this memory to your account to access it anytime
+                </p>
+                <Button 
+                  variant="gold" 
+                  size="lg" 
+                  onClick={handleSaveMemory}
+                  disabled={isSaving}
+                  className="w-full sm:w-auto"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  {isSaving ? 'Saving...' : 'Complete & Save Memory'}
+                </Button>
+                {!isAuthenticated && (
+                  <p className="text-xs text-muted-foreground">
+                    You'll need to log in to save your memory
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         )}
