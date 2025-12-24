@@ -14,7 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      memories: {
+        Row: {
+          attachment_url: string | null
+          constellation: string | null
+          created_at: string
+          id: string
+          is_unlocked: boolean
+          message: string | null
+          recipient_name: string
+          star_coordinates: Json | null
+          title: string | null
+          unlock_date: string
+          unlock_time: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          constellation?: string | null
+          created_at?: string
+          id?: string
+          is_unlocked?: boolean
+          message?: string | null
+          recipient_name: string
+          star_coordinates?: Json | null
+          title?: string | null
+          unlock_date: string
+          unlock_time?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attachment_url?: string | null
+          constellation?: string | null
+          created_at?: string
+          id?: string
+          is_unlocked?: boolean
+          message?: string | null
+          recipient_name?: string
+          star_coordinates?: Json | null
+          title?: string | null
+          unlock_date?: string
+          unlock_time?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          location: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          location?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          location?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
