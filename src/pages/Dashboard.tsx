@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star, Lock, Unlock, Plus, LogOut, Calendar, User, Settings, Sparkles, Trash2 } from 'lucide-react';
+import { Star, Lock, Unlock, Plus, LogOut, Calendar, User, Settings, Sparkles, Trash2, Map } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { ProfileSettings } from '@/components/ProfileSettings';
+import { StarMapModal } from '@/components/StarMapModal';
 import { useAuth } from '@/hooks/useAuth';
-import { useMemories } from '@/hooks/useMemories';
+import { useMemories, Memory } from '@/hooks/useMemories';
 import { toast } from 'sonner';
 
 const Dashboard = () => {
@@ -16,6 +17,8 @@ const Dashboard = () => {
   const { memories, isLoading: memoriesLoading, deleteMemory } = useMemories();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('memories');
+  const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
+  const [isStarMapOpen, setIsStarMapOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -206,6 +209,21 @@ const Dashboard = () => {
                         <span>{formatDate(memory.unlock_date)} at {formatTime(memory.unlock_time)}</span>
                       </div>
                       
+                      {/* View Star Map Button - Always visible */}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full mb-3 gap-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedMemory(memory);
+                          setIsStarMapOpen(true);
+                        }}
+                      >
+                        <Map className="w-4 h-4" />
+                        View Star Map
+                      </Button>
+                      
                       {memory.is_unlocked ? (
                         <div className="space-y-3">
                           {memory.message && (
@@ -213,8 +231,16 @@ const Dashboard = () => {
                               {memory.message}
                             </p>
                           )}
-                          <Button variant="secondary" className="w-full">
-                            View Memory
+                          <Button 
+                            variant="secondary" 
+                            className="w-full"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedMemory(memory);
+                              setIsStarMapOpen(true);
+                            }}
+                          >
+                            View Full Memory
                           </Button>
                         </div>
                       ) : (
@@ -250,6 +276,16 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Star Map Modal */}
+      <StarMapModal 
+        memory={selectedMemory}
+        isOpen={isStarMapOpen}
+        onClose={() => {
+          setIsStarMapOpen(false);
+          setSelectedMemory(null);
+        }}
+      />
     </div>
   );
 };
