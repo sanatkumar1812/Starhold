@@ -73,9 +73,11 @@ const Dashboard = () => {
       {/* Header */}
       <header className="relative z-10 border-b border-border/50 bg-background/50 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <Star className="w-6 h-6 text-primary" />
-            <span className="font-display text-xl">Starhold</span>
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center">
+              <Star className="w-5 h-5 text-primary-foreground" />
+            </div>
+            <span className="font-serif text-xl font-semibold text-foreground">Starhold</span>
           </Link>
           
           <div className="flex items-center gap-4">
