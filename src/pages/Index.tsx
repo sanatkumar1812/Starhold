@@ -17,7 +17,7 @@ const Index = () => {
       <CosmicBackground />
       
       <div className="relative z-10">
-        <Navigation onStartCreating={() => setIsCreating(true)} />
+        <Navigation />
 
         {isCreating ? (
           <main className="pt-24 pb-12 px-4 min-h-screen">

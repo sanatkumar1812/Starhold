@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Star, Lock, Unlock, Plus, LogOut, Calendar, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CosmicBackground } from '@/components/CosmicBackground';
+import { useAuth } from '@/hooks/useAuth';
 
 // Mock data for demonstration
 const mockMemories = [
@@ -34,7 +35,15 @@ const mockMemories = [
 ];
 
 const Dashboard = () => {
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
   const [memories] = useState(mockMemories);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/auth');
+    }
+  }, [isAuthenticated, navigate]);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
@@ -53,8 +62,8 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    // TODO: Implement actual logout
-    window.location.href = '/';
+    logout();
+    navigate('/');
   };
 
   return (
@@ -72,7 +81,7 @@ const Dashboard = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
-              <span>Demo User</span>
+              <span>{user?.name || 'User'}</span>
             </div>
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />
