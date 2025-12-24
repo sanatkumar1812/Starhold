@@ -74,8 +74,8 @@ const Auth = () => {
       <Card className="w-full max-w-md bg-background/80 backdrop-blur-xl border-border/50 z-10">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
-            <div className="p-3 rounded-full bg-primary/10 border border-primary/20">
-              <Star className="w-8 h-8 text-primary" />
+            <div className="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center">
+              <Star className="w-6 h-6 text-primary-foreground" />
             </div>
           </div>
           <CardTitle className="text-2xl font-display">Welcome to Starhold</CardTitle>
