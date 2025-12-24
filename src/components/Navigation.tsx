@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { Star } from 'lucide-react';
+import { Star, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
-interface NavigationProps {
-  onStartCreating: () => void;
-}
+export const Navigation = () => {
+  const { isAuthenticated } = useAuth();
 
-export const Navigation = ({ onStartCreating }: NavigationProps) => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -38,9 +38,18 @@ export const Navigation = ({ onStartCreating }: NavigationProps) => {
         </nav>
 
         {/* CTA */}
-        <Button variant="gold" size="sm" onClick={onStartCreating}>
-          Create Memory
-        </Button>
+        <Link to={isAuthenticated ? "/dashboard" : "/auth"}>
+          <Button variant="gold" size="sm">
+            {isAuthenticated ? (
+              "My Memories"
+            ) : (
+              <>
+                <LogIn className="w-4 h-4 mr-2" />
+                Login / Sign Up
+              </>
+            )}
+          </Button>
+        </Link>
       </div>
     </header>
   );

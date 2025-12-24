@@ -1,28 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star, Mail, Lock, User, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CosmicBackground } from '@/components/CosmicBackground';
+import { useAuth } from '@/hooks/useAuth';
 
 const Auth = () => {
+  const { login, signup, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [signupData, setSignupData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // TODO: Implement actual login with Supabase
-    setTimeout(() => {
-      toast.info('Login functionality will be available once backend is connected');
-      setIsLoading(false);
-    }, 1000);
+    const success = await login(loginData.email, loginData.password);
+    if (success) {
+      toast.success('Welcome back!');
+      navigate('/dashboard');
+    }
+    setIsLoading(false);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -40,11 +50,12 @@ const Auth = () => {
     
     setIsLoading(true);
     
-    // TODO: Implement actual signup with Supabase
-    setTimeout(() => {
-      toast.info('Signup functionality will be available once backend is connected');
-      setIsLoading(false);
-    }, 1000);
+    const success = await signup(signupData.name, signupData.email, signupData.password);
+    if (success) {
+      toast.success('Account created successfully!');
+      navigate('/dashboard');
+    }
+    setIsLoading(false);
   };
 
   return (
