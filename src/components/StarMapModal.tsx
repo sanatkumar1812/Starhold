@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { StarMap } from '@/components/StarMap';
-import { Download, X, Lock, Calendar, Star } from 'lucide-react';
+import { Lock, Calendar, Star } from 'lucide-react';
 import type { Memory } from '@/hooks/useMemories';
 
 interface StarMapModalProps {
@@ -72,11 +71,11 @@ export const StarMapModal = ({ memory, isOpen, onClose }: StarMapModalProps) => 
           />
 
           {/* Memory Info */}
-          <div className="w-full space-y-4 border-t border-border/30 pt-4">
+          <div className="w-full space-y-3 border-t border-border/30 pt-4">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="w-4 h-4" />
-                <span>Unlocks</span>
+                <span>Unlock Date</span>
               </div>
               <span className="text-foreground">
                 {formatDate(memory.unlock_date)} at {formatTime(memory.unlock_time)}
@@ -102,25 +101,6 @@ export const StarMapModal = ({ memory, isOpen, onClose }: StarMapModalProps) => 
                 {memory.is_unlocked ? 'Unlocked' : 'Locked'}
               </span>
             </div>
-
-            {/* Show message preview if unlocked */}
-            {memory.is_unlocked && memory.message && (
-              <div className="bg-background/50 rounded-lg p-4 border border-border/30">
-                <p className="text-xs text-muted-foreground mb-2">Message</p>
-                <p className="text-sm text-foreground whitespace-pre-wrap">
-                  {memory.message}
-                </p>
-              </div>
-            )}
-
-            {!memory.is_unlocked && (
-              <div className="bg-primary/5 rounded-lg p-4 border border-primary/20 text-center">
-                <Lock className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">
-                  The message will be revealed on the unlock date
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </DialogContent>

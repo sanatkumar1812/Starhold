@@ -5,11 +5,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { StarMap } from '@/components/StarMap';
 import { generateCoordinates, formatRA, formatDec, getTimeUntilUnlock } from '@/lib/coordinates';
-import { Calendar, Lock, Star, Sparkles, ArrowRight, ArrowLeft, Check, ImagePlus, X, Save } from 'lucide-react';
+import { Calendar, Lock, Star, Sparkles, ArrowRight, ArrowLeft, Check, ImagePlus, X, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useMemories } from '@/hooks/useMemories';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MemoryData {
   recipientName: string;
@@ -31,9 +32,10 @@ export const MemoryCreator = () => {
     mediaFiles: [],
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { createMemory } = useMemories();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +89,7 @@ export const MemoryCreator = () => {
   };
 
   const handleSaveMemory = async () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       toast.error('Please log in to save your memory', {
         action: {
           label: 'Log in',
@@ -100,27 +102,67 @@ export const MemoryCreator = () => {
     if (!coordinates) return;
 
     setIsSaving(true);
-    
-    const success = await createMemory({
-      recipient_name: memoryData.recipientName,
-      title: memoryData.senderName ? `From ${memoryData.senderName}` : undefined,
-      message: memoryData.message,
-      constellation: coordinates.constellation,
-      star_coordinates: { ra: coordinates.ra, dec: coordinates.dec },
-      unlock_date: memoryData.unlockDate.toISOString().split('T')[0],
-      unlock_time: memoryData.unlockTime + ':00',
-    });
+    setUploadProgress(0);
 
-    setIsSaving(false);
+    try {
+      // Upload files to storage
+      const uploadedUrls: string[] = [];
+      
+      if (memoryData.mediaFiles.length > 0) {
+        for (let i = 0; i < memoryData.mediaFiles.length; i++) {
+          const file = memoryData.mediaFiles[i];
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}-${i}.${fileExt}`;
+          const filePath = `${user.id}/${fileName}`;
 
-    if (success) {
-      toast.success('Memory saved to the cosmos!', {
-        description: 'View it in your dashboard anytime.',
-        action: {
-          label: 'View Dashboard',
-          onClick: () => navigate('/dashboard'),
-        },
+          const { error: uploadError, data } = await supabase.storage
+            .from('memory-attachments')
+            .upload(filePath, file);
+
+          if (uploadError) {
+            console.error('Upload error:', uploadError);
+            toast.error(`Failed to upload ${file.name}`);
+            continue;
+          }
+
+          const { data: urlData } = supabase.storage
+            .from('memory-attachments')
+            .getPublicUrl(filePath);
+
+          if (urlData?.publicUrl) {
+            uploadedUrls.push(urlData.publicUrl);
+          }
+
+          setUploadProgress(((i + 1) / memoryData.mediaFiles.length) * 100);
+        }
+      }
+
+      const success = await createMemory({
+        recipient_name: memoryData.recipientName,
+        title: memoryData.senderName ? `From ${memoryData.senderName}` : undefined,
+        message: memoryData.message,
+        constellation: coordinates.constellation,
+        star_coordinates: { ra: coordinates.ra, dec: coordinates.dec },
+        unlock_date: memoryData.unlockDate.toISOString().split('T')[0],
+        unlock_time: memoryData.unlockTime + ':00',
+        attachment_url: uploadedUrls.length > 0 ? uploadedUrls.join(',') : undefined,
       });
+
+      if (success) {
+        toast.success('Memory saved to the cosmos!', {
+          description: 'View it in your dashboard anytime.',
+          action: {
+            label: 'View Dashboard',
+            onClick: () => navigate('/dashboard'),
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error saving memory:', error);
+      toast.error('Failed to save memory');
+    } finally {
+      setIsSaving(false);
+      setUploadProgress(0);
     }
   };
 
@@ -449,6 +491,19 @@ export const MemoryCreator = () => {
                 <p className="text-sm text-muted-foreground">
                   Save this memory to your account to access it anytime
                 </p>
+                {isSaving && uploadProgress > 0 && uploadProgress < 100 && (
+                  <div className="w-full max-w-xs mx-auto">
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-primary transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Uploading attachments... {Math.round(uploadProgress)}%
+                    </p>
+                  </div>
+                )}
                 <Button 
                   variant="gold" 
                   size="lg" 
@@ -456,8 +511,17 @@ export const MemoryCreator = () => {
                   disabled={isSaving}
                   className="w-full sm:w-auto"
                 >
-                  <Save className="w-5 h-5 mr-2" />
-                  {isSaving ? 'Saving...' : 'Complete & Save Memory'}
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      {uploadProgress > 0 ? 'Uploading...' : 'Saving...'}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-5 h-5 mr-2" />
+                      Complete & Save Memory
+                    </>
+                  )}
                 </Button>
                 {!isAuthenticated && (
                   <p className="text-xs text-muted-foreground">
