@@ -16,6 +16,7 @@ export interface Memory {
   unlock_time: string;
   is_unlocked: boolean;
   attachment_url: string | null;
+  share_token: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -123,11 +124,30 @@ export const useMemories = () => {
     return true;
   };
 
+  const generateShareToken = async (id: string): Promise<string | null> => {
+    const token = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
+    
+    const { error } = await supabase
+      .from('memories')
+      .update({ share_token: token })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error generating share token:', error);
+      toast.error('Failed to generate share link');
+      return null;
+    }
+
+    await fetchMemories();
+    return `${window.location.origin}/memory/${token}`;
+  };
+
   return {
     memories,
     isLoading,
     createMemory,
     deleteMemory,
+    generateShareToken,
     refetch: fetchMemories,
   };
 };

@@ -23,6 +23,7 @@ export type Database = {
           is_unlocked: boolean
           message: string | null
           recipient_name: string
+          share_token: string | null
           star_coordinates: Json | null
           title: string | null
           unlock_date: string
@@ -38,6 +39,7 @@ export type Database = {
           is_unlocked?: boolean
           message?: string | null
           recipient_name: string
+          share_token?: string | null
           star_coordinates?: Json | null
           title?: string | null
           unlock_date: string
@@ -53,6 +55,7 @@ export type Database = {
           is_unlocked?: boolean
           message?: string | null
           recipient_name?: string
+          share_token?: string | null
           star_coordinates?: Json | null
           title?: string | null
           unlock_date?: string

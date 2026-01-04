@@ -3,22 +3,26 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star, Lock, Unlock, Plus, LogOut, Calendar, User, Settings, Sparkles, Trash2, Map } from 'lucide-react';
+import { Star, Lock, Unlock, Plus, LogOut, Calendar, Settings, Sparkles, Trash2, Map, Eye, Share2, FileText, Image } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { ProfileSettings } from '@/components/ProfileSettings';
 import { StarMapModal } from '@/components/StarMapModal';
+import { MemoryDetailModal } from '@/components/MemoryDetailModal';
+import { MemoryCountdown } from '@/components/MemoryCountdown';
+import { MemoryCardSkeleton } from '@/components/MemoryCardSkeleton';
 import { useAuth } from '@/hooks/useAuth';
 import { useMemories, Memory } from '@/hooks/useMemories';
 import { toast } from 'sonner';
 
 const Dashboard = () => {
   const { user, profile, isAuthenticated, isLoading: authLoading, logout } = useAuth();
-  const { memories, isLoading: memoriesLoading, deleteMemory } = useMemories();
+  const { memories, isLoading: memoriesLoading, deleteMemory, generateShareToken } = useMemories();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('memories');
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
   const [isStarMapOpen, setIsStarMapOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -30,7 +34,7 @@ const Dashboard = () => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
     });
   };
@@ -57,6 +61,10 @@ const Dashboard = () => {
     }
   };
 
+  const handleGenerateShareLink = async (id: string) => {
+    return await generateShareToken(id);
+  };
+
   const getInitials = () => {
     if (profile?.display_name) {
       return profile.display_name.slice(0, 2).toUpperCase();
@@ -65,6 +73,11 @@ const Dashboard = () => {
       return user.email.slice(0, 2).toUpperCase();
     }
     return 'U';
+  };
+
+  const getAttachmentCount = (memory: Memory) => {
+    if (!memory.attachment_url) return 0;
+    return memory.attachment_url.split(',').filter(Boolean).length;
   };
 
   const unlockedCount = memories.filter(m => m.is_unlocked).length;
@@ -117,11 +130,11 @@ const Dashboard = () => {
       </header>
       
       {/* Main Content */}
-      <main className="relative z-10 container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+      <main className="relative z-10 container mx-auto px-4 py-6 sm:py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-display mb-2">
+              <h1 className="text-2xl sm:text-3xl font-display mb-2">
                 Welcome, {profile?.display_name || user?.email?.split('@')[0] || 'Stargazer'}
               </h1>
               <p className="text-muted-foreground">
@@ -129,21 +142,21 @@ const Dashboard = () => {
               </p>
             </div>
             
-            <div className="flex items-center gap-3">
-              <TabsList className="bg-background/50">
-                <TabsTrigger value="memories" className="gap-2">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <TabsList className="bg-background/50 flex-1 sm:flex-initial">
+                <TabsTrigger value="memories" className="gap-2 flex-1 sm:flex-initial">
                   <Sparkles className="w-4 h-4" />
                   <span className="hidden sm:inline">Memories</span>
                 </TabsTrigger>
-                <TabsTrigger value="settings" className="gap-2">
+                <TabsTrigger value="settings" className="gap-2 flex-1 sm:flex-initial">
                   <Settings className="w-4 h-4" />
                   <span className="hidden sm:inline">Settings</span>
                 </TabsTrigger>
               </TabsList>
               
               <Link to="/">
-                <Button>
-                  <Plus className="w-4 h-4 mr-2" />
+                <Button className="whitespace-nowrap">
+                  <Plus className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">Create Memory</span>
                 </Button>
               </Link>
@@ -152,28 +165,36 @@ const Dashboard = () => {
           
           <TabsContent value="memories" className="mt-0">
             {memoriesLoading ? (
-              <div className="flex items-center justify-center py-16">
-                <Sparkles className="w-6 h-6 text-primary animate-pulse" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <MemoryCardSkeleton key={i} />
+                ))}
               </div>
             ) : memories.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {memories.map((memory) => (
                   <Card 
                     key={memory.id} 
-                    className={`bg-background/60 backdrop-blur-xl border-border/50 transition-all hover:border-primary/50 group ${
-                      memory.is_unlocked ? 'cursor-pointer' : 'opacity-90'
+                    className={`bg-background/60 backdrop-blur-xl border-border/50 transition-all hover:border-primary/50 group overflow-hidden ${
+                      memory.is_unlocked ? '' : 'opacity-95'
                     }`}
                   >
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
-                        <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                        <div className={`p-2.5 rounded-lg ${memory.is_unlocked ? 'bg-green-500/10 border border-green-500/20' : 'bg-primary/10 border border-primary/20'}`}>
                           {memory.is_unlocked ? (
-                            <Unlock className="w-5 h-5 text-primary" />
+                            <Unlock className="w-5 h-5 text-green-400" />
                           ) : (
-                            <Lock className="w-5 h-5 text-muted-foreground" />
+                            <Lock className="w-5 h-5 text-primary" />
                           )}
                         </div>
                         <div className="flex items-center gap-2">
+                          {memory.share_token && (
+                            <span className="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-400">
+                              <Share2 className="w-3 h-3 inline mr-1" />
+                              Shared
+                            </span>
+                          )}
                           <span className={`text-xs px-2 py-1 rounded-full ${
                             memory.is_unlocked 
                               ? 'bg-green-500/20 text-green-400' 
@@ -194,60 +215,73 @@ const Dashboard = () => {
                           </Button>
                         </div>
                       </div>
-                      <CardTitle className="text-lg mt-3">
+                      <CardTitle className="text-lg mt-3 line-clamp-1">
                         {memory.title || `For ${memory.recipient_name}`}
                       </CardTitle>
-                      <CardDescription className="flex items-center gap-1">
+                      <CardDescription className="flex items-center gap-2">
                         <Star className="w-3 h-3" />
-                        {memory.constellation || 'Custom Star'}
+                        <span className="truncate">{memory.constellation || 'Custom Star'}</span>
+                        {getAttachmentCount(memory) > 0 && (
+                          <span className="flex items-center gap-1 text-xs">
+                            <Image className="w-3 h-3" />
+                            {getAttachmentCount(memory)}
+                          </span>
+                        )}
                       </CardDescription>
                     </CardHeader>
                     
-                    <CardContent>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                        <Calendar className="w-4 h-4" />
-                        <span>{formatDate(memory.unlock_date)} at {formatTime(memory.unlock_time)}</span>
+                    <CardContent className="space-y-4">
+                      {/* Date & Countdown */}
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">{formatDate(memory.unlock_date)} at {formatTime(memory.unlock_time)}</span>
+                        </div>
+                        {!memory.is_unlocked && (
+                          <MemoryCountdown 
+                            unlockDate={memory.unlock_date}
+                            unlockTime={memory.unlock_time}
+                            isUnlocked={memory.is_unlocked}
+                          />
+                        )}
                       </div>
                       
-                      {/* View Star Map Button - Always visible */}
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full mb-3 gap-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedMemory(memory);
-                          setIsStarMapOpen(true);
-                        }}
-                      >
-                        <Map className="w-4 h-4" />
-                        View Star Map
-                      </Button>
-                      
-                      {memory.is_unlocked ? (
-                        <div className="space-y-3">
-                          {memory.message && (
-                            <p className="text-sm text-foreground/80 line-clamp-3">
-                              {memory.message}
-                            </p>
-                          )}
-                          <Button 
-                            variant="secondary" 
-                            className="w-full"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedMemory(memory);
-                              setIsStarMapOpen(true);
-                            }}
-                          >
-                            View Full Memory
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="text-center py-2 text-sm text-muted-foreground">
-                          Opens on unlock date
-                        </div>
+                      {/* Preview for unlocked memories */}
+                      {memory.is_unlocked && memory.message && (
+                        <p className="text-sm text-foreground/70 line-clamp-2 bg-background/30 rounded-lg p-3 border border-border/20">
+                          {memory.message}
+                        </p>
                       )}
+                      
+                      {/* Action Buttons */}
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1 gap-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedMemory(memory);
+                            setIsStarMapOpen(true);
+                          }}
+                        >
+                          <Map className="w-4 h-4" />
+                          <span className="hidden sm:inline">Star Map</span>
+                        </Button>
+                        <Button 
+                          variant={memory.is_unlocked ? "default" : "secondary"} 
+                          size="sm"
+                          className="flex-1 gap-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedMemory(memory);
+                            setIsDetailOpen(true);
+                          }}
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span className="hidden sm:inline">{memory.is_unlocked ? 'View' : 'Details'}</span>
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
@@ -285,6 +319,17 @@ const Dashboard = () => {
           setIsStarMapOpen(false);
           setSelectedMemory(null);
         }}
+      />
+
+      {/* Memory Detail Modal */}
+      <MemoryDetailModal
+        memory={selectedMemory}
+        isOpen={isDetailOpen}
+        onClose={() => {
+          setIsDetailOpen(false);
+          setSelectedMemory(null);
+        }}
+        onGenerateShareLink={handleGenerateShareLink}
       />
     </div>
   );
