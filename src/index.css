@@ -118,6 +118,11 @@
   .cosmic-bg {
     background: var(--gradient-cosmic);
   }
+
+  .overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 }
 
 /* Animations */

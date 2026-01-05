@@ -182,13 +182,13 @@ const SharedMemory = () => {
               )}
 
               {/* Title & Recipient */}
-              <div className="text-center space-y-4">
-                <h1 className="text-3xl sm:text-4xl font-display tracking-wide text-foreground">
+              <div className="text-center space-y-4 max-w-full overflow-hidden px-2">
+                <h1 className="text-3xl sm:text-4xl font-display tracking-wide text-foreground break-words hyphens-auto">
                   {memory.title || `A Memory for ${memory.recipient_name}`}
                 </h1>
                 <div className="flex items-center justify-center gap-2 text-primary/80">
-                  <MapPin className="w-4 h-4" />
-                  <span className="text-sm font-medium tracking-wide">For {memory.recipient_name}</span>
+                  <MapPin className="w-4 h-4 shrink-0" />
+                  <span className="text-sm font-medium tracking-wide break-words">{memory.recipient_name}</span>
                 </div>
               </div>
 
@@ -247,11 +247,11 @@ const SharedMemory = () => {
                 <div className="space-y-8 animate-fade-in-up">
                   {/* Message */}
                   {memory.message && (
-                    <div className="relative rounded-2xl bg-gradient-to-b from-background/60 to-background/30 border border-border/30 p-8 sm:p-10">
-                      <div className="absolute -top-3 left-8 px-4 py-1 bg-background border border-border/50 rounded-full">
+                    <div className="relative rounded-2xl bg-gradient-to-b from-background/60 to-background/30 border border-border/30 p-6 sm:p-10 overflow-hidden">
+                      <div className="absolute -top-3 left-6 sm:left-8 px-4 py-1 bg-background border border-border/50 rounded-full">
                         <span className="text-xs text-muted-foreground uppercase tracking-widest">Message</span>
                       </div>
-                      <p className="text-foreground whitespace-pre-wrap leading-relaxed text-lg sm:text-xl font-serif pt-2">
+                      <p className="text-foreground whitespace-pre-wrap leading-relaxed text-base sm:text-lg font-serif pt-2 break-words overflow-wrap-anywhere">
                         {memory.message}
                       </p>
                     </div>
