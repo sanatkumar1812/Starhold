@@ -1,9 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { StarMap } from '@/components/StarMap';
 import { MemoryCountdown } from '@/components/MemoryCountdown';
-import { Lock, Calendar, Star, Share2, Copy, Check, FileText, Image, Film, X } from 'lucide-react';
+import { Lock, Calendar, Star, Share2, Copy, Check, FileText, Film, Sparkles, MapPin, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import type { Memory } from '@/hooks/useMemories';
@@ -52,8 +52,8 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
   };
 
   const handleCopyLink = async () => {
-    if (!shareLink) return;
-    await navigator.clipboard.writeText(shareLink);
+    const link = shareLink || `${window.location.origin}/memory/${memory.share_token}`;
+    await navigator.clipboard.writeText(link);
     setCopied(true);
     toast.success('Link copied to clipboard!');
     setTimeout(() => setCopied(false), 2000);
@@ -70,167 +70,211 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] bg-background/95 backdrop-blur-xl border-border/50 p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-0">
-          <DialogTitle className="flex items-center gap-2 text-xl">
-            <Star className="w-5 h-5 text-primary" />
-            {memory.title || `Memory for ${memory.recipient_name}`}
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] bg-gradient-to-b from-background via-background to-background/95 backdrop-blur-2xl border-primary/20 p-0 overflow-hidden shadow-2xl shadow-primary/5">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 z-50 rounded-full p-2 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-background transition-all"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Decorative Header Gradient */}
+        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
         
-        <ScrollArea className="max-h-[calc(90vh-100px)]">
-          <div className="p-6 pt-4 space-y-6">
+        <ScrollArea className="max-h-[90vh]">
+          <div className="relative p-8 pt-12 space-y-8">
             {/* Star Map Section */}
             {coordinates && typeof coordinates.ra === 'number' && typeof coordinates.dec === 'number' && (
               <div className="flex justify-center">
-                <StarMap 
-                  ra={coordinates.ra} 
-                  dec={coordinates.dec} 
-                  size={220} 
-                  showCoordinates
-                  showDownload
-                  recipientName={memory.recipient_name}
-                  unlockDate={new Date(memory.unlock_date)}
-                  unlockTime={memory.unlock_time}
-                  constellation={memory.constellation || undefined}
-                />
+                <div className="relative">
+                  {/* Glow Effect */}
+                  <div className="absolute inset-0 blur-3xl bg-primary/20 rounded-full scale-75" />
+                  <StarMap 
+                    ra={coordinates.ra} 
+                    dec={coordinates.dec} 
+                    size={240} 
+                    showCoordinates
+                    showDownload
+                    recipientName={memory.recipient_name}
+                    unlockDate={new Date(memory.unlock_date)}
+                    unlockTime={memory.unlock_time}
+                    constellation={memory.constellation || undefined}
+                  />
+                </div>
               </div>
             )}
 
-            {/* Memory Info */}
-            <div className="space-y-4 border-t border-border/30 pt-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar className="w-4 h-4" />
-                  <span>Unlock Date</span>
-                </div>
-                <span className="text-foreground text-right">
-                  {formatDate(memory.unlock_date)} at {formatTime(memory.unlock_time)}
-                </span>
+            {/* Title & Recipient */}
+            <div className="text-center space-y-3">
+              <h2 className="text-2xl sm:text-3xl font-display tracking-wide text-foreground">
+                {memory.title || `A Memory for ${memory.recipient_name}`}
+              </h2>
+              <div className="flex items-center justify-center gap-2 text-primary/80">
+                <MapPin className="w-4 h-4" />
+                <span className="text-sm font-medium tracking-wide">For {memory.recipient_name}</span>
+              </div>
+            </div>
 
-                {memory.constellation && (
-                  <>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Star className="w-4 h-4" />
-                      <span>Constellation</span>
-                    </div>
-                    <span className="text-foreground text-right">{memory.constellation}</span>
-                  </>
-                )}
-
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Lock className="w-4 h-4" />
-                  <span>Status</span>
-                </div>
-                <div className="text-right">
-                  {memory.is_unlocked ? (
-                    <span className="text-green-400">Unlocked</span>
-                  ) : (
-                    <MemoryCountdown 
-                      unlockDate={memory.unlock_date} 
-                      unlockTime={memory.unlock_time}
-                      isUnlocked={memory.is_unlocked}
-                    />
-                  )}
+            {/* Constellation Badge */}
+            {memory.constellation && (
+              <div className="flex justify-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary">
+                  <Sparkles className="w-4 h-4" />
+                  <span className="text-sm font-serif tracking-wider">{memory.constellation}</span>
                 </div>
               </div>
+            )}
 
-              {/* Countdown for locked memories */}
-              {!memory.is_unlocked && (
-                <div className="bg-primary/5 rounded-lg p-6 border border-primary/20 text-center space-y-3">
-                  <Lock className="w-8 h-8 text-primary mx-auto" />
-                  <p className="text-muted-foreground">
-                    This memory will be revealed on the unlock date
-                  </p>
+            {/* Divider */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+              <Star className="w-4 h-4 text-primary/50" />
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+            </div>
+
+            {/* Memory Info Grid */}
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-1 text-center p-4 rounded-xl bg-background/50 border border-border/30">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground mb-2">
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-xs uppercase tracking-wider">Unlock Date</span>
+                </div>
+                <p className="font-serif text-foreground">{formatDate(memory.unlock_date)}</p>
+                <p className="text-sm text-muted-foreground">{formatTime(memory.unlock_time)}</p>
+              </div>
+              
+              <div className="space-y-1 text-center p-4 rounded-xl bg-background/50 border border-border/30">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground mb-2">
+                  <Lock className="w-4 h-4" />
+                  <span className="text-xs uppercase tracking-wider">Status</span>
+                </div>
+                {memory.is_unlocked ? (
+                  <p className="font-serif text-emerald-400">✦ Unlocked ✦</p>
+                ) : (
+                  <MemoryCountdown 
+                    unlockDate={memory.unlock_date} 
+                    unlockTime={memory.unlock_time}
+                    isUnlocked={memory.is_unlocked}
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Locked State */}
+            {!memory.is_unlocked && (
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-primary/10 via-primary/5 to-transparent border border-primary/20 p-8 text-center space-y-4">
+                {/* Decorative stars */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <div className="absolute top-4 left-8 w-1 h-1 rounded-full bg-primary/40 animate-pulse" />
+                  <div className="absolute top-12 right-12 w-1.5 h-1.5 rounded-full bg-primary/30 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                  <div className="absolute bottom-8 left-16 w-1 h-1 rounded-full bg-primary/50 animate-pulse" style={{ animationDelay: '1s' }} />
+                </div>
+                
+                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-b from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center">
+                  <Lock className="w-7 h-7 text-primary" />
+                </div>
+                <div className="space-y-2">
+                  <p className="font-serif text-lg text-foreground">This memory awaits its moment</p>
+                  <p className="text-sm text-muted-foreground italic">Come back when the stars align...</p>
+                </div>
+                <div className="pt-2">
                   <MemoryCountdown 
                     unlockDate={memory.unlock_date} 
                     unlockTime={memory.unlock_time}
                     isUnlocked={memory.is_unlocked}
                   />
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Message - only show when unlocked */}
-              {memory.is_unlocked && memory.message && (
-                <div className="bg-background/50 rounded-lg p-5 border border-border/30 space-y-2">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Message</p>
-                  <p className="text-foreground whitespace-pre-wrap leading-relaxed">
-                    {memory.message}
-                  </p>
+            {/* Message - only show when unlocked */}
+            {memory.is_unlocked && memory.message && (
+              <div className="relative rounded-2xl bg-gradient-to-b from-background/80 to-background/40 border border-border/30 p-6 sm:p-8 space-y-4">
+                <div className="absolute -top-3 left-6 px-3 py-1 bg-background border border-border/50 rounded-full">
+                  <span className="text-xs text-muted-foreground uppercase tracking-widest">Message</span>
                 </div>
-              )}
+                <p className="text-foreground whitespace-pre-wrap leading-relaxed text-lg font-serif pt-2">
+                  {memory.message}
+                </p>
+              </div>
+            )}
 
-              {/* Attachments - only show when unlocked */}
-              {memory.is_unlocked && attachments.length > 0 && (
-                <div className="space-y-3">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Attachments</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {attachments.map((url, index) => {
-                      const type = getAttachmentType(url);
-                      return (
-                        <a 
-                          key={index}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="relative aspect-square rounded-lg overflow-hidden bg-background/50 border border-border/30 hover:border-primary/50 transition-colors group"
-                        >
-                          {type === 'image' ? (
-                            <img 
-                              src={url} 
-                              alt={`Attachment ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : type === 'video' ? (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Film className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
-                            </div>
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <FileText className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors" />
-                            </div>
-                          )}
-                        </a>
-                      );
-                    })}
-                  </div>
+            {/* Attachments - only show when unlocked */}
+            {memory.is_unlocked && attachments.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border/50" />
+                  <span className="text-xs text-muted-foreground uppercase tracking-widest">Attached Memories</span>
+                  <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border/50" />
                 </div>
-              )}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {attachments.map((url, index) => {
+                    const type = getAttachmentType(url);
+                    return (
+                      <a 
+                        key={index}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="relative aspect-square rounded-xl overflow-hidden bg-gradient-to-b from-background/60 to-background/30 border border-border/30 hover:border-primary/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/10 group"
+                      >
+                        {type === 'image' ? (
+                          <img 
+                            src={url} 
+                            alt={`Attachment ${index + 1}`}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                        ) : type === 'video' ? (
+                          <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                            <Film className="w-10 h-10 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <span className="text-xs text-muted-foreground">Video</span>
+                          </div>
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                            <FileText className="w-10 h-10 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <span className="text-xs text-muted-foreground">Document</span>
+                          </div>
+                        )}
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
-              {/* Share Section */}
-              <div className="border-t border-border/30 pt-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Share this memory</span>
-                  {!shareLink && !memory.share_token && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={handleGenerateShareLink}
-                      disabled={isGeneratingLink}
-                    >
-                      <Share2 className="w-4 h-4 mr-2" />
-                      {isGeneratingLink ? 'Generating...' : 'Generate Link'}
-                    </Button>
-                  )}
-                </div>
-                
-                {(shareLink || memory.share_token) && (
-                  <div className="flex items-center gap-2">
-                    <code className="flex-1 text-xs bg-background/50 rounded px-3 py-2 border border-border/30 truncate">
+            {/* Share Section */}
+            <div className="pt-4 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border/50" />
+                <Share2 className="w-4 h-4 text-muted-foreground" />
+                <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border/50" />
+              </div>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                {!shareLink && !memory.share_token ? (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleGenerateShareLink}
+                    disabled={isGeneratingLink}
+                    className="border-primary/30 hover:bg-primary/10"
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    {isGeneratingLink ? 'Creating link...' : 'Create Share Link'}
+                  </Button>
+                ) : (
+                  <div className="flex items-center gap-2 w-full max-w-md">
+                    <code className="flex-1 text-xs bg-background/60 rounded-lg px-4 py-3 border border-border/40 truncate font-mono text-muted-foreground">
                       {shareLink || `${window.location.origin}/memory/${memory.share_token}`}
                     </code>
                     <Button 
-                      variant="ghost" 
+                      variant="outline" 
                       size="icon"
-                      onClick={() => {
-                        const link = shareLink || `${window.location.origin}/memory/${memory.share_token}`;
-                        navigator.clipboard.writeText(link);
-                        setCopied(true);
-                        toast.success('Link copied!');
-                        setTimeout(() => setCopied(false), 2000);
-                      }}
+                      onClick={handleCopyLink}
+                      className="border-primary/30 hover:bg-primary/10 shrink-0"
                     >
-                      {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                      {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                     </Button>
                   </div>
                 )}
