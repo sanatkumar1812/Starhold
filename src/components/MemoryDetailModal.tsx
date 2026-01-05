@@ -106,13 +106,13 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
             )}
 
             {/* Title & Recipient */}
-            <div className="text-center space-y-3">
-              <h2 className="text-2xl sm:text-3xl font-display tracking-wide text-foreground">
+            <div className="text-center space-y-3 max-w-full overflow-hidden">
+              <h2 className="text-2xl sm:text-3xl font-display tracking-wide text-foreground break-words hyphens-auto">
                 {memory.title || `A Memory for ${memory.recipient_name}`}
               </h2>
               <div className="flex items-center justify-center gap-2 text-primary/80">
-                <MapPin className="w-4 h-4" />
-                <span className="text-sm font-medium tracking-wide">For {memory.recipient_name}</span>
+                <MapPin className="w-4 h-4 shrink-0" />
+                <span className="text-sm font-medium tracking-wide break-words">{memory.recipient_name}</span>
               </div>
             </div>
 
@@ -190,11 +190,11 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
 
             {/* Message - only show when unlocked */}
             {memory.is_unlocked && memory.message && (
-              <div className="relative rounded-2xl bg-gradient-to-b from-background/80 to-background/40 border border-border/30 p-6 sm:p-8 space-y-4">
+              <div className="relative rounded-2xl bg-gradient-to-b from-background/80 to-background/40 border border-border/30 p-6 sm:p-8 space-y-4 overflow-hidden">
                 <div className="absolute -top-3 left-6 px-3 py-1 bg-background border border-border/50 rounded-full">
                   <span className="text-xs text-muted-foreground uppercase tracking-widest">Message</span>
                 </div>
-                <p className="text-foreground whitespace-pre-wrap leading-relaxed text-lg font-serif pt-2">
+                <p className="text-foreground whitespace-pre-wrap leading-relaxed text-lg font-serif pt-2 break-words overflow-wrap-anywhere">
                   {memory.message}
                 </p>
               </div>
