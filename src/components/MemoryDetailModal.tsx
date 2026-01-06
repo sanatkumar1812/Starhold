@@ -27,9 +27,15 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
     if (isOpen && memory?.is_unlocked) {
       setShowWarpAnimation(true);
       setAnimationComplete(false);
+      // Fallback: ensure content shows even if animation fails
+      const timeout = setTimeout(() => {
+        setAnimationComplete(true);
+        setShowWarpAnimation(false);
+      }, 3000);
+      return () => clearTimeout(timeout);
     } else {
       setShowWarpAnimation(false);
-      setAnimationComplete(false);
+      setAnimationComplete(true); // Set to true so content shows immediately for locked memories
     }
   }, [isOpen, memory?.is_unlocked]);
 
