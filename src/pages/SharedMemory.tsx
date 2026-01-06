@@ -26,6 +26,12 @@ const SharedMemory = () => {
   useEffect(() => {
     if (memory?.is_unlocked && !isLoading && !animationComplete) {
       setShowWarpAnimation(true);
+      // Fallback: ensure content shows even if animation fails
+      const timeout = setTimeout(() => {
+        setAnimationComplete(true);
+        setShowWarpAnimation(false);
+      }, 3000);
+      return () => clearTimeout(timeout);
     }
   }, [memory?.is_unlocked, isLoading, animationComplete]);
 
