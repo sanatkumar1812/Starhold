@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { StarMap } from '@/components/StarMap';
 import { MemoryCountdown } from '@/components/MemoryCountdown';
 import { CosmicBackground } from '@/components/CosmicBackground';
+import { StarWarpAnimation } from '@/components/StarWarpAnimation';
 import { Star, Lock, Calendar, ArrowLeft, FileText, Film, Sparkles, MapPin, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Memory } from '@/hooks/useMemories';
@@ -14,13 +15,19 @@ const SharedMemory = () => {
   const [memory, setMemory] = useState<Memory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showZoomAnimation, setShowZoomAnimation] = useState(false);
+  const [showWarpAnimation, setShowWarpAnimation] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
+
+  const handleAnimationComplete = useCallback(() => {
+    setAnimationComplete(true);
+    setShowWarpAnimation(false);
+  }, []);
 
   useEffect(() => {
-    if (memory?.is_unlocked && !isLoading) {
-      setShowZoomAnimation(true);
+    if (memory?.is_unlocked && !isLoading && !animationComplete) {
+      setShowWarpAnimation(true);
     }
-  }, [memory?.is_unlocked, isLoading]);
+  }, [memory?.is_unlocked, isLoading, animationComplete]);
 
   useEffect(() => {
     const fetchMemory = async () => {
@@ -139,6 +146,13 @@ const SharedMemory = () => {
     <div className="min-h-screen relative">
       <CosmicBackground />
       
+      {/* Star Warp Animation */}
+      <StarWarpAnimation 
+        isActive={showWarpAnimation} 
+        onComplete={handleAnimationComplete}
+        duration={2000}
+      />
+      
       {/* Header */}
       <header className="relative z-10 border-b border-border/30 bg-background/30 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -154,40 +168,11 @@ const SharedMemory = () => {
       <main className="relative z-10 container mx-auto px-4 py-12 sm:py-20">
         <div className="max-w-2xl mx-auto space-y-8">
           {/* Memory Card */}
-          <div className="relative rounded-3xl bg-gradient-to-b from-background/80 via-background/60 to-background/40 backdrop-blur-2xl border border-primary/20 overflow-hidden shadow-2xl shadow-primary/5">
+          <div className={`relative rounded-3xl bg-gradient-to-b from-background/80 via-background/60 to-background/40 backdrop-blur-2xl border border-primary/20 overflow-hidden shadow-2xl shadow-primary/5 transition-opacity duration-500 ${
+            memory.is_unlocked && !animationComplete && showWarpAnimation ? 'opacity-0' : 'opacity-100'
+          }`}>
             {/* Decorative gradient overlay */}
             <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
-            
-            {/* Star Zoom Animation Overlay */}
-            {showZoomAnimation && (
-              <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
-                {[...Array(16)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute star-zoom-overlay"
-                    style={{
-                      left: `${15 + Math.random() * 70}%`,
-                      top: `${15 + Math.random() * 70}%`,
-                      width: `${2 + Math.random() * 5}px`,
-                      height: `${2 + Math.random() * 5}px`,
-                      borderRadius: '50%',
-                      background: `radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)`,
-                      animationDelay: `${i * 0.04}s`,
-                    }}
-                  />
-                ))}
-                {/* Central burst */}
-                <div
-                  className="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 star-zoom-overlay"
-                  style={{
-                    width: '120px',
-                    height: '120px',
-                    borderRadius: '50%',
-                    background: `radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, hsl(var(--primary) / 0.2) 30%, transparent 70%)`,
-                  }}
-                />
-              </div>
-            )}
             
             {/* Decorative stars */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -197,7 +182,7 @@ const SharedMemory = () => {
               <div className="absolute bottom-20 right-20 w-1 h-1 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: '1.5s' }} />
             </div>
 
-            <div className={`relative p-8 sm:p-12 space-y-10 ${showZoomAnimation ? 'content-reveal' : ''}`}>
+            <div className="relative p-8 sm:p-12 space-y-10">
               {/* Star Map */}
               {coordinates && typeof coordinates.ra === 'number' && typeof coordinates.dec === 'number' && (
                 <div className="flex justify-center">
