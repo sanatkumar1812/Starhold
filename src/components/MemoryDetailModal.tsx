@@ -3,8 +3,9 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { StarMap } from '@/components/StarMap';
 import { MemoryCountdown } from '@/components/MemoryCountdown';
+import { StarWarpAnimation } from '@/components/StarWarpAnimation';
 import { Lock, Calendar, Star, Share2, Copy, Check, FileText, Film, Sparkles, MapPin, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import type { Memory } from '@/hooks/useMemories';
 
@@ -19,15 +20,23 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
   const [copied, setCopied] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [isGeneratingLink, setIsGeneratingLink] = useState(false);
-  const [showZoomAnimation, setShowZoomAnimation] = useState(false);
+  const [showWarpAnimation, setShowWarpAnimation] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
 
   useEffect(() => {
     if (isOpen && memory?.is_unlocked) {
-      setShowZoomAnimation(true);
+      setShowWarpAnimation(true);
+      setAnimationComplete(false);
     } else {
-      setShowZoomAnimation(false);
+      setShowWarpAnimation(false);
+      setAnimationComplete(false);
     }
   }, [isOpen, memory?.is_unlocked]);
+
+  const handleAnimationComplete = useCallback(() => {
+    setAnimationComplete(true);
+    setShowWarpAnimation(false);
+  }, []);
 
   if (!memory) return null;
 
@@ -78,52 +87,31 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
   const attachments = memory.attachment_url ? memory.attachment_url.split(',').filter(Boolean) : [];
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] bg-gradient-to-b from-background via-background to-background/95 backdrop-blur-2xl border-primary/20 p-0 overflow-hidden shadow-2xl shadow-primary/5">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 z-50 rounded-full p-2 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-background transition-all"
-        >
-          <X className="w-4 h-4" />
-        </button>
+    <>
+      {/* Star Warp Animation */}
+      <StarWarpAnimation 
+        isActive={showWarpAnimation} 
+        onComplete={handleAnimationComplete}
+        duration={1800}
+      />
+      
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] bg-gradient-to-b from-background via-background to-background/95 backdrop-blur-2xl border-primary/20 p-0 overflow-hidden shadow-2xl shadow-primary/5">
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 z-50 rounded-full p-2 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-background transition-all"
+          >
+            <X className="w-4 h-4" />
+          </button>
 
-        {/* Decorative Header Gradient */}
-        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
-        
-        {/* Star Zoom Animation Overlay */}
-        {showZoomAnimation && (
-          <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute star-zoom-overlay"
-                style={{
-                  left: `${20 + Math.random() * 60}%`,
-                  top: `${20 + Math.random() * 60}%`,
-                  width: `${2 + Math.random() * 4}px`,
-                  height: `${2 + Math.random() * 4}px`,
-                  borderRadius: '50%',
-                  background: `radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)`,
-                  animationDelay: `${i * 0.05}s`,
-                }}
-              />
-            ))}
-            {/* Central burst */}
-            <div
-              className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 star-zoom-overlay"
-              style={{
-                width: '100px',
-                height: '100px',
-                borderRadius: '50%',
-                background: `radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, hsl(var(--primary) / 0.2) 30%, transparent 70%)`,
-              }}
-            />
-          </div>
-        )}
-        
-        <ScrollArea className="max-h-[90vh]">
-          <div className={`relative p-8 pt-12 space-y-8 ${showZoomAnimation ? 'content-reveal' : ''}`}>
+          {/* Decorative Header Gradient */}
+          <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
+          
+          <ScrollArea className="max-h-[90vh]">
+            <div className={`relative p-8 pt-12 space-y-8 transition-opacity duration-500 ${
+              memory.is_unlocked && !animationComplete && showWarpAnimation ? 'opacity-0' : 'opacity-100'
+            }`}>
             {/* Star Map Section */}
             {coordinates && typeof coordinates.ra === 'number' && typeof coordinates.dec === 'number' && (
               <div className="flex justify-center">
@@ -321,8 +309,9 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
               </div>
             </div>
           </div>
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
