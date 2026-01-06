@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { StarMap } from '@/components/StarMap';
 import { MemoryCountdown } from '@/components/MemoryCountdown';
 import { Lock, Calendar, Star, Share2, Copy, Check, FileText, Film, Sparkles, MapPin, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import type { Memory } from '@/hooks/useMemories';
 
@@ -19,6 +19,15 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
   const [copied, setCopied] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [isGeneratingLink, setIsGeneratingLink] = useState(false);
+  const [showZoomAnimation, setShowZoomAnimation] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && memory?.is_unlocked) {
+      setShowZoomAnimation(true);
+    } else {
+      setShowZoomAnimation(false);
+    }
+  }, [isOpen, memory?.is_unlocked]);
 
   if (!memory) return null;
 
@@ -82,8 +91,39 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
         {/* Decorative Header Gradient */}
         <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
         
+        {/* Star Zoom Animation Overlay */}
+        {showZoomAnimation && (
+          <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute star-zoom-overlay"
+                style={{
+                  left: `${20 + Math.random() * 60}%`,
+                  top: `${20 + Math.random() * 60}%`,
+                  width: `${2 + Math.random() * 4}px`,
+                  height: `${2 + Math.random() * 4}px`,
+                  borderRadius: '50%',
+                  background: `radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)`,
+                  animationDelay: `${i * 0.05}s`,
+                }}
+              />
+            ))}
+            {/* Central burst */}
+            <div
+              className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 star-zoom-overlay"
+              style={{
+                width: '100px',
+                height: '100px',
+                borderRadius: '50%',
+                background: `radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, hsl(var(--primary) / 0.2) 30%, transparent 70%)`,
+              }}
+            />
+          </div>
+        )}
+        
         <ScrollArea className="max-h-[90vh]">
-          <div className="relative p-8 pt-12 space-y-8">
+          <div className={`relative p-8 pt-12 space-y-8 ${showZoomAnimation ? 'content-reveal' : ''}`}>
             {/* Star Map Section */}
             {coordinates && typeof coordinates.ra === 'number' && typeof coordinates.dec === 'number' && (
               <div className="flex justify-center">

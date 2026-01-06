@@ -14,6 +14,13 @@ const SharedMemory = () => {
   const [memory, setMemory] = useState<Memory | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showZoomAnimation, setShowZoomAnimation] = useState(false);
+
+  useEffect(() => {
+    if (memory?.is_unlocked && !isLoading) {
+      setShowZoomAnimation(true);
+    }
+  }, [memory?.is_unlocked, isLoading]);
 
   useEffect(() => {
     const fetchMemory = async () => {
@@ -151,6 +158,37 @@ const SharedMemory = () => {
             {/* Decorative gradient overlay */}
             <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
             
+            {/* Star Zoom Animation Overlay */}
+            {showZoomAnimation && (
+              <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
+                {[...Array(16)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute star-zoom-overlay"
+                    style={{
+                      left: `${15 + Math.random() * 70}%`,
+                      top: `${15 + Math.random() * 70}%`,
+                      width: `${2 + Math.random() * 5}px`,
+                      height: `${2 + Math.random() * 5}px`,
+                      borderRadius: '50%',
+                      background: `radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)`,
+                      animationDelay: `${i * 0.04}s`,
+                    }}
+                  />
+                ))}
+                {/* Central burst */}
+                <div
+                  className="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 star-zoom-overlay"
+                  style={{
+                    width: '120px',
+                    height: '120px',
+                    borderRadius: '50%',
+                    background: `radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, hsl(var(--primary) / 0.2) 30%, transparent 70%)`,
+                  }}
+                />
+              </div>
+            )}
+            
             {/* Decorative stars */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               <div className="absolute top-8 left-12 w-1 h-1 rounded-full bg-primary/40 animate-pulse" />
@@ -159,7 +197,7 @@ const SharedMemory = () => {
               <div className="absolute bottom-20 right-20 w-1 h-1 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: '1.5s' }} />
             </div>
 
-            <div className="relative p-8 sm:p-12 space-y-10">
+            <div className={`relative p-8 sm:p-12 space-y-10 ${showZoomAnimation ? 'content-reveal' : ''}`}>
               {/* Star Map */}
               {coordinates && typeof coordinates.ra === 'number' && typeof coordinates.dec === 'number' && (
                 <div className="flex justify-center">
