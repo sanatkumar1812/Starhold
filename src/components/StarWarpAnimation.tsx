@@ -155,7 +155,7 @@ export const StarWarpAnimation = ({ isActive, onComplete, duration = 2000 }: Sta
     };
   }, [isActive, duration]);
 
-  if (!isActive && phase === 'done') return null;
+  if (!isActive) return null;
 
   return (
     <div 
