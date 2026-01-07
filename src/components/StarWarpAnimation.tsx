@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface StarWarpAnimationProps {
   isActive: boolean;
@@ -9,6 +9,12 @@ interface StarWarpAnimationProps {
 export const StarWarpAnimation = ({ isActive, onComplete, duration = 2000 }: StarWarpAnimationProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [phase, setPhase] = useState<'warp' | 'flash' | 'done'>('warp');
+  const onCompleteRef = useRef(onComplete);
+  
+  // Keep callback ref updated
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     if (!isActive) {
@@ -68,6 +74,7 @@ export const StarWarpAnimation = ({ isActive, onComplete, duration = 2000 }: Sta
     const acceleration = 2;
     let elapsed = 0;
     const startTime = Date.now();
+    let hasCompleted = false;
 
     const animate = () => {
       elapsed = Date.now() - startTime;
@@ -130,12 +137,13 @@ export const StarWarpAnimation = ({ isActive, onComplete, duration = 2000 }: Sta
 
       if (elapsed < duration * 0.8) {
         animationId = requestAnimationFrame(animate);
-      } else {
+      } else if (!hasCompleted) {
+        hasCompleted = true;
         // Transition to flash
         setPhase('flash');
         setTimeout(() => {
           setPhase('done');
-          onComplete();
+          onCompleteRef.current();
         }, 400);
       }
     };
@@ -145,7 +153,7 @@ export const StarWarpAnimation = ({ isActive, onComplete, duration = 2000 }: Sta
     return () => {
       cancelAnimationFrame(animationId);
     };
-  }, [isActive, duration, onComplete]);
+  }, [isActive, duration]);
 
   if (!isActive && phase === 'done') return null;
 
