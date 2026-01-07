@@ -116,7 +116,7 @@ export const MemoryDetailModal = ({ memory, isOpen, onClose, onGenerateShareLink
           
           <ScrollArea className="max-h-[90vh]">
             <div className={`relative p-8 pt-12 space-y-8 transition-opacity duration-500 ${
-              memory.is_unlocked && !animationComplete && showWarpAnimation ? 'opacity-0' : 'opacity-100'
+              !animationComplete ? 'opacity-0' : 'opacity-100'
             }`}>
             {/* Star Map Section */}
             {coordinates && typeof coordinates.ra === 'number' && typeof coordinates.dec === 'number' && (

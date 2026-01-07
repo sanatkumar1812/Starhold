@@ -16,7 +16,7 @@ const SharedMemory = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showWarpAnimation, setShowWarpAnimation] = useState(false);
-  const [animationComplete, setAnimationComplete] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(true); // Start true, only set false when animation starts
 
   const handleAnimationComplete = useCallback(() => {
     setAnimationComplete(true);
@@ -24,7 +24,8 @@ const SharedMemory = () => {
   }, []);
 
   useEffect(() => {
-    if (memory?.is_unlocked && !isLoading && !animationComplete) {
+    if (memory?.is_unlocked && !isLoading) {
+      setAnimationComplete(false);
       setShowWarpAnimation(true);
       // Fallback: ensure content shows even if animation fails
       const timeout = setTimeout(() => {
@@ -33,7 +34,7 @@ const SharedMemory = () => {
       }, 3000);
       return () => clearTimeout(timeout);
     }
-  }, [memory?.is_unlocked, isLoading, animationComplete]);
+  }, [memory?.is_unlocked, isLoading]);
 
   useEffect(() => {
     const fetchMemory = async () => {
@@ -175,7 +176,7 @@ const SharedMemory = () => {
         <div className="max-w-2xl mx-auto space-y-8">
           {/* Memory Card */}
           <div className={`relative rounded-3xl bg-gradient-to-b from-background/80 via-background/60 to-background/40 backdrop-blur-2xl border border-primary/20 overflow-hidden shadow-2xl shadow-primary/5 transition-opacity duration-500 ${
-            memory.is_unlocked && !animationComplete && showWarpAnimation ? 'opacity-0' : 'opacity-100'
+            !animationComplete ? 'opacity-0' : 'opacity-100'
           }`}>
             {/* Decorative gradient overlay */}
             <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
