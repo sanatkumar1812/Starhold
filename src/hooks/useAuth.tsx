@@ -23,6 +23,9 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<boolean>;
   uploadAvatar: (file: File) => Promise<string | null>;
+  updateEmail: (email: string) => Promise<boolean>;
+  updatePassword: (password: string) => Promise<boolean>;
+  deleteAccount: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -39,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .select('*')
       .eq('user_id', userId)
       .maybeSingle();
-    
+
     if (error) {
       console.error('Error fetching profile:', error);
       return null;
@@ -53,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         // Defer profile fetch with setTimeout to prevent deadlock
         if (session?.user) {
           setTimeout(() => {
@@ -69,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         fetchProfile(session.user.id).then(setProfile);
       }
@@ -94,7 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     const redirectUrl = `${window.location.origin}/`;
-    
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -161,25 +164,70 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
-    
+
     // Update profile with new avatar URL
     await updateProfile({ avatar_url: data.publicUrl });
-    
+
     return data.publicUrl;
   };
 
+  const updateEmail = async (email: string): Promise<boolean> => {
+    const { error } = await supabase.auth.updateUser({ email });
+    if (error) {
+      toast.error(error.message);
+      return false;
+    }
+    toast.success('Email update request sent! Please check your new email for verification.');
+    return true;
+  };
+
+  const updatePassword = async (password: string): Promise<boolean> => {
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) {
+      toast.error(error.message);
+      return false;
+    }
+    toast.success('Password updated successfully');
+    return true;
+  };
+
+  const deleteAccount = async (): Promise<boolean> => {
+    try {
+      const { error } = await supabase.rpc('delete_user_account');
+      if (error) {
+        if (error.message.includes('function delete_user_account() does not exist')) {
+          toast.error('Account deletion requires backend configuration. Please contact support.');
+        } else {
+          toast.error(error.message);
+        }
+        return false;
+      }
+
+      await logout();
+      toast.success('Account deleted successfully');
+      return true;
+    } catch (err) {
+      console.error('Delete account error:', err);
+      toast.error('An unexpected error occurred during account deletion');
+      return false;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ 
-      user, 
+    <AuthContext.Provider value={{
+      user,
       session,
       profile,
-      isAuthenticated: !!user, 
+      isAuthenticated: !!user,
       isLoading,
-      login, 
-      signup, 
+      login,
+      signup,
       logout,
       updateProfile,
       uploadAvatar,
+      updateEmail,
+      updatePassword,
+      deleteAccount,
     }}>
       {children}
     </AuthContext.Provider>

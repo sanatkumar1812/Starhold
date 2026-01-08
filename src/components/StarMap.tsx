@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, Eye, Sparkles as SparklesIcon } from 'lucide-react';
+import { getSkyViewUrl } from '@/lib/skyview';
 
 interface StarMapProps {
   ra: number; // Right Ascension in degrees (0-360)
@@ -15,21 +16,50 @@ interface StarMapProps {
   className?: string;
 }
 
-export const StarMap = ({ 
-  ra, 
-  dec, 
-  size = 300, 
-  showCoordinates = true, 
-  showDownload = false, 
+export const StarMap = ({
+  ra,
+  dec,
+  size = 300,
+  showCoordinates = true,
+  showDownload = false,
   recipientName,
   unlockDate,
   unlockTime,
   constellation,
-  className = '' 
+  className = ''
 }: StarMapProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [viewMode, setViewMode] = useState<'artistic' | 'real'>('artistic');
+  const [realImage, setRealImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
+  // Fetch real image when coordinates change
   useEffect(() => {
+    if (viewMode === 'real' && !realImage) {
+      setIsLoading(true);
+      setHasError(false);
+      // Optimization: Reduced pixels from size * 2 to size used for display
+      // This significantly improves SkyView generation time
+      const url = getSkyViewUrl(ra, dec, { pixels: size });
+
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        setRealImage(url);
+        setIsLoading(false);
+      };
+      img.onerror = () => {
+        setHasError(true);
+        setIsLoading(false);
+      };
+    }
+  }, [ra, dec, viewMode, size]);
+
+  // Draw artistic map (original logic)
+  useEffect(() => {
+    if (viewMode === 'real') return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -80,7 +110,7 @@ export const StarMap = ({
     ctx.strokeStyle = 'rgba(100, 140, 200, 0.15)';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 4]);
-    
+
     const constellationPoints = [];
     for (let i = 0; i < 6; i++) {
       constellationPoints.push({
@@ -88,7 +118,7 @@ export const StarMap = ({
         y: centerY + (seededRandom(i + 600) - 0.5) * radius * 1.5,
       });
     }
-    
+
     ctx.beginPath();
     ctx.moveTo(constellationPoints[0].x, constellationPoints[0].y);
     for (let i = 1; i < constellationPoints.length; i++) {
@@ -136,7 +166,7 @@ export const StarMap = ({
     // Target crosshair
     ctx.strokeStyle = 'rgba(212, 175, 55, 0.8)';
     ctx.lineWidth = 1;
-    
+
     // Outer ring
     ctx.beginPath();
     ctx.arc(targetX, targetY, 12, 0, Math.PI * 2);
@@ -167,7 +197,7 @@ export const StarMap = ({
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
     ctx.stroke();
 
-  }, [ra, dec, size]);
+  }, [ra, dec, size, viewMode]);
 
   const formatRA = (ra: number) => {
     const hours = Math.floor(ra / 15);
@@ -185,94 +215,148 @@ export const StarMap = ({
     return `${sign}${degrees}° ${minutes}' ${seconds.toFixed(1)}"`;
   };
 
-  const handleDownload = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
+  const handleDownload = async () => {
     // Create a new canvas for the download with extra space for text
     const downloadCanvas = document.createElement('canvas');
     const padding = 100;
     const textHeight = 240;
     const totalWidth = Math.max(size + padding * 2, 500); // Minimum width to fit coordinates
     const totalHeight = size + padding * 2 + textHeight;
-    
+
     const dpr = 2; // Fixed high resolution for download
     downloadCanvas.width = totalWidth * dpr;
     downloadCanvas.height = totalHeight * dpr;
-    
+
     const ctx = downloadCanvas.getContext('2d');
     if (!ctx) return;
-    
+
     ctx.scale(dpr, dpr);
-    
+
     // Background with subtle gradient
     const bgGradient = ctx.createLinearGradient(0, 0, 0, totalHeight);
     bgGradient.addColorStop(0, '#0d0f18');
     bgGradient.addColorStop(1, '#070810');
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, totalWidth, totalHeight);
-    
+
     // Draw decorative double border
     ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)';
     ctx.lineWidth = 1;
     ctx.strokeRect(12, 12, totalWidth - 24, totalHeight - 24);
-    
+
     ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
     ctx.lineWidth = 2;
     ctx.strokeRect(20, 20, totalWidth - 40, totalHeight - 40);
-    
+
     // Corner accents
     const cornerSize = 20;
     ctx.strokeStyle = 'rgba(212, 175, 55, 0.6)';
     ctx.lineWidth = 2;
-    
+
     // Top-left corner
     ctx.beginPath();
     ctx.moveTo(20, 20 + cornerSize);
     ctx.lineTo(20, 20);
     ctx.lineTo(20 + cornerSize, 20);
     ctx.stroke();
-    
+
     // Top-right corner
     ctx.beginPath();
     ctx.moveTo(totalWidth - 20 - cornerSize, 20);
     ctx.lineTo(totalWidth - 20, 20);
     ctx.lineTo(totalWidth - 20, 20 + cornerSize);
     ctx.stroke();
-    
+
     // Bottom-left corner
     ctx.beginPath();
     ctx.moveTo(20, totalHeight - 20 - cornerSize);
     ctx.lineTo(20, totalHeight - 20);
     ctx.lineTo(20 + cornerSize, totalHeight - 20);
     ctx.stroke();
-    
+
     // Bottom-right corner
     ctx.beginPath();
     ctx.moveTo(totalWidth - 20 - cornerSize, totalHeight - 20);
     ctx.lineTo(totalWidth - 20, totalHeight - 20);
     ctx.lineTo(totalWidth - 20, totalHeight - 20 - cornerSize);
     ctx.stroke();
-    
-    // Draw the star map from original canvas centered
+
+    // Draw the map content centered
     const mapX = (totalWidth - size) / 2;
-    ctx.drawImage(canvas, mapX, padding, size, size);
-    
+
+    if (viewMode === 'real' && realImage) {
+      // Draw the real image
+      try {
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; // Try to avoid tainted canvas if server supports it
+        img.src = realImage;
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+
+        // Save context for clipping
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(mapX + size / 2, padding + size / 2, size / 2, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(img, mapX, padding, size, size);
+        ctx.restore();
+
+        // Draw overlay crosshair for real image
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+        ctx.lineWidth = 1;
+        const cx = mapX + size / 2;
+        const cy = padding + size / 2;
+        const ch = 10; // crosshair size
+        ctx.beginPath();
+        ctx.moveTo(cx - ch, cy);
+        ctx.lineTo(cx + ch, cy);
+        ctx.moveTo(cx, cy - ch);
+        ctx.lineTo(cx, cy + ch);
+        ctx.stroke();
+
+        // Border ring
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+        ctx.stroke();
+
+      } catch (e) {
+        console.error("Failed to load real image for download", e);
+        // Fallback to text or empty
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        ctx.arc(mapX + size / 2, padding + size / 2, size / 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.textAlign = "center";
+        ctx.fillText("Image Error", mapX + size / 2, padding + size / 2);
+      }
+    } else {
+      // Draw artistic canvas
+      const canvas = canvasRef.current;
+      if (canvas) {
+        ctx.drawImage(canvas, mapX, padding, size, size);
+      }
+    }
+
     // Text styling
     const textStartY = size + padding + 40;
     const centerX = totalWidth / 2;
-    
+
     // Brand name - Starhold with elegant font
     ctx.font = '600 32px Cinzel, Georgia, serif';
     ctx.fillStyle = 'rgba(212, 175, 55, 1)';
     ctx.textAlign = 'center';
     ctx.fillText('S T A R H O L D', centerX, textStartY);
-    
+
     // Tagline
     ctx.font = 'italic 11px Georgia, serif';
     ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
     ctx.fillText('memories among the stars', centerX, textStartY + 22);
-    
+
     // Decorative divider with diamond
     ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
     ctx.lineWidth = 1;
@@ -284,7 +368,7 @@ export const StarMap = ({
     ctx.moveTo(centerX + 8, textStartY + 42);
     ctx.lineTo(centerX + 100, textStartY + 42);
     ctx.stroke();
-    
+
     // Diamond in center
     ctx.fillStyle = 'rgba(212, 175, 55, 0.5)';
     ctx.beginPath();
@@ -294,9 +378,9 @@ export const StarMap = ({
     ctx.lineTo(centerX - 5, textStartY + 42);
     ctx.closePath();
     ctx.fill();
-    
+
     let currentY = textStartY + 70;
-    
+
     // Constellation name
     if (constellation) {
       ctx.font = 'italic 18px Georgia, serif';
@@ -304,33 +388,33 @@ export const StarMap = ({
       ctx.fillText(constellation, centerX, currentY);
       currentY += 28;
     }
-    
+
     // Celestial coordinates - split into two lines for better fit
     ctx.font = '12px monospace';
     ctx.fillStyle = 'rgba(212, 175, 55, 0.7)';
     ctx.fillText(`α  ${formatRA(ra)}   ·   δ  ${formatDec(dec)}`, centerX, currentY);
     currentY += 35;
-    
+
     // Recipient section
     if (recipientName) {
       ctx.font = '10px Georgia, serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.fillText('— FOR —', centerX, currentY);
       currentY += 22;
-      
+
       ctx.font = '500 22px Cinzel, Georgia, serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
       ctx.fillText(recipientName, centerX, currentY);
       currentY += 30;
     }
-    
+
     // Unlock date and time
     if (unlockDate) {
       ctx.font = '10px Georgia, serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.fillText('— UNLOCKS —', centerX, currentY);
       currentY += 20;
-      
+
       ctx.font = '15px Georgia, serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       const formattedDate = unlockDate.toLocaleDateString('en-US', {
@@ -338,7 +422,7 @@ export const StarMap = ({
         month: 'long',
         day: 'numeric',
       });
-      
+
       // Format time if provided
       let formattedTime = '';
       if (unlockTime) {
@@ -348,25 +432,85 @@ export const StarMap = ({
         const hour12 = hour % 12 || 12;
         formattedTime = ` at ${hour12}:${minutes} ${ampm}`;
       }
-      
+
       ctx.fillText(`${formattedDate}${formattedTime}`, centerX, currentY);
     }
 
-    const link = document.createElement('a');
-    link.download = `starhold-${formatRA(ra).replace(/\s/g, '')}-${formatDec(dec).replace(/\s/g, '')}.png`;
-    link.href = downloadCanvas.toDataURL('image/png');
-    link.click();
+    try {
+      const link = document.createElement('a');
+      link.download = `starhold-${formatRA(ra).replace(/\s/g, '')}-${formatDec(dec).replace(/\s/g, '')}.png`;
+      link.href = downloadCanvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      console.error("Canvas export error (likely CORS):", err);
+      alert("Unable to download real space image due to browser security restrictions on external images.");
+    }
   };
 
   return (
-    <div className={`flex flex-col items-center ${className}`}>
-      <canvas
-        ref={canvasRef}
-        style={{ width: size, height: size }}
-        className="rounded-full"
-      />
+    <div className={`flex flex-col items-center gap-4 ${className}`}>
+
+      {/* Toggle Controls */}
+      <div className="flex bg-background/50 p-1 rounded-lg border border-border/50">
+        <button
+          onClick={() => setViewMode('artistic')}
+          className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-2 ${viewMode === 'artistic'
+            ? 'bg-primary text-primary-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'
+            }`}
+        >
+          <SparklesIcon className="w-3 h-3" />
+          Artistic
+        </button>
+        <button
+          onClick={() => setViewMode('real')}
+          className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-2 ${viewMode === 'real'
+            ? 'bg-primary text-primary-foreground shadow-sm'
+            : 'text-muted-foreground hover:text-foreground'
+            }`}
+        >
+          <Eye className="w-3 h-3" />
+          Real Cosmos (NASA)
+        </button>
+      </div>
+
+      <div className="relative">
+        {viewMode === 'real' ? (
+          <div
+            style={{ width: size, height: size }}
+            className="relative rounded-full overflow-hidden border-2 border-primary/20 bg-black flex items-center justify-center"
+          >
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            )}
+
+            {hasError ? (
+              <div className="text-center p-4 text-xs text-muted-foreground">
+                Unable to load NASA imagery for this coordinate.
+              </div>
+            ) : realImage ? (
+              <>
+                <img src={realImage} alt="Space" className="w-full h-full object-cover scale-150" />
+                {/* Overlay Crosshair */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-4 h-4 border border-primary/50 text-xs flex items-center justify-center">+</div>
+                </div>
+              </>
+            ) : null}
+          </div>
+        ) : (
+          <canvas
+            ref={canvasRef}
+            style={{ width: size, height: size }}
+            className="rounded-full"
+          />
+        )}
+      </div>
+
       {showCoordinates && (
-        <div className="mt-4 text-center space-y-1">
+        <div className="text-center space-y-1">
           <p className="text-sm text-muted-foreground">Celestial Coordinates</p>
           <p className="font-mono text-primary">
             α {formatRA(ra)} · δ {formatDec(dec)}
@@ -374,7 +518,7 @@ export const StarMap = ({
         </div>
       )}
       {showDownload && (
-        <Button variant="outline" size="sm" onClick={handleDownload} className="mt-4 gap-2">
+        <Button variant="outline" size="sm" onClick={handleDownload} className="gap-2">
           <Download className="w-4 h-4" />
           Download Star Map
         </Button>

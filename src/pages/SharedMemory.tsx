@@ -9,6 +9,8 @@ import { Star, Lock, Calendar, ArrowLeft, FileText, Film, Sparkles, MapPin, Cloc
 import { supabase } from '@/integrations/supabase/client';
 import type { Memory } from '@/hooks/useMemories';
 import { Skeleton } from '@/components/ui/skeleton';
+import { decrypt } from '@/lib/encryption';
+import { CosmicGift } from '@/components/CosmicGift';
 
 const SharedMemory = () => {
   const { token } = useParams<{ token: string }>();
@@ -17,6 +19,7 @@ const SharedMemory = () => {
   const [error, setError] = useState<string | null>(null);
   const [showWarpAnimation, setShowWarpAnimation] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(true); // Start true, only set false when animation starts
+  const [isUnboxed, setIsUnboxed] = useState(false);
 
   const handleAnimationComplete = useCallback(() => {
     setAnimationComplete(true);
@@ -24,7 +27,8 @@ const SharedMemory = () => {
   }, []);
 
   useEffect(() => {
-    if (memory?.is_unlocked && !isLoading) {
+    // Only trigger warp if unlocked AND unboxed
+    if (memory?.is_unlocked && isUnboxed && !isLoading) {
       setAnimationComplete(false);
       setShowWarpAnimation(true);
       // Fallback: ensure content shows even if animation fails
@@ -34,7 +38,7 @@ const SharedMemory = () => {
       }, 3000);
       return () => clearTimeout(timeout);
     }
-  }, [memory?.is_unlocked, isLoading]);
+  }, [memory?.is_unlocked, isUnboxed, isLoading]);
 
   useEffect(() => {
     const fetchMemory = async () => {
@@ -61,16 +65,22 @@ const SharedMemory = () => {
       const unlockDateTime = new Date(`${data.unlock_date}T${data.unlock_time}`);
       const shouldBeUnlocked = now >= unlockDateTime;
 
+      const processedData = {
+        ...data,
+        is_unlocked: shouldBeUnlocked || data.is_unlocked,
+        recipient_name: decrypt(data.recipient_name),
+        message: data.message ? decrypt(data.message) : null,
+        title: data.title ? decrypt(data.title) : null
+      };
+
       if (shouldBeUnlocked && !data.is_unlocked) {
         await supabase
           .from('memories')
           .update({ is_unlocked: true })
           .eq('id', data.id);
-        setMemory({ ...data, is_unlocked: true } as Memory);
-      } else {
-        setMemory(data as Memory);
       }
 
+      setMemory(processedData as Memory);
       setIsLoading(false);
     };
 
@@ -152,14 +162,21 @@ const SharedMemory = () => {
   return (
     <div className="min-h-screen relative">
       <CosmicBackground />
-      
-      {/* Star Warp Animation */}
-      <StarWarpAnimation 
-        isActive={showWarpAnimation} 
+
+      <StarWarpAnimation
+        isActive={showWarpAnimation}
         onComplete={handleAnimationComplete}
         duration={2000}
       />
-      
+
+      {/* Unboxing Experience */}
+      {memory?.is_unlocked && !isUnboxed && (
+        <CosmicGift
+          onShatter={() => setIsUnboxed(true)}
+          senderName="Your Loved One" // We could fetch actual sender name if profiles were public
+        />
+      )}
+
       {/* Header */}
       <header className="relative z-10 border-b border-border/30 bg-background/30 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -175,12 +192,11 @@ const SharedMemory = () => {
       <main className="relative z-10 container mx-auto px-4 py-12 sm:py-20">
         <div className="max-w-2xl mx-auto space-y-8">
           {/* Memory Card */}
-          <div className={`relative rounded-3xl bg-gradient-to-b from-background/80 via-background/60 to-background/40 backdrop-blur-2xl border border-primary/20 overflow-hidden shadow-2xl shadow-primary/5 transition-opacity duration-500 ${
-            !animationComplete ? 'opacity-0' : 'opacity-100'
-          }`}>
+          <div className={`relative rounded-3xl bg-gradient-to-b from-background/80 via-background/60 to-background/40 backdrop-blur-2xl border border-primary/20 overflow-hidden shadow-2xl shadow-primary/5 transition-opacity duration-500 ${!animationComplete ? 'opacity-0' : 'opacity-100'
+            }`}>
             {/* Decorative gradient overlay */}
             <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent pointer-events-none" />
-            
+
             {/* Decorative stars */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               <div className="absolute top-8 left-12 w-1 h-1 rounded-full bg-primary/40 animate-pulse" />
@@ -196,10 +212,10 @@ const SharedMemory = () => {
                   <div className="relative">
                     {/* Glow Effect */}
                     <div className="absolute inset-0 blur-3xl bg-primary/20 rounded-full scale-75" />
-                    <StarMap 
-                      ra={coordinates.ra} 
-                      dec={coordinates.dec} 
-                      size={280} 
+                    <StarMap
+                      ra={coordinates.ra}
+                      dec={coordinates.dec}
+                      size={280}
                       showCoordinates
                       showDownload
                       recipientName={memory.recipient_name}
@@ -252,7 +268,7 @@ const SharedMemory = () => {
                     <span className="text-sm">{formatTime(memory.unlock_time)}</span>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2 text-center p-5 rounded-2xl bg-background/40 border border-border/30">
                   <div className="flex items-center justify-center gap-2 text-muted-foreground mb-3">
                     <Lock className="w-4 h-4" />
@@ -262,8 +278,8 @@ const SharedMemory = () => {
                     <p className="font-serif text-lg text-emerald-400">✦ Unlocked ✦</p>
                   ) : (
                     <div className="pt-1">
-                      <MemoryCountdown 
-                        unlockDate={memory.unlock_date} 
+                      <MemoryCountdown
+                        unlockDate={memory.unlock_date}
                         unlockTime={memory.unlock_time}
                         isUnlocked={memory.is_unlocked}
                       />
@@ -299,7 +315,7 @@ const SharedMemory = () => {
                         {attachments.map((url, index) => {
                           const type = getAttachmentType(url);
                           return (
-                            <a 
+                            <a
                               key={index}
                               href={url}
                               target="_blank"
@@ -307,18 +323,26 @@ const SharedMemory = () => {
                               className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-b from-background/60 to-background/30 border border-border/30 hover:border-primary/50 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/10 group"
                             >
                               {type === 'image' ? (
-                                <img 
-                                  src={url} 
+                                <img
+                                  src={url}
                                   alt={`Attachment ${index + 1}`}
                                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                               ) : type === 'video' ? (
-                                <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-                                  <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                                    <Film className="w-7 h-7 text-muted-foreground group-hover:text-primary transition-colors" />
+                                <>
+                                  <video
+                                    src={url}
+                                    className="w-full h-full object-cover"
+                                    controls={false}
+                                    muted
+                                    playsInline
+                                  />
+                                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
+                                    <div className="w-12 h-12 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/40 flex items-center justify-center">
+                                      <Film className="w-6 h-6 text-white" />
+                                    </div>
                                   </div>
-                                  <span className="text-xs text-muted-foreground">Play Video</span>
-                                </div>
+                                </>
                               ) : (
                                 <div className="w-full h-full flex flex-col items-center justify-center gap-3">
                                   <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -343,7 +367,7 @@ const SharedMemory = () => {
                     <div className="absolute bottom-10 left-20 w-1 h-1 rounded-full bg-primary/50 animate-pulse" style={{ animationDelay: '1s' }} />
                     <div className="absolute bottom-20 right-24 w-1 h-1 rounded-full bg-primary/35 animate-pulse" style={{ animationDelay: '0.7s' }} />
                   </div>
-                  
+
                   <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-b from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center">
                     <Lock className="w-9 h-9 text-primary" />
                   </div>
@@ -352,7 +376,7 @@ const SharedMemory = () => {
                     <p className="text-muted-foreground italic">Come back when the stars align...</p>
                   </div>
                   <div className="pt-4">
-                    <MemoryCountdown 
+                    <MemoryCountdown
                       unlockDate={memory.unlock_date}
                       unlockTime={memory.unlock_time}
                       isUnlocked={memory.is_unlocked}

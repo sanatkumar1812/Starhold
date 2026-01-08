@@ -42,6 +42,15 @@ export const MemoryCreator = () => {
     const files = e.target.files;
     if (files) {
       const newFiles = Array.from(files);
+      const oversizedFiles = newFiles.filter(f => f.size > 50 * 1024 * 1024); // 50MB
+
+      if (oversizedFiles.length > 0) {
+        toast.error('Some files are too large', {
+          description: 'Maximum size per file is 50MB.'
+        });
+        return;
+      }
+
       setMemoryData(prev => ({
         ...prev,
         mediaFiles: [...prev.mediaFiles, ...newFiles].slice(0, 10) // Max 10 files
@@ -57,7 +66,7 @@ export const MemoryCreator = () => {
   };
 
   const coordinates = memoryData.message && memoryData.recipientName
-    ? generateCoordinates(memoryData.message, memoryData.unlockDate, memoryData.recipientName)
+    ? generateCoordinates(memoryData.message, memoryData.unlockDate, memoryData.recipientName, user?.id)
     : null;
 
   const timeUntil = getTimeUntilUnlock(memoryData.unlockDate);
@@ -107,7 +116,7 @@ export const MemoryCreator = () => {
     try {
       // Upload files to storage
       const uploadedUrls: string[] = [];
-      
+
       if (memoryData.mediaFiles.length > 0) {
         for (let i = 0; i < memoryData.mediaFiles.length; i++) {
           const file = memoryData.mediaFiles[i];
@@ -117,7 +126,10 @@ export const MemoryCreator = () => {
 
           const { error: uploadError, data } = await supabase.storage
             .from('memory-attachments')
-            .upload(filePath, file);
+            .upload(filePath, file, {
+              contentType: file.type,
+              upsert: true
+            });
 
           if (uploadError) {
             console.error('Upload error:', uploadError);
@@ -173,21 +185,19 @@ export const MemoryCreator = () => {
         {[1, 2, 3, 4].map((s) => (
           <div key={s} className="flex items-center">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-500 ${
-                s === step
-                  ? 'gradient-gold text-primary-foreground scale-110'
-                  : s < step
+              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-500 ${s === step
+                ? 'gradient-gold text-primary-foreground scale-110'
+                : s < step
                   ? 'bg-primary/30 text-primary'
                   : 'bg-muted text-muted-foreground'
-              }`}
+                }`}
             >
               {s < step ? <Check className="w-4 h-4" /> : s}
             </div>
             {s < 4 && (
               <div
-                className={`w-16 h-0.5 mx-2 transition-colors duration-500 ${
-                  s < step ? 'bg-primary/50' : 'bg-muted'
-                }`}
+                className={`w-16 h-0.5 mx-2 transition-colors duration-500 ${s < step ? 'bg-primary/50' : 'bg-muted'
+                  }`}
               />
             )}
           </div>
@@ -266,16 +276,16 @@ export const MemoryCreator = () => {
                 <Label className="text-sm text-muted-foreground">
                   Attach Photos or Videos (optional)
                 </Label>
-                
+
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*,video/*"
+                  accept="image/*,video/mp4,video/webm,video/ogg,video/quicktime"
                   multiple
                   onChange={handleFileChange}
                   className="hidden"
                 />
-                
+
                 <div className="flex flex-wrap gap-3">
                   {memoryData.mediaFiles.map((file, index) => (
                     <div
@@ -289,8 +299,11 @@ export const MemoryCreator = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                          <span className="text-xs text-center px-1">{file.name.slice(0, 10)}...</span>
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-primary/5 text-primary">
+                          <Film className="w-6 h-6 mb-1" />
+                          <span className="text-[10px] text-center px-1 font-mono line-clamp-2">
+                            {file.name}
+                          </span>
                         </div>
                       )}
                       <button
@@ -301,7 +314,7 @@ export const MemoryCreator = () => {
                       </button>
                     </div>
                   ))}
-                  
+
                   {memoryData.mediaFiles.length < 10 && (
                     <button
                       onClick={() => fileInputRef.current?.click()}
@@ -312,7 +325,7 @@ export const MemoryCreator = () => {
                     </button>
                   )}
                 </div>
-                
+
                 <p className="text-xs text-muted-foreground">
                   {memoryData.mediaFiles.length}/10 files attached
                 </p>
@@ -427,11 +440,11 @@ export const MemoryCreator = () => {
             </div>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-              <StarMap 
-                ra={coordinates.ra} 
-                dec={coordinates.dec} 
-                size={280} 
-                showDownload 
+              <StarMap
+                ra={coordinates.ra}
+                dec={coordinates.dec}
+                size={280}
+                showDownload
                 recipientName={memoryData.recipientName}
                 unlockDate={memoryData.unlockDate}
                 unlockTime={memoryData.unlockTime}
@@ -494,7 +507,7 @@ export const MemoryCreator = () => {
                 {isSaving && uploadProgress > 0 && uploadProgress < 100 && (
                   <div className="w-full max-w-xs mx-auto">
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-primary transition-all duration-300"
                         style={{ width: `${uploadProgress}%` }}
                       />
@@ -504,9 +517,9 @@ export const MemoryCreator = () => {
                     </p>
                   </div>
                 )}
-                <Button 
-                  variant="gold" 
-                  size="lg" 
+                <Button
+                  variant="gold"
+                  size="lg"
                   onClick={handleSaveMemory}
                   disabled={isSaving}
                   className="w-full sm:w-auto"

@@ -38,10 +38,12 @@ const hashString = (str: string): number => {
 export const generateCoordinates = (
   message: string,
   unlockDate: Date,
-  recipientName: string
+  recipientName: string,
+  senderId?: string
 ): CelestialCoordinate => {
   // Create a unique seed from the inputs
-  const seed = `${message.slice(0, 50)}-${unlockDate.getTime()}-${recipientName}`;
+  // Including senderId ensures different users get different stars for same message
+  const seed = `${message.slice(0, 50)}-${unlockDate.getTime()}-${recipientName}-${senderId || ''}`;
   const hash = hashString(seed);
 
   // Select constellation based on hash
@@ -93,16 +95,16 @@ export const formatDec = (dec: number): string => {
 };
 
 // Calculate time until unlock
-export const getTimeUntilUnlock = (unlockDate: Date): { 
-  years: number; 
-  months: number; 
-  days: number; 
+export const getTimeUntilUnlock = (unlockDate: Date): {
+  years: number;
+  months: number;
+  days: number;
   hours: number;
   isPast: boolean;
 } => {
   const now = new Date();
   const diff = unlockDate.getTime() - now.getTime();
-  
+
   if (diff <= 0) {
     return { years: 0, months: 0, days: 0, hours: 0, isPast: true };
   }

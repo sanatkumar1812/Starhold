@@ -1,16 +1,19 @@
 import { Button } from '@/components/ui/button';
 import { Star, LogIn } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { UserNav } from './UserNav';
 
 export const Navigation = () => {
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center">
             <Star className="w-5 h-5 text-primary-foreground" />
           </div>
@@ -22,34 +25,39 @@ export const Navigation = () => {
               Cosmic Memory Archive
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* Navigation links */}
-        <nav className="hidden md:flex items-center gap-8">
-          <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            How it Works
-          </a>
-          <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Features
-          </a>
-          <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Pricing
-          </a>
-        </nav>
+        {isHomePage && (
+          <nav className="hidden md:flex items-center gap-8">
+            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              How it Works
+            </a>
+            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Features
+            </a>
+            <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              About
+            </Link>
+            <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Contact
+            </Link>
+          </nav>
+        )}
 
         {/* CTA */}
-        <Link to={isAuthenticated ? "/dashboard" : "/auth"}>
-          <Button variant="gold" size="sm">
-            {isAuthenticated ? (
-              "My Memories"
-            ) : (
-              <>
+        <div className="flex items-center gap-4">
+          {isAuthenticated ? (
+            <UserNav />
+          ) : (
+            <Link to="/auth">
+              <Button variant="gold" size="sm">
                 <LogIn className="w-4 h-4 mr-2" />
                 Login / Sign Up
-              </>
-            )}
-          </Button>
-        </Link>
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );

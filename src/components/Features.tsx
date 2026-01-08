@@ -35,39 +35,49 @@ export const Features = () => {
   ];
 
   return (
-    <section className="py-24 px-4 relative">
+    <section id="features" className="py-32 px-4 relative overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 cosmic-bg pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cosmic-blue/5 to-transparent pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="font-serif text-4xl md:text-5xl text-foreground">
-            Beyond ordinary <span className="text-gradient-gold">time capsules</span>
+        <div className="text-center mb-24 space-y-6">
+          <h2 className="font-serif text-5xl md:text-6xl text-foreground">
+            Beyond Ordinary <br />
+            <span className="text-gradient-gold italic">Time Capsules</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Where technology meets the infinite canvas of the universe
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            Where cutting-edge technology meets the infinite canvas of the universe.
           </p>
         </div>
 
         {/* Features grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group p-6 rounded-2xl border border-border/30 bg-card/30 hover:bg-card/50 hover:border-primary/20 transition-all duration-500"
+              className="group relative p-8 rounded-3xl border border-white/5 bg-slate-900/20 backdrop-blur-sm hover:bg-slate-900/40 hover:border-primary/30 transition-all duration-700 hover:-translate-y-2"
             >
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <feature.icon className="w-5 h-5 text-primary" />
+              {/* Card Glow */}
+              <div className="absolute -inset-px bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
+
+              <div className="relative space-y-6">
+                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-500">
+                  <feature.icon className="w-6 h-6 text-primary" />
                 </div>
-                <div className="space-y-2">
-                  <h3 className="font-serif text-lg text-foreground">
+                <div className="space-y-3">
+                  <h3 className="font-serif text-2xl text-foreground group-hover:text-primary transition-colors">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed text-sm group-hover:text-slate-300 transition-colors">
                     {feature.description}
                   </p>
+                </div>
+
+                {/* Visual accent */}
+                <div className="pt-4 border-t border-white/5 flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-white/20">
+                  <span>Protocol V.4.2</span>
+                  <feature.icon className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </div>
             </div>
