@@ -42,7 +42,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
 
 
         {/* Main headline */}
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-tight animate-fade-in-up stagger-1">
+        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light leading-tight animate-fade-in-up stagger-1">
           <span className="text-foreground">Encode your</span>
           <br />
           <span className="text-gradient-gold text-glow">memories</span>
@@ -51,7 +51,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 px-4">
+        <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 px-4">
           A cosmic time capsule that assigns your most precious moments to unique celestial coordinates—
           waiting among the stars until the perfect moment to be revealed.
         </p>
