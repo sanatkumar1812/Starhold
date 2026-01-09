@@ -93,10 +93,10 @@ const StellarObservatory = () => {
 
                     <div className="flex flex-col items-center gap-4">
                         {/* Zoom stack repositioned above Compass */}
-                        <div className="flex flex-col gap-2 scale-90 sm:scale-100">
-                            <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomIn()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110"><ZoomIn className="w-5 h-5" /></Button>
-                            <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomOut()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110"><ZoomOut className="w-5 h-5" /></Button>
-                            <Button variant="secondary" size="icon" onClick={() => mapRef.current?.resetView()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110"><RotateCcw className="w-5 h-5" /></Button>
+                        <div className="flex flex-col gap-2">
+                            <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomIn()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110 w-11 h-11 sm:w-10 sm:h-10"><ZoomIn className="w-5 h-5" /></Button>
+                            <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomOut()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110 w-11 h-11 sm:w-10 sm:h-10"><ZoomOut className="w-5 h-5" /></Button>
+                            <Button variant="secondary" size="icon" onClick={() => mapRef.current?.resetView()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110 w-11 h-11 sm:w-10 sm:h-10"><RotateCcw className="w-5 h-5" /></Button>
                         </div>
 
                         <div className="relative">

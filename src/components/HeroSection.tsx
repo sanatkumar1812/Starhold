@@ -51,25 +51,25 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2">
+        <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 px-4">
           A cosmic time capsule that assigns your most precious moments to unique celestial coordinates—
           waiting among the stars until the perfect moment to be revealed.
         </p>
 
         {/* Scroll Prompt */}
         <div className="flex flex-col items-center justify-center gap-3 pt-8 animate-fade-in-up stagger-3">
-          <div className="flex items-center gap-3 text-muted-foreground/60 group cursor-pointer" onClick={onLearnMore}>
-            <div className="h-px w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
-            <span className="text-sm font-mono uppercase tracking-[0.3em] group-hover:text-primary/80 transition-colors">
+          <div className="flex items-center gap-2 sm:gap-3 text-muted-foreground/60 group cursor-pointer" onClick={onLearnMore}>
+            <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
+            <span className="text-xs sm:text-sm font-mono uppercase tracking-[0.3em] group-hover:text-primary/80 transition-colors">
               Scroll to Learn More
             </span>
-            <div className="h-px w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
+            <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
           </div>
           <ArrowDown className="w-5 h-5 text-primary/40 animate-bounce" />
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-8 pt-12 animate-fade-in-up stagger-4 max-w-2xl mx-auto">
+        <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-12 animate-fade-in-up stagger-4 max-w-2xl mx-auto px-4">
           {[
             { value: '∞', label: 'Unique Coordinates' },
             { value: '13.8B', label: 'Light Years of Sky' },
