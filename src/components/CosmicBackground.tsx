@@ -35,7 +35,9 @@ export const CosmicBackground = () => {
     ];
 
     const stars: Star[] = [];
-    const numStars = 400; // Increased for depth
+    // Reduce star count for better performance, especially on mobile
+    const isMobile = window.innerWidth < 768;
+    const numStars = isMobile ? 150 : 300;
 
     for (let i = 0; i < numStars; i++) {
       const isBright = Math.random() > 0.95;
@@ -54,17 +56,30 @@ export const CosmicBackground = () => {
     let mouseY = 0;
     let scrollY = 0;
 
+    // Throttle mouse movement for better performance
+    let lastMouseUpdate = 0;
     const handleMouseMove = (e: MouseEvent) => {
+      const now = Date.now();
+      if (now - lastMouseUpdate < 50) return; // Throttle to 20fps
+      lastMouseUpdate = now;
       mouseX = (e.clientX / window.innerWidth - 0.5) * 50;
       mouseY = (e.clientY / window.innerHeight - 0.5) * 50;
     };
 
+    // Throttle scroll for better performance
+    let lastScrollUpdate = 0;
     const handleScroll = () => {
+      const now = Date.now();
+      if (now - lastScrollUpdate < 100) return; // Throttle to 10fps
+      lastScrollUpdate = now;
       scrollY = window.scrollY * 0.1;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('scroll', handleScroll);
+    // Only add mouse parallax on desktop for performance
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     // Create nebula clouds
     interface Nebula {
@@ -75,7 +90,10 @@ export const CosmicBackground = () => {
       opacity: number;
     }
 
-    const nebulae: Nebula[] = [
+    // Reduce nebula count on mobile
+    const nebulae: Nebula[] = isMobile ? [
+      { x: canvas.width * 0.5, y: canvas.height * 0.5, radius: 400, color: '148, 103, 189', opacity: 0.015 },
+    ] : [
       { x: canvas.width * 0.2, y: canvas.height * 0.3, radius: 400, color: '148, 103, 189', opacity: 0.02 },
       { x: canvas.width * 0.8, y: canvas.height * 0.7, radius: 500, color: '52, 108, 176', opacity: 0.015 },
       { x: canvas.width * 0.5, y: canvas.height * 0.5, radius: 600, color: '176, 92, 140', opacity: 0.01 },
@@ -122,17 +140,18 @@ export const CosmicBackground = () => {
         const twinkle = Math.sin(time * star.twinkleSpeed) * 0.3 + 0.7;
         const currentOpacity = star.opacity * twinkle;
 
-        // Draw star glow for brighter stars
-        if (star.size > 1.5) {
+        // Simplified rendering for better performance
+        // Only add glow for brightest stars on desktop
+        if (!isMobile && star.size > 1.8) {
           const glowGradient = ctx.createRadialGradient(
             px, py, 0,
-            px, py, star.size * 4
+            px, py, star.size * 3
           );
-          glowGradient.addColorStop(0, `${star.color}${currentOpacity * 0.3})`);
+          glowGradient.addColorStop(0, `${star.color}${currentOpacity * 0.2})`);
           glowGradient.addColorStop(1, `${star.color}0)`);
           ctx.fillStyle = glowGradient;
           ctx.beginPath();
-          ctx.arc(px, py, star.size * 4, 0, Math.PI * 2);
+          ctx.arc(px, py, star.size * 3, 0, Math.PI * 2);
           ctx.fill();
         }
 

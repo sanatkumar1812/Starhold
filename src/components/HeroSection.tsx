@@ -42,7 +42,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
 
 
         {/* Main headline */}
-        <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light leading-tight animate-fade-in-up stagger-1">
+        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-tight animate-fade-in-up stagger-1">
           <span className="text-foreground">Encode your</span>
           <br />
           <span className="text-gradient-gold text-glow">memories</span>
