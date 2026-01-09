@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
-import { getBrightStars, getConstellationLines, getMilkyWayFeature, StarFeature, ConstellationLineFeature } from '@/lib/celestial-data';
+import { getBrightStars, getConstellationLines, getMilkyWayFeature, getSolarSystemObjects, StarFeature, ConstellationLineFeature } from '@/lib/celestial-data';
 import { Memory } from '@/hooks/useMemories';
 import { Button } from '@/components/ui/button';
 import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { CosmicInfoCard } from './CosmicInfoCard';
 import { getConstellationArt } from '@/lib/constellation-art';
-import { getLST } from '@/lib/astro-math';
+import { getLST, celestialToHorizon, getSunPosition, horizonToCelestial } from '@/lib/astro-math';
 
 interface InteractiveMapProps {
     memories: Memory[];
@@ -57,13 +57,16 @@ export const InteractiveMap = ({ memories, onMemoryClick, observerLocation, clas
 
     // Memoized Data to prevent expensive re-parsing
     const celestialData = useMemo(() => {
+        const date = observerLocation?.date || new Date();
         return {
             stars: getBrightStars(),
             constellations: getConstellationLines(),
             milkyWay: getMilkyWayFeature(),
-            graticule: d3.geoGraticule10()
+            graticule: d3.geoGraticule10(),
+            solarSystem: getSolarSystemObjects(date),
+            horizon: d3.geoCircle().center(observerLocation ? [getLST(observerLocation.date, observerLocation.lng), observerLocation.lat] : [0, 90]).radius(90)()
         };
-    }, []);
+    }, [observerLocation]);
 
     // Load Art Image when selected constellation changes
     useEffect(() => {
@@ -144,12 +147,69 @@ export const InteractiveMap = ({ memories, onMemoryClick, observerLocation, clas
 
             ctx.clearRect(0, 0, width, height);
 
+            // --- Day / Night Logic ---
+            const sunPos = getSunPosition(observerLocation?.date || new Date());
+            const sunHorizon = observerLocation
+                ? celestialToHorizon(observerLocation.date, observerLocation.lat, observerLocation.lng, sunPos.ra, sunPos.dec)
+                : { altitude: -10 }; // Default to night
+
+            let skyColor;
+            if (sunHorizon.altitude > 0) {
+                // Day / Twilight
+                const alt = Math.min(15, sunHorizon.altitude);
+                const dayFactor = alt / 15;
+                const r = Math.floor(15 + 85 * dayFactor);
+                const g = Math.floor(23 + 140 * dayFactor);
+                const b = Math.floor(42 + 213 * dayFactor);
+                skyColor = `rgb(${r}, ${g}, ${b})`;
+            } else {
+                skyColor = '#000000';
+            }
+
             const gradient = ctx.createRadialGradient(width / 2, height, height * 0.2, width / 2, height / 2, width);
-            gradient.addColorStop(0, '#0f172a');
-            gradient.addColorStop(0.5, '#020617');
-            gradient.addColorStop(1, '#000000');
+            if (sunHorizon.altitude > 0) {
+                gradient.addColorStop(0, skyColor);
+                gradient.addColorStop(1, '#050a14');
+            } else {
+                gradient.addColorStop(0, '#0f172a');
+                gradient.addColorStop(0.5, '#020617');
+                gradient.addColorStop(1, '#000000');
+            }
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
+
+            // Draw Horizon Line
+            if (observerLocation) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                // @ts-ignore
+                path(celestialData.horizon);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Label Horizon Cardinal Points
+                const cardinals = [
+                    { label: 'N', az: 0 },
+                    { label: 'E', az: 90 },
+                    { label: 'S', az: 180 },
+                    { label: 'W', az: 270 }
+                ];
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.font = 'bold 12px Inter';
+                ctx.textAlign = 'center';
+
+                cardinals.forEach(c => {
+                    const pos = horizonToCelestial(observerLocation.date, observerLocation.lat, observerLocation.lng, c.az, 0);
+                    const lng = pos.ra > 180 ? pos.ra - 360 : pos.ra;
+                    const p = projection([lng, pos.dec]);
+                    if (p) {
+                        ctx.fillText(c.label, p[0], p[1] + 4);
+                    }
+                });
+            }
 
             ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
             ctx.beginPath();
@@ -222,6 +282,35 @@ export const InteractiveMap = ({ memories, onMemoryClick, observerLocation, clas
                         ctx.textAlign = 'left';
                         ctx.fillText(star.properties.name, projected[0] + 6, projected[1] + 3);
                     }
+                }
+            });
+
+            // --- Solar System Objects ---
+            celestialData.solarSystem.forEach((obj: any) => {
+                const projected = projection(obj.geometry.coordinates);
+                if (projected) {
+                    const isSun = obj.properties.name === 'Sun';
+                    const isMoon = obj.properties.name === 'Moon';
+
+                    ctx.fillStyle = obj.properties.color;
+                    ctx.beginPath();
+                    const radius = isSun ? 12 : isMoon ? 10 : 4;
+                    ctx.arc(projected[0], projected[1], radius, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    if (isSun || isMoon) {
+                        ctx.shadowBlur = 20;
+                        ctx.shadowColor = obj.properties.color;
+                        ctx.beginPath();
+                        ctx.arc(projected[0], projected[1], radius, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 10px Inter';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(obj.properties.name, projected[0], projected[1] + radius + 14);
                 }
             });
 

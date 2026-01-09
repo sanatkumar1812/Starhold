@@ -239,6 +239,45 @@ export const getMilkyWayFeature = () => {
     return milkyWay as any; // Returns FeatureCollection
 };
 
-// Kept for compatibility / utils
-export const raToDeg = (h: number, m: number, s: number = 0) => (h + m / 60 + s / 3600) * 15;
-export const decToDeg = (d: number, m: number, s: number = 0) => (d >= 0 ? 1 : -1) * (Math.abs(d) + m / 60 + s / 3600);
+// Solar System Integration
+import { getSunPosition, getMoonPosition, getPlanetPosition } from './astro-math';
+
+export const getSolarSystemObjects = (date: Date) => {
+    const sun = getSunPosition(date);
+    const moon = getMoonPosition(date);
+
+    const objects = [
+        { name: 'Sun', type: 'star', magnitude: -26.7, ...sun, color: '#fdb813' },
+        { name: 'Moon', type: 'moon', magnitude: -12.7, ...moon, color: '#f4f4f4' },
+    ];
+
+    const planets: (keyof typeof PLANET_DATA)[] = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'] as any;
+    // Note: We need PLANET_DATA or a copy here if we want to loop. 
+    // For simplicity, I'll just list them.
+
+    const pNames = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'] as const;
+    pNames.forEach(p => {
+        const pos = getPlanetPosition(p, date);
+        objects.push({
+            name: p,
+            type: 'planet',
+            magnitude: 0, // Placeholder
+            ...pos,
+            color: p === 'Mars' ? '#ff4d4d' : p === 'Venus' ? '#e6e6e6' : '#fff'
+        });
+    });
+
+    return objects.map(obj => ({
+        type: 'Feature' as const,
+        geometry: {
+            type: 'Point' as const,
+            coordinates: [obj.ra > 180 ? obj.ra - 360 : obj.ra, obj.dec] as [number, number]
+        },
+        properties: {
+            name: obj.name,
+            type: obj.type,
+            magnitude: obj.magnitude,
+            color: obj.color
+        }
+    }));
+};
