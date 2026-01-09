@@ -3,6 +3,7 @@ import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { Star, Rocket, Shield, Globe } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const About = () => {
     return (
@@ -67,13 +68,19 @@ const About = () => {
                         </div>
 
                         {/* Vision Quote */}
-                        <ScrollReveal delay={600}>
-                            <div className="text-center bg-primary/5 border border-primary/10 rounded-3xl p-12 space-y-6">
-                                <p className="font-serif text-2xl md:text-3xl italic text-foreground leading-relaxed">
-                                    "For my part I know nothing with any certainty, but the sight of the stars makes me dream."
-                                </p>
-                                <div className="w-12 h-px bg-primary/30 mx-auto" />
-                                <p className="text-sm uppercase tracking-widest text-primary/60 font-mono">Archive Protocol v.4.2</p>
+                        <ScrollReveal delay={500}>
+                            <div className="flex flex-col md:flex-row gap-8 items-center glass p-10 rounded-[3rem] border-white/5">
+                                <div className="space-y-4 flex-1">
+                                    <h3 className="font-serif text-3xl">Deepen Your Knowledge</h3>
+                                    <p className="text-muted-foreground">Learn about the science of the stars and the technology behind our archive protocol in the Stellar Academy.</p>
+                                    <Link to="/academy" className="inline-block px-8 py-3 rounded-full gradient-gold text-primary-foreground font-semibold">Visit Academy</Link>
+                                </div>
+                                <div className="w-px h-20 bg-white/10 hidden md:block" />
+                                <div className="space-y-4 flex-1">
+                                    <h3 className="font-serif text-3xl">Explore the Skies</h3>
+                                    <p className="text-muted-foreground">Use our professional-grade observatory to map coordinates and see the heavens in real-time.</p>
+                                    <Link to="/observatory" className="inline-block px-8 py-3 rounded-full glass border-white/10 text-foreground font-semibold">Enter Observatory</Link>
+                                </div>
                             </div>
                         </ScrollReveal>
                     </div>

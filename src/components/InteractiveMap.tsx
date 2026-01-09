@@ -6,14 +6,16 @@ import { Button } from '@/components/ui/button';
 import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { CosmicInfoCard } from './CosmicInfoCard';
 import { getConstellationArt } from '@/lib/constellation-art';
+import { getLST } from '@/lib/astro-math';
 
 interface InteractiveMapProps {
     memories: Memory[];
     onMemoryClick?: (memory: Memory) => void;
+    observerLocation?: { lat: number; lng: number; date: Date };
     className?: string;
 }
 
-export const InteractiveMap = ({ memories, onMemoryClick, className = '' }: InteractiveMapProps) => {
+export const InteractiveMap = ({ memories, onMemoryClick, observerLocation, className = '' }: InteractiveMapProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -32,14 +34,26 @@ export const InteractiveMap = ({ memories, onMemoryClick, className = '' }: Inte
         console.log('InteractiveMap: Selected Object:', selectedObject);
     }, [selectedObject]);
 
-    // Initial view: Looking UP (Zenith) or South? 
     // Sky Dome usually defaults to looking South or up. 
-    // [0, -90, 0] centers the North Celestial Pole? No, [0, 90] is North Pole in Geo.
     // In Sky maps, Dec +90 is North Pole.
-    // Let's start with a view that shows some constellations.
     const projectionRef = useRef(d3.geoStereographic().scale(600).clipAngle(120).rotate([0, -45, 0]));
-    const rotationRef = useRef([0, -45, 0]);
+    const rotationRef = useRef<[number, number, number]>([0, -45, 0]);
     const targetRotationRef = useRef<[number, number, number] | null>(null);
+
+    // Update rotation if observerLocation provided
+    useEffect(() => {
+        if (observerLocation) {
+            const { lat, lng, date } = observerLocation;
+            const lst = getLST(date, lng);
+            // Rotate the sky so that the Zenith (Point above observer) is at the center.
+            // Zenith RA = Local Sidereal Time, Zenith Dec = Observer Latitude
+            // D3 rotation is [lng, -lat, roll] (for Geo) 
+            // For Sky: [-RA, -Dec, 0]? Actually D3 Geo expects Longitude/Latitude.
+            // RA is basically Longitude (0-360). 
+            // We want LST at the center. So rotate by -LST.
+            targetRotationRef.current = [-lst, -lat, 0];
+        }
+    }, [observerLocation]);
 
     // Memoized Data to prevent expensive re-parsing
     const celestialData = useMemo(() => {
@@ -160,6 +174,29 @@ export const InteractiveMap = ({ memories, onMemoryClick, className = '' }: Inte
                 path(con);
                 ctx.stroke();
             });
+
+            // 1.5 Draw Graticule Labels
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.font = '9px monospace';
+            ctx.textAlign = 'center';
+
+            // RA Labels (along equator)
+            for (let ra = 0; ra < 360; ra += 30) {
+                const lng = ra > 180 ? ra - 360 : ra;
+                const p = projection([lng, 0]);
+                if (p) {
+                    ctx.fillText(`${ra / 15}h`, p[0], p[1] + 10);
+                }
+            }
+
+            // Dec Labels (along prime meridian)
+            ctx.textAlign = 'right';
+            for (let dec = -60; dec <= 60; dec += 30) {
+                const p = projection([0, dec]);
+                if (p) {
+                    ctx.fillText(`${dec > 0 ? '+' : ''}${dec}°`, p[0] - 5, p[1] + 3);
+                }
+            }
 
             celestialData.stars.forEach((star: any) => {
                 const mag = star.properties.magnitude;

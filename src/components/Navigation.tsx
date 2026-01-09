@@ -28,22 +28,30 @@ export const Navigation = () => {
         </Link>
 
         {/* Navigation links */}
-        {isHomePage && (
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              How it Works
-            </a>
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Features
-            </a>
-            <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              About
-            </Link>
-            <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Contact
-            </Link>
-          </nav>
-        )}
+        <nav className="hidden md:flex items-center gap-8">
+          <Link to="/academy" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+            Academy
+          </Link>
+          <Link to="/observatory" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+            Observatory
+          </Link>
+          {isHomePage && (
+            <>
+              <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                How it Works
+              </a>
+              <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Features
+              </a>
+            </>
+          )}
+          <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            About
+          </Link>
+          <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            Contact
+          </Link>
+        </nav>
 
         {/* CTA */}
         <div className="flex items-center gap-4">
