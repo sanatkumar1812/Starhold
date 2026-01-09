@@ -56,15 +56,16 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
           waiting among the stars until the perfect moment to be revealed.
         </p>
 
-        {/* CTA buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up stagger-3">
-          <Button variant="gold" size="xl" onClick={onStartCreating} className="relative overflow-hidden group">
-            <div className="absolute inset-0 animate-holographic pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
-            <span className="relative z-10">Create Your Starhold</span>
-          </Button>
-          <Button variant="glass" size="lg" onClick={onLearnMore} className="border-primary/20 hover:border-primary/40">
-            Learn how it works
-          </Button>
+        {/* Scroll Prompt */}
+        <div className="flex flex-col items-center justify-center gap-3 pt-8 animate-fade-in-up stagger-3">
+          <div className="flex items-center gap-3 text-muted-foreground/60 group cursor-pointer" onClick={onLearnMore}>
+            <div className="h-px w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
+            <span className="text-sm font-mono uppercase tracking-[0.3em] group-hover:text-primary/80 transition-colors">
+              Scroll to Learn More
+            </span>
+            <div className="h-px w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
+          </div>
+          <ArrowDown className="w-5 h-5 text-primary/40 animate-bounce" />
         </div>
 
         {/* Stats */}
