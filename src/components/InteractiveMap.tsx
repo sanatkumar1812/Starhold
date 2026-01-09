@@ -367,12 +367,23 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
         const drag = d3.drag()
             .on('drag', (event: any) => {
                 targetRotationRef.current = null; // Cancel animations
-                const k = 0.5;
-                const [r0, r1, r2] = rotationRef.current;
-                const newRotation = [r0 + event.dx * k, r1 - event.dy * k, r2];
+
+                // Sensitivity should scale with zoom
+                const currentScale = projection.scale();
+                const k = 0.25 * (600 / currentScale); // Base sensitivity adjusted
+
+                const [r0, r1, r2] = rotationRef.current as [number, number, number];
+
+                // r0 is RA (Longitude), r1 is Dec (Latitude)
+                // Invert dy for Dec
+                const newRotation: [number, number, number] = [
+                    r0 + event.dx * k,
+                    Math.max(-90, Math.min(90, r1 - event.dy * k)),
+                    r2
+                ];
+
                 rotationRef.current = newRotation;
-                projection.rotate(newRotation as any);
-                // No need to call render manually if animation loop is running
+                projection.rotate(newRotation);
             });
 
         // @ts-ignore
