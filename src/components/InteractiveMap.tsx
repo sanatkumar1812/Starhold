@@ -40,11 +40,12 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
         console.log('InteractiveMap: Selected Object:', selectedObject);
     }, [selectedObject]);
 
-    // Sky Dome usually defaults to looking South or up. 
+    // Sky Dome usually defaults to looking South or up.
     // In Sky maps, Dec +90 is North Pole.
-    const projectionRef = useRef(d3.geoStereographic().scale(600).clipAngle(120).rotate([0, -45, 0]));
-    const rotationRef = useRef<[number, number, number]>([0, -45, 0]);
-    const targetRotationRef = useRef<[number, number, number] | null>(null);
+    const projectionRef = useRef(d3.geoStereographic().scale(600).clipAngle(120).rotate([0, 0, 0]));
+    const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
+    const rotationRef = useRef<[number, number, number]>([0, 0, 0]);
+    const targetRotationRef = useRef<[number, number, number] | null>([0, 0, 0]); // Default to centered horizon
 
     // Update rotation if observerLocation provided
     useEffect(() => {
@@ -405,6 +406,19 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
             }
         }
 
+        // 1.5 Solar System Objects
+        for (const obj of celestialData.solarSystem) {
+            const coords = projection(obj.geometry.coordinates);
+            if (coords) {
+                const dx = mx - coords[0];
+                const dy = my - coords[1];
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 15) {
+                    return { type: 'planet', data: obj.properties, x: coords[0], y: coords[1] };
+                }
+            }
+        }
+
         // 2. Stars
         // console.log("Checking stars:", celestialData.stars.length);
         for (const star of celestialData.stars) {
@@ -506,7 +520,7 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
     };
 
     const resetView = () => {
-        targetRotationRef.current = [0, -45, 0];
+        targetRotationRef.current = [0, 0, 0];
         projectionRef.current.scale(600);
         setSelectedObject(null);
     };
@@ -552,12 +566,20 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
 
             {/* Removed internal controls stack to allow parent placement */}
 
-            {/* Legend */}
-            <div className="absolute top-6 right-6 pointer-events-none text-right opacity-60 hover:opacity-100 transition-opacity">
-                <h1 className="text-3xl font-thin tracking-[0.2em] text-white">OBSERVATORY</h1>
-                <div className="text-xs text-blue-200 mt-1 font-mono">
-                    <span className="mr-3">★ {celestialData.stars.length} Stars</span>
-                    <span>☡ 88 Constellations</span>
+            {/* Top-Right Legend */}
+            <div className="absolute top-8 right-8 pointer-events-none text-right">
+                <div className="flex flex-col items-end">
+                    <h2 className="text-3xl font-serif text-white tracking-[0.2em] leading-none mb-1 uppercase opacity-90">Observatory</h2>
+                    <div className="flex items-center gap-4 text-xs font-mono text-blue-200/60 uppercase tracking-widest bg-white/5 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10 shadow-xl">
+                        <span className="flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-blue-400 animate-pulse" />
+                            {celestialData.stars.length} Stars
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-primary/60 animate-pulse" />
+                            88 Constellations
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
