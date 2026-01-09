@@ -43,24 +43,40 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
     // Sky Dome usually defaults to looking South or up.
     // In Sky maps, Dec +90 is North Pole.
     const projectionRef = useRef(d3.geoStereographic().scale(600).clipAngle(120).rotate([0, 0, 0]));
-    const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
+
+    // View orientation (Horizon relative: 0 = Zenith, 90 = South?)
+    // Actually let's use: Azimuth (0-360), Altitude (0-90)
+    const [viewAz, setViewAz] = useState(180); // Looking South
+    const [viewAlt, setViewAlt] = useState(30); // 30 degrees up
+
     const rotationRef = useRef<[number, number, number]>([0, 0, 0]);
-    const targetRotationRef = useRef<[number, number, number] | null>([0, 0, 0]); // Default to centered horizon
+    const targetRotationRef = useRef<[number, number, number] | null>(null);
 
     // Update rotation if observerLocation provided
     useEffect(() => {
         if (observerLocation) {
             const { lat, lng, date } = observerLocation;
             const lst = getLST(date, lng);
-            // Rotate the sky so that the Zenith (Point above observer) is at the center.
-            // Zenith RA = Local Sidereal Time, Zenith Dec = Observer Latitude
-            // D3 rotation is [lng, -lat, roll] (for Geo) 
-            // For Sky: [-RA, -Dec, 0]? Actually D3 Geo expects Longitude/Latitude.
-            // RA is basically Longitude (0-360). 
-            // We want LST at the center. So rotate by -LST.
-            targetRotationRef.current = [-lst, -lat, 0];
+
+            // Convert current look-at (Az, Alt) to (RA, Dec)
+            const celestial = horizonToCelestial(date, lat, lng, viewAz, viewAlt);
+            const ra_lng = celestial.ra > 180 ? celestial.ra - 360 : celestial.ra;
+
+            // To keep horizon level, we need a specific roll (gamma).
+            // A simple way is to use d3.geoRotation which handles the math.
+            // But for stereographic sky, we can just rotate to zenith and then apply offsets.
+
+            // Projection rotation: [-lst + az, -lat - (90-alt), 0]? 
+            // Let's try simpler: directly center on target RA/Dec but keeping Zenith up.
+            // This is equivalent to: rotate([-RA, -Dec, roll])
+
+            // For now, let's use the RA/Dec center but we need the roll to keep the horizon flat.
+            // A robust way is to rotate to Zenith first, then apply Az/Alt.
+
+            rotationRef.current = [-lst + (viewAz - 180), -lat - (90 - viewAlt), 0];
+            projectionRef.current.rotate(rotationRef.current);
         }
-    }, [observerLocation]);
+    }, [observerLocation, viewAz, viewAlt]);
 
     // Memoized Data to prevent expensive re-parsing
     const celestialData = useMemo(() => {
@@ -158,32 +174,65 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
             const sunPos = getSunPosition(observerLocation?.date || new Date());
             const sunHorizon = observerLocation
                 ? celestialToHorizon(observerLocation.date, observerLocation.lat, observerLocation.lng, sunPos.ra, sunPos.dec)
-                : { altitude: -10 }; // Default to night
+                : { altitude: -10 };
 
-            let skyColor;
-            if (sunHorizon.altitude > 0) {
-                // Day / Twilight
-                const alt = Math.min(15, sunHorizon.altitude);
-                const dayFactor = alt / 15;
-                const r = Math.floor(15 + 85 * dayFactor);
-                const g = Math.floor(23 + 140 * dayFactor);
-                const b = Math.floor(42 + 213 * dayFactor);
-                skyColor = `rgb(${r}, ${g}, ${b})`;
-            } else {
-                skyColor = '#000000';
-            }
+            // Determine sky opacity for stars (0 when sun is high)
+            const starOpacity = Math.max(0, Math.min(1, (-sunHorizon.altitude + 5) / 10));
 
-            const gradient = ctx.createRadialGradient(width / 2, height, height * 0.2, width / 2, height / 2, width);
-            if (sunHorizon.altitude > 0) {
-                gradient.addColorStop(0, skyColor);
-                gradient.addColorStop(1, '#050a14');
+            ctx.save();
+            if (sunHorizon.altitude > -18) {
+                // Daytime/Twilight Gradient
+                const gradient = ctx.createLinearGradient(0, 0, 0, height);
+
+                if (sunHorizon.altitude > 0) {
+                    // Day Color Scheme
+                    const altFactor = Math.min(1, sunHorizon.altitude / 45);
+                    const skyTop = `rgb(${Math.floor(10 + 30 * altFactor)}, ${Math.floor(20 + 80 * altFactor)}, ${Math.floor(40 + 180 * altFactor)})`;
+                    const skyBottom = `rgb(${Math.floor(40 + 100 * altFactor)}, ${Math.floor(80 + 140 * altFactor)}, ${Math.floor(140 + 115 * altFactor)})`;
+
+                    gradient.addColorStop(0, skyTop);
+                    gradient.addColorStop(1, skyBottom);
+                } else {
+                    // Twilight Color Scheme
+                    const twiFactor = (sunHorizon.altitude + 18) / 18; // 0 to 1
+                    gradient.addColorStop(0, '#020617');
+                    gradient.addColorStop(0.5, `rgb(${Math.floor(20 * twiFactor)}, ${Math.floor(10 * twiFactor)}, ${Math.floor(40 * twiFactor)})`);
+                    gradient.addColorStop(1, `rgb(${Math.floor(80 * twiFactor)}, ${Math.floor(40 * twiFactor)}, ${Math.floor(20 * twiFactor)})`);
+                }
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+
+                // Sun Glow
+                const sPos = projection([sunPos.ra > 180 ? sunPos.ra - 360 : sunPos.ra, sunPos.dec]);
+                if (sPos && sunHorizon.altitude > -5) {
+                    const glow = ctx.createRadialGradient(sPos[0], sPos[1], 0, sPos[0], sPos[1], 300);
+                    const intensity = Math.max(0, (sunHorizon.altitude + 5) / 15);
+                    glow.addColorStop(0, `rgba(255, 255, 230, ${0.4 * intensity})`);
+                    glow.addColorStop(0.2, `rgba(255, 200, 100, ${0.1 * intensity})`);
+                    glow.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = glow;
+                    ctx.fillRect(0, 0, width, height);
+                }
             } else {
+                // Deep Night
+                const gradient = ctx.createRadialGradient(width / 2, height, height * 0.2, width / 2, height / 2, width);
                 gradient.addColorStop(0, '#0f172a');
                 gradient.addColorStop(0.5, '#020617');
                 gradient.addColorStop(1, '#000000');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
             }
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+
+            // Draw Horizon Haze
+            if (observerLocation) {
+                const haze = ctx.createLinearGradient(0, height * 0.7, 0, height);
+                haze.addColorStop(0, 'rgba(0,0,0,0)');
+                haze.addColorStop(1, 'rgba(0,0,0,0.3)');
+                ctx.fillStyle = haze;
+                ctx.fillRect(0, 0, width, height);
+            }
 
             // Draw Horizon Line
             if (observerLocation) {
@@ -218,6 +267,8 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
                 });
             }
 
+            ctx.globalAlpha = starOpacity;
+
             ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
             ctx.beginPath();
             // @ts-ignore
@@ -231,66 +282,6 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
             path(celestialData.graticule);
             ctx.stroke();
 
-            celestialData.constellations.forEach((con: any) => {
-                const isSelected = selectedObject?.type === 'constellation' &&
-                    selectedObject.data.name === con.properties.name;
-                ctx.strokeStyle = isSelected ? 'rgba(100, 200, 255, 0.6)' : 'rgba(255, 255, 255, 0.08)';
-                ctx.lineWidth = isSelected ? 2 : 1;
-                ctx.beginPath();
-                // @ts-ignore
-                path(con);
-                ctx.stroke();
-            });
-
-            // 1.5 Draw Graticule Labels
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-            ctx.font = '9px monospace';
-            ctx.textAlign = 'center';
-
-            // RA Labels (along equator)
-            for (let ra = 0; ra < 360; ra += 30) {
-                const lng = ra > 180 ? ra - 360 : ra;
-                const p = projection([lng, 0]);
-                if (p) {
-                    ctx.fillText(`${ra / 15}h`, p[0], p[1] + 10);
-                }
-            }
-
-            // Dec Labels (along prime meridian)
-            ctx.textAlign = 'right';
-            for (let dec = -60; dec <= 60; dec += 30) {
-                const p = projection([0, dec]);
-                if (p) {
-                    ctx.fillText(`${dec > 0 ? '+' : ''}${dec}°`, p[0] - 5, p[1] + 3);
-                }
-            }
-
-            celestialData.stars.forEach((star: any) => {
-                const mag = star.properties.magnitude;
-                const isSelected = selectedObject?.type === 'star' && selectedObject.data.name === star.properties.name;
-                const baseRadius = Math.max(0.3, 2.5 - mag * 0.3);
-                const radius = isSelected ? baseRadius * 1.5 : baseRadius;
-                ctx.fillStyle = isSelected ? '#60a5fa' : `rgba(255, 255, 255, ${Math.min(1, 1.2 - mag * 0.15)})`;
-                ctx.beginPath();
-                // @ts-ignore
-                const projected = projection(star.geometry.coordinates);
-                if (projected) {
-                    ctx.arc(projected[0], projected[1], radius, 0, 2 * Math.PI);
-                    ctx.fill();
-                    if (mag < 1.0) {
-                        ctx.fillStyle = `rgba(255, 255, 255, 0.1)`;
-                        ctx.beginPath();
-                        ctx.arc(projected[0], projected[1], radius * 4, 0, 2 * Math.PI);
-                        ctx.fill();
-                    }
-                    if ((mag < 1.0 || isSelected) && star.properties.name) {
-                        ctx.fillStyle = isSelected ? '#fff' : 'rgba(255, 255, 255, 0.4)';
-                        ctx.font = isSelected ? '12px Inter' : '10px Inter';
-                        ctx.textAlign = 'left';
-                        ctx.fillText(star.properties.name, projected[0] + 6, projected[1] + 3);
-                    }
-                }
-            });
 
             // --- Solar System Objects ---
             celestialData.solarSystem.forEach((obj: any) => {
@@ -362,28 +353,18 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
 
         render(0);
 
-        // Interactions
+        // Interactions: Alt-Azimuth Drag
         // @ts-ignore
         const drag = d3.drag()
             .on('drag', (event: any) => {
                 targetRotationRef.current = null; // Cancel animations
 
-                // Sensitivity should scale with zoom
                 const currentScale = projection.scale();
-                const k = 0.25 * (600 / currentScale); // Base sensitivity adjusted
+                const k = 0.25 * (600 / currentScale);
 
-                const [r0, r1, r2] = rotationRef.current as [number, number, number];
-
-                // r0 is RA (Longitude), r1 is Dec (Latitude)
-                // Invert dy for Dec
-                const newRotation: [number, number, number] = [
-                    r0 + event.dx * k,
-                    Math.max(-90, Math.min(90, r1 - event.dy * k)),
-                    r2
-                ];
-
-                rotationRef.current = newRotation;
-                projection.rotate(newRotation);
+                // Update Azimuth and Altitude
+                setViewAz(prev => (prev - event.dx * k + 360) % 360);
+                setViewAlt(prev => Math.max(5, Math.min(90, prev + event.dy * k)));
             });
 
         // @ts-ignore
@@ -531,7 +512,8 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
     };
 
     const resetView = () => {
-        targetRotationRef.current = [0, 0, 0];
+        setViewAz(180); // Back to South
+        setViewAlt(30);  // Back to 30 deg up
         projectionRef.current.scale(600);
         setSelectedObject(null);
     };
