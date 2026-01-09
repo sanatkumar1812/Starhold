@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, forwardRef, useImperativeHandle } from 'react';
 import * as d3 from 'd3';
 import { getBrightStars, getConstellationLines, getMilkyWayFeature, getSolarSystemObjects, StarFeature, ConstellationLineFeature } from '@/lib/celestial-data';
 import { Memory } from '@/hooks/useMemories';
@@ -15,7 +15,13 @@ interface InteractiveMapProps {
     className?: string;
 }
 
-export const InteractiveMap = ({ memories, onMemoryClick, observerLocation, className = '' }: InteractiveMapProps) => {
+export interface InteractiveMapHandle {
+    zoomIn: () => void;
+    zoomOut: () => void;
+    resetView: () => void;
+}
+
+export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapProps>(({ memories, onMemoryClick, observerLocation, className = '' }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -505,6 +511,12 @@ export const InteractiveMap = ({ memories, onMemoryClick, observerLocation, clas
         setSelectedObject(null);
     };
 
+    useImperativeHandle(ref, () => ({
+        zoomIn: () => handleZoom(200),
+        zoomOut: () => handleZoom(-200),
+        resetView
+    }));
+
     return (
         <div ref={containerRef} className={`relative bg-black w-full h-full overflow-hidden ${className}`}>
             <canvas
@@ -538,12 +550,7 @@ export const InteractiveMap = ({ memories, onMemoryClick, observerLocation, clas
                 />
             )}
 
-            {/* Controls */}
-            <div className="absolute bottom-6 right-6 flex flex-col gap-2">
-                <Button variant="secondary" size="icon" onClick={() => handleZoom(200)} className="bg-white/10 hover:bg-white/20 border-white/10 text-white"><ZoomIn className="w-5 h-5" /></Button>
-                <Button variant="secondary" size="icon" onClick={() => handleZoom(-200)} className="bg-white/10 hover:bg-white/20 border-white/10 text-white"><ZoomOut className="w-5 h-5" /></Button>
-                <Button variant="secondary" size="icon" onClick={resetView} className="bg-white/10 hover:bg-white/20 border-white/10 text-white"><RotateCcw className="w-5 h-5" /></Button>
-            </div>
+            {/* Removed internal controls stack to allow parent placement */}
 
             {/* Legend */}
             <div className="absolute top-6 right-6 pointer-events-none text-right opacity-60 hover:opacity-100 transition-opacity">
@@ -555,5 +562,7 @@ export const InteractiveMap = ({ memories, onMemoryClick, observerLocation, clas
             </div>
         </div>
     );
-};
+});
+
+export default InteractiveMap;
 

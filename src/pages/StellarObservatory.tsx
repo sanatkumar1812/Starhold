@@ -1,23 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useMemories } from '@/hooks/useMemories';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { Info, Map as MapIcon, Compass, Settings, X, ChevronLeft } from 'lucide-react';
+import { Info, Map as MapIcon, Compass, Settings, X, ChevronLeft, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { InteractiveMap } from '@/components/InteractiveMap';
+import { InteractiveMap, InteractiveMapHandle } from '@/components/InteractiveMap';
 import { SkyLocationSelector } from '@/components/SkyLocationSelector';
+import { MemoryDetailModal } from '@/components/MemoryDetailModal';
+import { Memory } from '@/hooks/useMemories';
 
 const StellarObservatory = () => {
     const { memories } = useMemories();
     const [observerLoc, setObserverLoc] = useState<{ lat: number; lng: number; date: Date } | undefined>();
     const [isControlsOpen, setIsControlsOpen] = useState(false);
+    const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const mapRef = useRef<InteractiveMapHandle>(null);
+
+    const handleMemoryClick = (memory: Memory) => {
+        setSelectedMemory(memory);
+        setIsModalOpen(true);
+    };
 
     return (
         <div className="h-screen w-screen relative overflow-hidden bg-black">
             {/* Main Interactive Map - Fullscreen Background */}
             <div className="absolute inset-0 z-0">
                 <InteractiveMap
+                    ref={mapRef}
                     memories={memories || []}
+                    onMemoryClick={handleMemoryClick}
                     observerLocation={observerLoc}
                     className="w-full h-full"
                 />
@@ -25,33 +37,35 @@ const StellarObservatory = () => {
 
             {/* UI Overlays */}
             <div className="relative z-10 w-full h-full pointer-events-none flex flex-col justify-between p-6">
-                {/* Top Bar */}
-                <div className="flex justify-between items-start">
-                    <div className="space-y-1 bg-black/40 backdrop-blur-md p-4 rounded-2xl border border-white/10 pointer-events-auto">
-                        <h1 className="font-serif text-2xl text-foreground">Celestial Observatory</h1>
-                        <div className="flex items-center gap-3">
-                            <span className="text-[10px] text-primary font-mono animate-pulse">● SIGNAL ACTIVE</span>
-                            <span className="text-[10px] text-muted-foreground/60 font-mono">SCANNING PERSISTENCE...</span>
+                {/* Top Bar - Repositioned to Right */}
+                <div className="flex justify-end items-start pointer-events-none">
+                    <div className="flex flex-col items-end gap-3 pointer-events-auto">
+                        <div className="space-y-1 bg-black/40 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                            <h1 className="font-serif text-2xl text-foreground text-right leading-tight">Celestial<br />Observatory</h1>
+                            <div className="flex items-center justify-end gap-3">
+                                <span className="text-[10px] text-primary font-mono animate-pulse">● SIGNAL ACTIVE</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <Link to="/dashboard" className="pointer-events-auto">
-                        <Button variant="ghost" className="text-white/50 hover:text-white hover:bg-white/10 gap-2 rounded-xl">
-                            <ChevronLeft className="w-4 h-4" />
-                            Dashboard
-                        </Button>
-                    </Link>
+                        <Link to="/dashboard">
+                            <Button variant="ghost" className="text-white/50 hover:text-white hover:bg-white/10 gap-2 rounded-xl h-10 px-4">
+                                <ChevronLeft className="w-4 h-4" />
+                                Dashboard
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
-                {/* Bottom Controls */}
-                <div className="flex justify-end items-end gap-6 pointer-events-auto">
-                    {/* Compact Info (Optional) */}
-                    <div className="hidden lg:block bg-black/40 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10 text-xs text-muted-foreground/60 font-mono mb-2">
-                        DATA SOURCE: NASA/HIPPARCOS / J2000.0 REFERENCE
+                {/* Controls Toggle & Zoom Stack */}
+                <div className="flex flex-col items-center gap-4">
+                    {/* Zoom stack repositioned above Compass */}
+                    <div className="flex flex-col gap-2 scale-90 sm:scale-100">
+                        <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomIn()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl pointer-events-auto"><ZoomIn className="w-5 h-5" /></Button>
+                        <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomOut()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl pointer-events-auto"><ZoomOut className="w-5 h-5" /></Button>
+                        <Button variant="secondary" size="icon" onClick={() => mapRef.current?.resetView()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl pointer-events-auto"><RotateCcw className="w-5 h-5" /></Button>
                     </div>
 
-                    {/* Controls Toggle */}
-                    <div className="relative">
+                    <div className="relative pointer-events-auto">
                         {isControlsOpen && (
                             <div className="absolute bottom-16 right-0 mb-4 animate-in slide-in-from-bottom-5 fade-in duration-300">
                                 <SkyLocationSelector
@@ -68,10 +82,19 @@ const StellarObservatory = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Subtle Vignette */}
-            <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
         </div>
+
+            {/* Memory Detail Modal */ }
+    <MemoryDetailModal
+        memory={selectedMemory}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        showAnimation={true}
+    />
+
+    {/* Subtle Vignette */ }
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
+        </div >
     );
 };
 
