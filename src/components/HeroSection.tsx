@@ -71,7 +71,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-12 animate-fade-in-up stagger-4 max-w-2xl mx-auto px-4">
           {[
             { value: '∞', label: 'Unique Coordinates' },
-            { value: '13.8B', label: 'Light Years of Sky' },
+            { value: '13.8 B', label: 'Light Years of Sky' },
             { value: '24/7', label: 'Active Support' },
           ].map((stat) => (
             <div key={stat.label} className="text-center group">
