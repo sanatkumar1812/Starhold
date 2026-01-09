@@ -127,7 +127,7 @@ const StellarAcademy = () => {
                                 </p>
                                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                                     <a href="#/observatory" className="px-10 py-4 rounded-full gradient-gold text-primary-foreground font-semibold hover:shadow-[0_0_30px_rgba(234,179,8,0.4)] transition-all">
-                                        Visit Observatory
+                                        Enter the Cosmos
                                     </a>
                                     <a href="#/" className="px-10 py-4 rounded-full glass border-white/10 text-foreground font-semibold hover:bg-white/10 transition-all">
                                         Return to Origin

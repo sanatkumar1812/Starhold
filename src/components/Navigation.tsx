@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Star, LogIn } from 'lucide-react';
+import { Star, LogIn, Compass } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { UserNav } from './UserNav';
@@ -32,8 +32,9 @@ export const Navigation = () => {
           <Link to="/academy" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
             Academy
           </Link>
-          <Link to="/observatory" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
-            Observatory
+          <Link to="/observatory" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
+            <Compass className="w-4 h-4" />
+            Enter the Cosmos
           </Link>
           {isHomePage && (
             <>

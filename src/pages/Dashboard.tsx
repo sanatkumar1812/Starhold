@@ -117,13 +117,6 @@ const Dashboard = () => {
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              <Link to="/starmap">
-                <Button className="whitespace-nowrap bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-purple-500/20 gap-2">
-                  <Compass className="w-4 h-4" />
-                  <span>Enter the Cosmos</span>
-                </Button>
-              </Link>
-
               <Link to="/?create=true">
                 <Button className="whitespace-nowrap flex-1 sm:flex-initial">
                   <Plus className="w-4 h-4 mr-2" />
