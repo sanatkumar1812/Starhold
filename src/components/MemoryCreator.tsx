@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { StarMap } from '@/components/StarMap';
 import { generateCoordinates, formatRA, formatDec, getTimeUntilUnlock } from '@/lib/coordinates';
-import { Calendar, Lock, Star, Sparkles, ArrowRight, ArrowLeft, Check, ImagePlus, X, Save, Loader2 } from 'lucide-react';
+import { Calendar, Lock, Star, Sparkles, ArrowRight, ArrowLeft, Check, ImagePlus, X, Save, Loader2, Film } from 'lucide-react';
 import { toast } from 'sonner';
 import { useMemories } from '@/hooks/useMemories';
 import { useAuth } from '@/hooks/useAuth';

@@ -1,28 +1,91 @@
+import React, { useState, useEffect } from 'react';
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { Star, Library, Microscope, Zap, BookOpen, Compass } from 'lucide-react';
+import { Library, CheckCircle2, HelpCircle } from 'lucide-react';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+import { CoordinateVisualizer } from '@/components/academy/CoordinateVisualizer';
+import { StarLifecycleViewer } from '@/components/academy/StarLifecycleViewer';
+import { ConstellationBuilder } from '@/components/academy/ConstellationBuilder';
+import { CosmicCompendium } from '@/components/academy/CosmicCompendium';
 
 const StellarAcademy = () => {
-    const starTypes = [
-        { type: 'O', color: 'bg-blue-500', label: 'Blue Giants', temp: ' > 30,000K', description: 'The hottest and rarest stars. They burn fast and bright, ending in magnificent supernovae.' },
-        { type: 'B', color: 'bg-blue-300', label: 'Blue-White', temp: '10,000 - 30,000K', description: 'Extremely luminous and massive. Rigel in Orion is a classic B-type star.' },
-        { type: 'A', color: 'bg-white', label: 'White', temp: '7,500 - 10,000K', description: 'Strong hydrogen lines. Sirius, the brightest star in our sky, is A-type.' },
-        { type: 'F', color: 'bg-yellow-100', label: 'Yellow-White', temp: '6,000 - 7,500K', description: 'Main sequence stars. They appear white to the naked eye but have a yellow tint.' },
-        { type: 'G', color: 'bg-yellow-400', label: 'Yellow', temp: '5,000 - 6,000K', description: 'Our Sun is a G-type star. Stable and long-lived, ideal for hosting life.' },
-        { type: 'K', color: 'bg-orange-500', label: 'Orange', temp: '3,500 - 5,000K', description: 'Cooler than the Sun. Arcturus is a famous K-type giant.' },
-        { type: 'M', color: 'bg-red-500', label: 'Red Dwarfs', temp: '< 3,500K', description: 'The most common stars in the galaxy. Cool, small, and can live for trillions of years.' },
+    // Scroll Progress Logic
+    const [activeSection, setActiveSection] = useState(0);
+
+    // Simple scroll spy (in a real app, use IntersectionObserver)
+    useEffect(() => {
+        const handleScroll = () => {
+            const sections = document.querySelectorAll('section');
+            sections.forEach((sec, idx) => {
+                const rect = sec.getBoundingClientRect();
+                if (rect.top >= 0 && rect.top <= window.innerHeight / 2) {
+                    setActiveSection(idx + 1);
+                }
+            });
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const steps = [
+        { id: 1, label: "Coordinates" },
+        { id: 2, label: "Evolution" },
+        { id: 3, label: "Compendium" },
+        { id: 4, label: "Constellations" },
     ];
+
+    const AIGuide = ({ tip }: { tip: string }) => (
+        <TooltipProvider delayDuration={0}>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <button className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-mono uppercase tracking-widest rounded-full transition-colors cursor-help border border-primary/20">
+                        <HelpCircle className="w-3 h-3" /> Why this matters?
+                    </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="bg-black/90 border-primary/20 text-white max-w-xs p-4">
+                    <p className="font-serif italic leading-relaxed text-sm">"{tip}"</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    );
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-background">
             <CosmicBackground />
+
+            {/* Floating Progress Tracker */}
+            <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden xl:flex flex-col gap-8">
+                {steps.map((step, idx) => (
+                    <div key={step.id} className="relative group flex items-center justify-end">
+                        <span className={`
+                            absolute right-8 text-xs font-mono uppercase tracking-widest transition-all duration-300
+                            ${activeSection === step.id ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0'}
+                        `}>
+                            {step.label}
+                        </span>
+                        <div className={`
+                            w-3 h-3 rounded-full border border-primary/50 transition-all duration-500
+                            ${activeSection === step.id ? 'bg-primary scale-125 shadow-[0_0_15px_rgba(234,179,8,0.6)]' : 'bg-transparent'}
+                            ${activeSection > step.id ? 'bg-primary/40' : ''}
+                        `} />
+                        {activeSection > step.id && <div className="absolute h-8 w-[1px] bg-primary/20 -bottom-8 right-[5px]" />}
+                    </div>
+                ))}
+            </div>
+
             <div className="relative z-10 flex flex-col min-h-screen">
                 <Navigation />
 
                 <main className="flex-1 pt-32 pb-20 px-4">
-                    <div className="max-w-6xl mx-auto space-y-32">
+                    <div className="max-w-7xl mx-auto space-y-40">
 
                         {/* Academy Header */}
                         <ScrollReveal>
@@ -32,110 +95,98 @@ const StellarAcademy = () => {
                                 </div>
                                 <h1 className="font-serif text-5xl md:text-8xl text-foreground">The Language of <span className="text-gradient-gold italic">Light</span></h1>
                                 <p className="text-xl text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed">
-                                    Understand the science behind your archive. From the spectral signatures of distant suns to the geometry of the infinite.
+                                    Interactive modules to master the mechanics of the cosmos.
                                 </p>
                             </div>
                         </ScrollReveal>
 
-                        {/* The Spectral Scale Interactive */}
-                        <section className="space-y-16">
-                            <ScrollReveal delay={200}>
-                                <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/10 pb-10">
-                                    <div className="space-y-4">
-                                        <h2 className="font-serif text-4xl text-foreground">The Spectral Scale</h2>
-                                        <p className="text-muted-foreground max-w-xl">
-                                            Stars are classified based on their spectral characteristics. Use this key to identify the nature of the star holding your memory.
+                        {/* Module 1: Coordinates */}
+                        <section className="scroll-mt-32">
+                            <ScrollReveal>
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-white/10 pb-8">
+                                    <div className="space-y-4 max-w-2xl">
+                                        <h2 className="font-serif text-4xl text-foreground">01. Celestial Coordinates</h2>
+                                        <p className="text-muted-foreground text-lg">
+                                            The Universal GPS. Learn how we map the infinite void using Right Ascension and Declination.
                                         </p>
                                     </div>
-                                    <div className="flex items-center gap-2 font-mono text-[10px] text-primary/60 tracking-widest uppercase">
-                                        <Zap className="w-4 h-4 animate-pulse" /> Thermal Analysis Active
-                                    </div>
+                                    <AIGuide tip="Coordinates ensure your memory is locked to a specific point in space-time, preventing it from drifting into the void." />
                                 </div>
                             </ScrollReveal>
-
-                            <div className="grid gap-4">
-                                {starTypes.map((star, idx) => (
-                                    <ScrollReveal key={star.type} delay={idx * 100}>
-                                        <div className="glass group hover:bg-white/5 transition-all duration-500 p-6 md:p-8 rounded-[2rem] flex flex-col md:flex-row items-center gap-8 border-white/5 hover:border-primary/20">
-                                            <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${star.color} shadow-2xl flex items-center justify-center text-background font-bold text-2xl md:text-3xl relative overflow-hidden`}>
-                                                <div className="absolute inset-0 bg-white/20 animate-pulse" />
-                                                {star.type}
-                                            </div>
-                                            <div className="flex-1 text-center md:text-left space-y-2">
-                                                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
-                                                    <h3 className="font-serif text-2xl text-foreground">{star.label}</h3>
-                                                    <span className="font-mono text-xs text-primary px-3 py-1 rounded-full bg-primary/10 w-fit mx-auto md:mx-0">
-                                                        TEMP: {star.temp}
-                                                    </span>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
-                                                    {star.description}
-                                                </p>
-                                            </div>
-                                            <Star className="w-8 h-8 text-white/10 group-hover:text-primary/40 transition-colors shrink-0 hidden md:block" />
-                                        </div>
-                                    </ScrollReveal>
-                                ))}
-                            </div>
+                            <ScrollReveal delay={200}>
+                                <CoordinateVisualizer />
+                            </ScrollReveal>
                         </section>
 
-                        {/* Technical Fundamentals Section */}
-                        <div className="grid md:grid-cols-2 gap-8">
+                        {/* Module 2: Stellar Evolution */}
+                        <section className="scroll-mt-32">
+                            <ScrollReveal>
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-white/10 pb-8">
+                                    <div className="space-y-4 max-w-2xl">
+                                        <h2 className="font-serif text-4xl text-foreground">02. Stellar Evolution</h2>
+                                        <p className="text-muted-foreground text-lg">
+                                            From birth to black holes. Witness the billion-year lifecycle of stars.
+                                        </p>
+                                    </div>
+                                    <AIGuide tip="Choosing a long-lived star ensures your archive lasts for eons. Choose wisely based on the star's age." />
+                                </div>
+                            </ScrollReveal>
                             <ScrollReveal delay={200}>
-                                <div className="glass p-12 rounded-[3rem] border-white/5 space-y-6 h-full relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-8 text-white/5 group-hover:text-primary/10 transition-colors">
-                                        <Microscope className="w-32 h-32" />
-                                    </div>
-                                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8">
-                                        <Compass className="w-7 h-7" />
-                                    </div>
-                                    <h3 className="font-serif text-3xl text-foreground">Celestial Coordinates</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        To lock a memory in place, we use the Equatorial Coordinate System. RA (Right Ascension) and Dec (Declination) act as a global lattice for the entire universe. Unlike terrestrial maps, these are fixed against the distant background of space, ensuring your archive never "drifts" from its stellar host.
-                                    </p>
-                                    <div className="pt-6 font-mono text-xs text-primary/50 uppercase tracking-widest">
-                                        HIPPARCOS CATALOG PRIMARY SOURCE
-                                    </div>
-                                </div>
+                                <StarLifecycleViewer />
                             </ScrollReveal>
+                        </section>
 
-                            <ScrollReveal delay={400}>
-                                <div className="glass p-12 rounded-[3rem] border-white/5 space-y-6 h-full relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-8 text-white/5 group-hover:text-primary/10 transition-colors">
-                                        <BookOpen className="w-32 h-32" />
+                        {/* Module 3: Cosmic Taxonomy */}
+                        <section className="scroll-mt-32">
+                            <ScrollReveal>
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-white/10 pb-8">
+                                    <div className="space-y-4 max-w-2xl">
+                                        <h2 className="font-serif text-4xl text-foreground">03. The Cosmic Compendium</h2>
+                                        <p className="text-muted-foreground text-lg">
+                                            Meet the neighbors. Explore the exotic objects that populate our galaxy.
+                                        </p>
                                     </div>
-                                    <div className="w-14 h-14 rounded-2xl bg-cosmic-purple/10 flex items-center justify-center text-cosmic-purple mb-8">
-                                        <Library className="w-7 h-7" />
-                                    </div>
-                                    <h3 className="font-serif text-3xl text-foreground">The Epoch Protocol</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        Because Earth's axis wobbles slightly over thousands of years (precession), astronomers use an "Epoch" to standardize maps. Starhold uses J2000.0, the current standard reference. This technical precision is why your memory will be reachable by light-waves thousands of years from now.
-                                    </p>
-                                    <div className="pt-6 font-mono text-xs text-cosmic-purple/50 uppercase tracking-widest">
-                                        CHRONO-STABILITY ASSURED
-                                    </div>
+                                    <AIGuide tip="Not all hosts are stars. Nebulae offer vast, artistic canvasses for shared community archives." />
                                 </div>
                             </ScrollReveal>
-                        </div>
+                            <ScrollReveal delay={200}>
+                                <CosmicCompendium />
+                            </ScrollReveal>
+                        </section>
+
+                        {/* Module 4: Constellations */}
+                        <section className="scroll-mt-32">
+                            <ScrollReveal>
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-white/10 pb-8">
+                                    <div className="space-y-4 max-w-2xl">
+                                        <h2 className="font-serif text-4xl text-foreground">04. Constellation Architect</h2>
+                                        <p className="text-muted-foreground text-lg">
+                                            Connect the dots. Trace the ancient patterns hidden in the night sky.
+                                        </p>
+                                    </div>
+                                    <AIGuide tip="Constellations help you memorize the location of your star without needing complex instruments." />
+                                </div>
+                            </ScrollReveal>
+                            <ScrollReveal delay={200}>
+                                <ConstellationBuilder />
+                            </ScrollReveal>
+                        </section>
 
                         {/* Final CTA */}
                         <ScrollReveal>
-                            <div className="text-center bg-white/5 border border-white/10 rounded-[4rem] p-20 space-y-8">
-                                <h2 className="font-serif text-4xl md:text-5xl text-foreground">Ready to test your vision?</h2>
-                                <p className="text-muted-foreground max-w-xl mx-auto">
-                                    Step into the observatory to see these principles in action or start encoding your primary archive entry.
+                            <div className="text-center bg-white/5 border border-white/10 rounded-[4rem] p-20 space-y-8 relative overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent" />
+                                <h2 className="font-serif text-4xl md:text-5xl text-foreground relative z-10">Academy Certified</h2>
+                                <p className="text-muted-foreground max-w-xl mx-auto relative z-10">
+                                    You have explored the fundamentals of the cosmos. Your vision is now attuned to the infinite.
                                 </p>
-                                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                                <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
                                     <a href="#/observatory" className="px-10 py-4 rounded-full gradient-gold text-primary-foreground font-semibold hover:shadow-[0_0_30px_rgba(234,179,8,0.4)] transition-all">
-                                        Enter the Cosmos
-                                    </a>
-                                    <a href="#/" className="px-10 py-4 rounded-full glass border-white/10 text-foreground font-semibold hover:bg-white/10 transition-all">
-                                        Return to Origin
+                                        Enter the Observatory
                                     </a>
                                 </div>
                             </div>
                         </ScrollReveal>
-
                     </div>
                 </main>
 
