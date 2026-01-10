@@ -65,6 +65,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
             </span>
             <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
           </div>
+          <ArrowDown className="w-5 h-5 text-primary/40 animate-bounce" />
         </div>
 
         {/* Stats */}
