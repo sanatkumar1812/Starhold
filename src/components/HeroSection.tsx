@@ -76,16 +76,11 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
             { value: '24/7', label: 'Active Support' },
           ].map((stat) => (
             <div key={stat.label} className="text-center group">
-              <p className="text-3xl md:text-4xl font-serif text-primary group-hover:scale-110 transition-transform">{stat.value}</p>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1">{stat.label}</p>
+              <p className="text-3xl md:text-4xl lg:text-5xl font-serif text-primary group-hover:scale-110 transition-transform">{stat.value}</p>
+              <p className="text-xs md:text-sm lg:text-base text-muted-foreground mt-1">{stat.label}</p>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <ArrowDown className="w-6 h-6 text-muted-foreground" />
       </div>
     </section>
   );
