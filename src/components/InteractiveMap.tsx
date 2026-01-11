@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { CosmicInfoCard } from './CosmicInfoCard';
 import { getConstellationArt } from '@/lib/constellation-art';
-import { getLST, celestialToHorizon, getSunPosition, horizonToCelestial } from '@/lib/astro-math';
+import { getLST, celestialToHorizon, getSunPosition, horizonToCelestial, getGMST } from '@/lib/astro-math';
 
 interface InteractiveMapProps {
     memories: Memory[];
     onMemoryClick?: (memory: Memory) => void;
     observerLocation?: { lat: number; lng: number; date: Date };
+    controlMode?: 'polar' | 'pan';
     className?: string;
 }
 
@@ -21,7 +22,7 @@ export interface InteractiveMapHandle {
     resetView: () => void;
 }
 
-export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapProps>(({ memories, onMemoryClick, observerLocation, className = '' }, ref) => {
+export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapProps>(({ memories, onMemoryClick, observerLocation, controlMode = 'polar', className = '' }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -42,36 +43,30 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
 
     // Sky Dome usually defaults to looking South or up.
     // In Sky maps, Dec +90 is North Pole.
-    const projectionRef = useRef(d3.geoStereographic().scale(600).clipAngle(120).rotate([0, 0, 0]));
+    const projectionRef = useRef(d3.geoStereographic().scale(600).rotate([0, 0, 0])); // Removed clipAngle to allow seeing "Ground"
     const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
     const rotationRef = useRef<[number, number, number]>([0, 0, 0]);
     const targetRotationRef = useRef<[number, number, number] | null>([0, 0, 0]); // Default to centered horizon
 
-    // Update rotation if observerLocation provided
-    useEffect(() => {
-        if (observerLocation) {
-            const { lat, lng, date } = observerLocation;
-            const lst = getLST(date, lng);
-            // Rotate the sky so that the Zenith (Point above observer) is at the center.
-            // Zenith RA = Local Sidereal Time, Zenith Dec = Observer Latitude
-            // D3 rotation is [lng, -lat, roll] (for Geo) 
-            // For Sky: [-RA, -Dec, 0]? Actually D3 Geo expects Longitude/Latitude.
-            // RA is basically Longitude (0-360). 
-            // We want LST at the center. So rotate by -LST.
-            targetRotationRef.current = [-lst, -lat, 0];
-        }
-    }, [observerLocation]);
+    // ... (keep useEffect for observerLocation)
 
     // Memoized Data to prevent expensive re-parsing
     const celestialData = useMemo(() => {
         const date = observerLocation?.date || new Date();
+        const lst = observerLocation ? getLST(observerLocation.date, observerLocation.lng) : 0;
+        const lat = observerLocation ? observerLocation.lat : 90;
+
+        // Nadir is opposite to Zenith (LST, Lat) -> (LST+180, -Lat)
+        const nadir = [(lst + 180) % 360, -lat];
+
         return {
             stars: getBrightStars(),
             constellations: getConstellationLines(),
             milkyWay: getMilkyWayFeature(),
             graticule: d3.geoGraticule10(),
             solarSystem: getSolarSystemObjects(date),
-            horizon: d3.geoCircle().center(observerLocation ? [getLST(observerLocation.date, observerLocation.lng), observerLocation.lat] : [0, 90]).radius(90)()
+            horizon: d3.geoCircle().center(observerLocation ? [lst, lat] : [0, 90]).radius(90)(),
+            earth: d3.geoCircle().center(nadir as [number, number]).radius(90)()
         };
     }, [observerLocation]);
 
@@ -147,76 +142,21 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
                     rotationRef.current = target;
                     targetRotationRef.current = null;
                 } else {
-                    rotationRef.current = next;
+                    rotationRef.current = next as [number, number, number];
                 }
                 projection.rotate(rotationRef.current as any);
             }
 
             ctx.clearRect(0, 0, width, height);
 
-            // --- Day / Night Logic ---
-            const sunPos = getSunPosition(observerLocation?.date || new Date());
-            const sunHorizon = observerLocation
-                ? celestialToHorizon(observerLocation.date, observerLocation.lat, observerLocation.lng, sunPos.ra, sunPos.dec)
-                : { altitude: -10 }; // Default to night
-
-            let skyColor;
-            if (sunHorizon.altitude > 0) {
-                // Day / Twilight
-                const alt = Math.min(15, sunHorizon.altitude);
-                const dayFactor = alt / 15;
-                const r = Math.floor(15 + 85 * dayFactor);
-                const g = Math.floor(23 + 140 * dayFactor);
-                const b = Math.floor(42 + 213 * dayFactor);
-                skyColor = `rgb(${r}, ${g}, ${b})`;
-            } else {
-                skyColor = '#000000';
-            }
-
+            // Deep Space Background (Permanent Night Mode)
             const gradient = ctx.createRadialGradient(width / 2, height, height * 0.2, width / 2, height / 2, width);
-            if (sunHorizon.altitude > 0) {
-                gradient.addColorStop(0, skyColor);
-                gradient.addColorStop(1, '#050a14');
-            } else {
-                gradient.addColorStop(0, '#0f172a');
-                gradient.addColorStop(0.5, '#020617');
-                gradient.addColorStop(1, '#000000');
-            }
+            gradient.addColorStop(0, '#0f172a');
+            gradient.addColorStop(0.5, '#020617');
+            gradient.addColorStop(1, '#000000');
+
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
-
-            // Draw Horizon Line
-            if (observerLocation) {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-                ctx.lineWidth = 1;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                // @ts-ignore
-                path(celestialData.horizon);
-                ctx.stroke();
-                ctx.setLineDash([]);
-
-                // Label Horizon Cardinal Points
-                const cardinals = [
-                    { label: 'N', az: 0 },
-                    { label: 'E', az: 90 },
-                    { label: 'S', az: 180 },
-                    { label: 'W', az: 270 }
-                ];
-
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.font = 'bold 12px Inter';
-                ctx.textAlign = 'center';
-
-                cardinals.forEach(c => {
-                    const pos = horizonToCelestial(observerLocation.date, observerLocation.lat, observerLocation.lng, c.az, 0);
-                    const lng = pos.ra > 180 ? pos.ra - 360 : pos.ra;
-                    const p = projection([lng, pos.dec]);
-                    if (p) {
-                        ctx.fillText(c.label, p[0], p[1] + 4);
-                    }
-                });
-            }
 
             ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
             ctx.beginPath();
@@ -224,13 +164,21 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
             path(celestialData.milkyWay);
             ctx.fill();
 
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            // Dynamic Grid Step based on Zoom
+            const currentScale = projection.scale();
+            let gridStep = 30;
+            if (currentScale > 2000) gridStep = 5;
+            else if (currentScale > 1000) gridStep = 10;
+            else if (currentScale > 600) gridStep = 15;
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             // @ts-ignore
-            path(celestialData.graticule);
+            path(d3.geoGraticule().step([gridStep, gridStep])());
             ctx.stroke();
 
+            // Constellations
             celestialData.constellations.forEach((con: any) => {
                 const isSelected = selectedObject?.type === 'constellation' &&
                     selectedObject.data.name === con.properties.name;
@@ -242,29 +190,25 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
                 ctx.stroke();
             });
 
-            // 1.5 Draw Graticule Labels
+            // Graticule Labels
             ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
             ctx.font = '9px monospace';
             ctx.textAlign = 'center';
-
-            // RA Labels (along equator)
-            for (let ra = 0; ra < 360; ra += 30) {
+            // RA
+            for (let ra = 0; ra < 360; ra += (gridStep * 1.5)) {
                 const lng = ra > 180 ? ra - 360 : ra;
                 const p = projection([lng, 0]);
-                if (p) {
-                    ctx.fillText(`${ra / 15}h`, p[0], p[1] + 10);
-                }
+                if (p) ctx.fillText(`${Math.floor(ra / 15)}h`, p[0], p[1] + 10);
             }
-
-            // Dec Labels (along prime meridian)
+            // Dec
             ctx.textAlign = 'right';
-            for (let dec = -60; dec <= 60; dec += 30) {
+            for (let dec = -80; dec <= 80; dec += gridStep) {
+                if (dec === 0) continue;
                 const p = projection([0, dec]);
-                if (p) {
-                    ctx.fillText(`${dec > 0 ? '+' : ''}${dec}°`, p[0] - 5, p[1] + 3);
-                }
+                if (p) ctx.fillText(`${dec > 0 ? '+' : ''}${dec}°`, p[0] - 5, p[1] + 3);
             }
 
+            // Stars
             celestialData.stars.forEach((star: any) => {
                 const mag = star.properties.magnitude;
                 const isSelected = selectedObject?.type === 'star' && selectedObject.data.name === star.properties.name;
@@ -292,7 +236,7 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
                 }
             });
 
-            // --- Solar System Objects ---
+            // Solar System Objects
             celestialData.solarSystem.forEach((obj: any) => {
                 const projected = projection(obj.geometry.coordinates);
                 if (projected) {
@@ -338,7 +282,7 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
                 }
             });
 
-            // 4. Draw Mythology Art (for selected constellation)
+            // Mythology Art
             if (selectedObject?.type === 'constellation' && artImage) {
                 const conFeature = celestialData.constellations.find(
                     (c: any) => c.properties.name === selectedObject.data.name
@@ -348,15 +292,52 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
                     const projected = projection(centroid);
                     if (projected) {
                         ctx.save();
-                        ctx.globalAlpha = 0.25; // Ghostly opacity
+                        ctx.globalAlpha = 0.25;
                         ctx.translate(projected[0], projected[1]);
                         const imgSize = projection.scale() * 0.9;
                         ctx.drawImage(artImage, -imgSize / 2, -imgSize / 2, imgSize, imgSize);
                         ctx.restore();
-                    } else {
-                        // console.log("InteractiveMap: Centroid outside view");
                     }
                 }
+            }
+
+            // --- OPAQUE HORIZON / EARTH MASK (COVERS SKY) ---
+            if (observerLocation) {
+                ctx.fillStyle = '#0f172a'; // Match background or slightly lighter ground
+                ctx.beginPath();
+                // @ts-ignore
+                path(celestialData.earth);
+                ctx.fill();
+
+                ctx.strokeStyle = '#38bdf8';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                // @ts-ignore
+                path(celestialData.horizon);
+                ctx.stroke();
+
+                const cardinals = [
+                    { label: 'N', az: 0 },
+                    { label: 'E', az: 90 },
+                    { label: 'S', az: 180 },
+                    { label: 'W', az: 270 }
+                ];
+
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = 'bold 12px Inter';
+                ctx.textAlign = 'center';
+
+                cardinals.forEach(c => {
+                    const pos = horizonToCelestial(observerLocation.date, observerLocation.lat, observerLocation.lng, c.az, 0);
+                    const lng = pos.ra > 180 ? pos.ra - 360 : pos.ra;
+                    const p = projection([lng, pos.dec]);
+                    if (p) {
+                        // Simple visibility check handled by Earth Mask covering if behind?
+                        // Actually if we look DOWN, the Cardinal is "inside" the Earth circle on screen.
+                        // But we want to see it ON the line.
+                        ctx.fillText(c.label, p[0], p[1] + 15);
+                    }
+                });
             }
         };
 
@@ -366,24 +347,53 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
         // @ts-ignore
         const drag = d3.drag()
             .on('drag', (event: any) => {
-                targetRotationRef.current = null; // Cancel animations
-
-                // Sensitivity should scale with zoom
+                targetRotationRef.current = null;
                 const currentScale = projection.scale();
-                const k = 0.25 * (600 / currentScale); // Base sensitivity adjusted
+                const k = 0.25 * (600 / currentScale);
 
-                const [r0, r1, r2] = rotationRef.current as [number, number, number];
+                if (controlMode === 'pan' && observerLocation) {
+                    // --- PLANAR (ALT-AZ) CONTROL ---
+                    const [r0, r1, r2] = rotationRef.current;
+                    const centerRA = -r0;
+                    const centerDec = -r1;
 
-                // r0 is RA (Longitude), r1 is Dec (Latitude)
-                // Invert dy for Dec
-                const newRotation: [number, number, number] = [
-                    r0 + event.dx * k,
-                    Math.max(-90, Math.min(90, r1 - event.dy * k)),
-                    r2
-                ];
+                    const currentHoriz = celestialToHorizon(
+                        observerLocation.date,
+                        observerLocation.lat,
+                        observerLocation.lng,
+                        centerRA,
+                        centerDec
+                    );
 
-                rotationRef.current = newRotation;
-                projection.rotate(newRotation);
+                    // Drag Right (dx > 0) -> Move View Left -> Decrease Azimuth
+                    let newAz = currentHoriz.azimuth - event.dx * k;
+                    let newAlt = currentHoriz.altitude + event.dy * k;
+
+                    newAlt = Math.max(-89, Math.min(89, newAlt));
+
+                    const newCel = horizonToCelestial(
+                        observerLocation.date,
+                        observerLocation.lat,
+                        observerLocation.lng,
+                        newAz,
+                        newAlt
+                    );
+
+                    const newRotation: [number, number, number] = [-newCel.ra, -newCel.dec, r2];
+                    rotationRef.current = newRotation;
+                    projection.rotate(newRotation);
+
+                } else {
+                    // --- POLAR TELESCOPE CONTROL (Default) ---
+                    const [r0, r1, r2] = rotationRef.current as [number, number, number];
+                    const newRotation: [number, number, number] = [
+                        r0 + event.dx * k,
+                        Math.max(-90, Math.min(90, r1 - event.dy * k)),
+                        r2
+                    ];
+                    rotationRef.current = newRotation;
+                    projection.rotate(newRotation);
+                }
             });
 
         // @ts-ignore
@@ -392,7 +402,7 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
         return () => {
             cancelAnimationFrame(animationFrameId);
         };
-    }, [memories, celestialData, selectedObject]); // Re-run on memory/selection change
+    }, [memories, celestialData, selectedObject, controlMode]); // Re-run on memory/selection/control change
 
     const findObjectUnderCursor = (mx: number, my: number) => {
         // Projection instance

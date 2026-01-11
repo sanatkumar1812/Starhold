@@ -27,6 +27,7 @@ const StellarObservatory = () => {
         date: getDefaultMidday()
     });
 
+    const [controlMode, setControlMode] = useState<'polar' | 'pan'>('polar');
     const [isControlsOpen, setIsControlsOpen] = useState(false);
     const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,6 +47,7 @@ const StellarObservatory = () => {
                     memories={memories || []}
                     onMemoryClick={handleMemoryClick}
                     observerLocation={observerLoc}
+                    controlMode={controlMode}
                     className="w-full h-full"
                 />
             </div>
@@ -86,12 +88,14 @@ const StellarObservatory = () => {
 
                 {/* Bottom Controls - Grouped in Bottom Right */}
                 <div className="flex flex-col items-end gap-6 pointer-events-auto self-end">
-                    {/* Compact Info (Optional) */}
-                    <div className="hidden lg:block bg-black/40 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10 text-[10px] text-muted-foreground/40 font-mono tracking-widest uppercase">
-                        DATA SOURCE: NASA/HIPPARCOS / J2000.0 REFERENCE
-                    </div>
+                    {/* Data Source Moved to Left of Compass */}
 
                     <div className="flex flex-col items-center gap-4">
+                        {/* Data Source Label - Repositioned Here */}
+                        <div className="absolute right-20 bottom-2 whitespace-nowrap hidden lg:block bg-black/40 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10 text-[10px] text-muted-foreground/40 font-mono tracking-widest uppercase">
+                            DATA SOURCE: NASA/HIPPARCOS / J2000.0 REFERENCE
+                        </div>
+
                         {/* Zoom stack repositioned above Compass */}
                         <div className="flex flex-col gap-2">
                             <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomIn()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110 w-11 h-11 sm:w-10 sm:h-10"><ZoomIn className="w-5 h-5" /></Button>
@@ -104,6 +108,8 @@ const StellarObservatory = () => {
                                 <div className="absolute bottom-16 right-0 mb-4 animate-in slide-in-from-bottom-5 fade-in duration-300">
                                     <SkyLocationSelector
                                         onLocationChange={(lat, lng, date) => setObserverLoc({ lat, lng, date })}
+                                        onControlModeChange={setControlMode}
+                                        controlMode={controlMode}
                                     />
                                 </div>
                             )}

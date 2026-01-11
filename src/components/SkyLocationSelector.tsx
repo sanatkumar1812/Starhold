@@ -7,10 +7,12 @@ import { Slider } from '@/components/ui/slider';
 
 interface SkyLocationSelectorProps {
     onLocationChange: (lat: number, lng: number, date: Date) => void;
+    onControlModeChange?: (mode: 'polar' | 'pan') => void;
+    controlMode?: 'polar' | 'pan';
     className?: string;
 }
 
-export const SkyLocationSelector = ({ onLocationChange, className = '' }: SkyLocationSelectorProps) => {
+export const SkyLocationSelector = ({ onLocationChange, onControlModeChange, controlMode = 'polar', className = '' }: SkyLocationSelectorProps) => {
     const [lat, setLat] = useState<string>('0');
     const [lng, setLng] = useState<string>('0');
     const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
@@ -98,6 +100,26 @@ export const SkyLocationSelector = ({ onLocationChange, className = '' }: SkyLoc
                     onChange={(e) => setDate(e.target.value)}
                     className="bg-white/5 border-white/10 h-8 text-xs rounded-xl"
                 />
+            </div>
+
+            <div className="pt-2 border-t border-white/5 space-y-2">
+                <Label className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1">
+                    Navigation Mode
+                </Label>
+                <div className="flex bg-black/40 rounded-xl p-1 border border-white/10 relative">
+                    <button
+                        onClick={() => onControlModeChange?.('polar')}
+                        className={`flex-1 py-1.5 rounded-lg text-[10px] font-medium transition-all ${controlMode === 'polar' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        TELESCOPE (POLAR)
+                    </button>
+                    <button
+                        onClick={() => onControlModeChange?.('pan')}
+                        className={`flex-1 py-1.5 rounded-lg text-[10px] font-medium transition-all ${controlMode === 'pan' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        FREE (PLANAR)
+                    </button>
+                </div>
             </div>
 
             <Button
