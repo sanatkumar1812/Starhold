@@ -1,18 +1,51 @@
 import { StarProperties } from "@/lib/celestial-data";
 import { Button } from "@/components/ui/button";
-import { X, ExternalLink, Info } from "lucide-react";
+import { X, ExternalLink, Info, Crosshair, MapPin } from "lucide-react";
 import { getConstellationArt } from "@/lib/constellation-art";
+import { celestialToHorizon } from "@/lib/astro-math";
 
 import { PLANET_DETAILS } from "@/lib/planet-info";
 
 interface CosmicInfoCardProps {
     data: any;
     type: 'star' | 'constellation' | 'planet';
+    coords?: [number, number]; // [RA, Dec]
+    controlMode?: 'polar' | 'pan';
+    observerLocation?: { lat: number; lng: number; date: Date };
     onClose: () => void;
 }
 
-export const CosmicInfoCard = ({ data, type, onClose }: CosmicInfoCardProps) => {
+export const CosmicInfoCard = ({ data, type, coords, controlMode, observerLocation, onClose }: CosmicInfoCardProps) => {
     const artUrl = type === 'constellation' ? getConstellationArt(data.name) : null;
+
+    // Coordinate Calculation
+    const isPlanar = controlMode === 'pan';
+    let displayCoords = null;
+
+    if (coords) {
+        if (isPlanar && observerLocation) {
+            // Convert RA/Dec to Alt/Az for planar mode
+            const horiz = celestialToHorizon(
+                observerLocation.date,
+                observerLocation.lat,
+                observerLocation.lng,
+                coords[0] < 0 ? coords[0] + 360 : coords[0],
+                coords[1]
+            );
+            displayCoords = {
+                title: 'Horizon Pos (Alt/Az)',
+                c1: { label: 'Altitude', value: `${horiz.altitude.toFixed(2)}°` },
+                c2: { label: 'Azimuth', value: `${horiz.azimuth.toFixed(2)}°` }
+            };
+        } else {
+            // Show RA/Dec for polar mode
+            displayCoords = {
+                title: 'Celestial Pos (J2000)',
+                c1: { label: 'RA', value: `${(coords[0] < 0 ? coords[0] + 360 : coords[0]).toFixed(2)}°` },
+                c2: { label: 'Dec', value: `${coords[1].toFixed(2)}°` }
+            };
+        }
+    }
 
     return (
         <div className="absolute bottom-6 left-6 w-80 bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-left-4 duration-300 z-50">
@@ -50,6 +83,26 @@ export const CosmicInfoCard = ({ data, type, onClose }: CosmicInfoCardProps) => 
                         </p>
                     )}
 
+                    {/* Coordinates Display */}
+                    {displayCoords && (
+                        <div className="space-y-2 pt-2 border-t border-white/5">
+                            <div className="flex items-center gap-2 text-[10px] text-primary/60 font-mono uppercase tracking-[0.2em]">
+                                {isPlanar ? <MapPin className="w-3 h-3" /> : <Crosshair className="w-3 h-3" />}
+                                {displayCoords.title}
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-white/5 p-2 rounded border border-white/5">
+                                    <span className="text-white/40 block text-[9px] uppercase">{displayCoords.c1.label}</span>
+                                    <span className="text-white font-mono text-sm">{displayCoords.c1.value}</span>
+                                </div>
+                                <div className="bg-white/5 p-2 rounded border border-white/5">
+                                    <span className="text-white/40 block text-[9px] uppercase">{displayCoords.c2.label}</span>
+                                    <span className="text-white font-mono text-sm">{displayCoords.c2.value}</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Planet Specific Stats */}
                     {type === 'planet' && (
                         <div className="space-y-4">
@@ -78,7 +131,7 @@ export const CosmicInfoCard = ({ data, type, onClose }: CosmicInfoCardProps) => 
                                 <div className="space-y-2 pt-2">
                                     <span className="text-[10px] text-primary/60 font-mono uppercase tracking-widest">Scientific Insights</span>
                                     <ul className="text-[11px] text-white/60 space-y-1 list-disc pl-4">
-                                        {PLANET_DETAILS[data.name].facts.map((f, i) => (
+                                        {PLANET_DETAILS[data.name].facts.map((f: string, i: number) => (
                                             <li key={i}>{f}</li>
                                         ))}
                                     </ul>

@@ -4,7 +4,7 @@
 
 // Julian Date calculation
 export const getJulianDate = (date: Date = new Date()): number => {
-    return (date.getTime() / 86400000) - (date.getTimezoneOffset() / 1440) + 2440587.5;
+    return (date.getTime() / 86400000) + 2440587.5;
 };
 
 // Greenwich Mean Sidereal Time (GMST) in degrees
@@ -164,4 +164,26 @@ export const horizonToCelestial = (date: Date, lat: number, lng: number, az: num
     const ra = (lst - ha + 360) % 360;
 
     return { ra, dec: (decRad * 180) / Math.PI };
+};
+
+// Parallactic Angle (q)
+// The angle between the celestial pole (North) and the zenith (Vertical) at a given point (HA, Dec).
+// Used to rotate the field of view so that Zenith is "Up" in Planar/Alt-Az mode.
+export const getParallacticAngle = (date: Date, lat: number, lng: number, ra: number, dec: number): number => {
+    const lst = getLST(date, lng);
+    const ha = (lst - ra + 360) % 360;
+
+    // Convert to radians
+    const latRad = (lat * Math.PI) / 180;
+    const haRad = (ha * Math.PI) / 180;
+    const decRad = (dec * Math.PI) / 180;
+
+    // Formula: tan q = sin(H) / (tan(phi)cos(delta) - sin(delta)cos(H))
+    const numerator = Math.sin(haRad);
+    const denominator = Math.tan(latRad) * Math.cos(decRad) - Math.sin(decRad) * Math.cos(haRad);
+
+    const qRad = Math.atan2(numerator, denominator);
+    const qDeg = (qRad * 180) / Math.PI;
+
+    return qDeg;
 };

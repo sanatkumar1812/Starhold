@@ -19,6 +19,37 @@ export const SkyLocationSelector = ({ onLocationChange, onControlModeChange, con
     const [time, setTime] = useState<string>(new Date().toTimeString().split(' ')[0].slice(0, 5));
     const [isLocating, setIsLocating] = useState(false);
 
+    // City Search State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchResults, setSearchResults] = useState<any[]>([]);
+
+    const handleSearch = async (query: string) => {
+        setSearchQuery(query);
+        if (query.length < 3) {
+            setSearchResults([]);
+            return;
+        }
+
+        setIsSearching(true);
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
+            const data = await response.json();
+            setSearchResults(data);
+        } catch (error) {
+            console.error('Geocoding error:', error);
+        } finally {
+            setIsSearching(false);
+        }
+    };
+
+    const selectCity = (city: any) => {
+        setLat(parseFloat(city.lat).toFixed(4));
+        setLng(parseFloat(city.lon).toFixed(4));
+        setSearchResults([]);
+        setSearchQuery(city.display_name.split(',')[0]);
+    };
+
     const useMyLocation = () => {
         setIsLocating(true);
         navigator.geolocation.getCurrentPosition(
@@ -32,8 +63,19 @@ export const SkyLocationSelector = ({ onLocationChange, onControlModeChange, con
     };
 
     useEffect(() => {
-        const fullDate = new Date(`${date}T${time}`);
-        onLocationChange(parseFloat(lat) || 0, parseFloat(lng) || 0, fullDate);
+        // Interpret the selected date/time as "Local Clock Time" for the target coordinates.
+        // We create a naive date object, then adjust it based on longitude to get the real UTC point in time.
+        // This ensures that "12:00" on the slider is always roughly local noon at any city globally.
+        const naiveDate = new Date(`${date}T${time}Z`); // Treat as UTC initially to get a stable base
+        const lngNum = parseFloat(lng) || 0;
+
+        // Offset in hours from UTC (15 degrees per hour)
+        const timezoneOffsetHours = lngNum / 15;
+
+        // Real UTC = Local Time - Offset
+        const utcDate = new Date(naiveDate.getTime() - timezoneOffsetHours * 3600000);
+
+        onLocationChange(parseFloat(lat) || 0, lngNum, utcDate);
     }, [lat, lng, date, time]);
 
     const handleTimeSliderChange = (val: number[]) => {
@@ -55,6 +97,40 @@ export const SkyLocationSelector = ({ onLocationChange, onControlModeChange, con
                 <div className="font-mono text-[10px] text-primary/60 bg-primary/10 px-2 py-0.5 rounded-full">
                     EPOCH J2000
                 </div>
+            </div>
+
+            {/* City Search */}
+            <div className="relative space-y-1.5">
+                <Label className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1">
+                    <MapPin className="w-3 h-3" /> Search City
+                </Label>
+                <Input
+                    placeholder="Enter city name..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    className="bg-white/5 border-white/10 h-8 text-xs rounded-xl"
+                />
+                {isSearching && (
+                    <div className="absolute right-3 top-7">
+                        <div className="w-3 h-3 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                    </div>
+                )}
+                {searchResults.length > 0 && (
+                    <div className="absolute top-14 left-0 right-0 bg-slate-900/95 border border-white/10 rounded-xl overflow-hidden z-[60] shadow-2xl backdrop-blur-xl">
+                        {searchResults.map((result, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => selectCity(result)}
+                                className="w-full px-3 py-2 text-left text-[11px] text-white/80 hover:bg-primary/20 hover:text-white border-b border-white/5 last:border-0 transition-colors"
+                            >
+                                <div className="font-semibold truncate">{result.display_name.split(',')[0]}</div>
+                                <div className="text-[9px] text-white/40 truncate">
+                                    {result.display_name.split(',').slice(1).join(',').trim()}
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">

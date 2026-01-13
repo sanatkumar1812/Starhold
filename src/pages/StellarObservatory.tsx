@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMemories } from '@/hooks/useMemories';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { Info, Map as MapIcon, Compass, Settings, X, ChevronLeft, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { Info, Map as MapIcon, Compass, Settings, X, ChevronLeft, ZoomIn, ZoomOut, RotateCcw, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { InteractiveMap, InteractiveMapHandle } from '@/components/InteractiveMap';
@@ -9,10 +9,12 @@ import { SkyLocationSelector } from '@/components/SkyLocationSelector';
 import { MemoryDetailModal } from '@/components/MemoryDetailModal';
 import { Memory } from '@/hooks/useMemories';
 import { useAuth } from '@/hooks/useAuth';
+import { ObservatoryWalkthrough } from '@/components/ObservatoryWalkthrough';
 
 const StellarObservatory = () => {
     const { memories } = useMemories();
-    const { user } = useAuth();
+    const { user, profile, updateProfile } = useAuth();
+    const hasLoadedInitialProfile = useRef(false);
 
     // Default to Midday Sun (12:00 PM) for visual impact
     const getDefaultMidday = () => {
@@ -22,16 +24,57 @@ const StellarObservatory = () => {
     };
 
     const [observerLoc, setObserverLoc] = useState<{ lat: number; lng: number; date: Date } | undefined>({
-        lat: 40.7128, // Default NYC or use 0,0
+        lat: 40.7128, // Default NYC
         lng: -74.0060,
         date: getDefaultMidday()
     });
 
+    // Load saved location from profile
+    useEffect(() => {
+        if (profile?.location && !hasLoadedInitialProfile.current) {
+            try {
+                const [lat, lng] = profile.location.split(',').map(Number);
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    setObserverLoc(prev => ({
+                        ...prev!,
+                        lat,
+                        lng,
+                        date: prev?.date || getDefaultMidday()
+                    }));
+                    hasLoadedInitialProfile.current = true;
+                }
+            } catch (e) {
+                console.error("Failed to parse saved location:", e);
+            }
+        }
+    }, [profile]);
+
+    const handleLocationChange = (lat: number, lng: number, date: Date) => {
+        setObserverLoc({ lat, lng, date });
+
+        // Save to profile if logged in
+        if (user) {
+            // Debounce or just save on change - since it's a manual action in the UI, direct update is usually fine
+            updateProfile({ location: `${lat.toFixed(4)},${lng.toFixed(4)}` });
+        }
+    };
+
     const [controlMode, setControlMode] = useState<'polar' | 'pan'>('polar');
     const [isControlsOpen, setIsControlsOpen] = useState(false);
+    const [isWalkthroughOpen, setIsWalkthroughOpen] = useState(false);
     const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const mapRef = useRef<InteractiveMapHandle>(null);
+
+    // Every-time onboarding check
+    useEffect(() => {
+        const timer = setTimeout(() => setIsWalkthroughOpen(true), 1500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const handleWalkthroughClose = () => {
+        setIsWalkthroughOpen(false);
+    };
 
     const handleMemoryClick = (memory: Memory) => {
         setSelectedMemory(memory);
@@ -98,6 +141,15 @@ const StellarObservatory = () => {
 
                         {/* Zoom stack repositioned above Compass */}
                         <div className="flex flex-col gap-2">
+                            <Button
+                                variant="secondary"
+                                size="icon"
+                                onClick={() => setIsWalkthroughOpen(true)}
+                                title="Restart Tour"
+                                className="bg-primary/20 hover:bg-primary/40 border-primary/20 text-primary rounded-xl shadow-xl transition-all hover:scale-110 w-11 h-11 sm:w-10 sm:h-10 mb-2"
+                            >
+                                <HelpCircle className="w-5 h-5" />
+                            </Button>
                             <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomIn()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110 w-11 h-11 sm:w-10 sm:h-10"><ZoomIn className="w-5 h-5" /></Button>
                             <Button variant="secondary" size="icon" onClick={() => mapRef.current?.zoomOut()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110 w-11 h-11 sm:w-10 sm:h-10"><ZoomOut className="w-5 h-5" /></Button>
                             <Button variant="secondary" size="icon" onClick={() => mapRef.current?.resetView()} className="bg-white/10 hover:bg-white/20 border-white/10 text-white rounded-xl shadow-xl transition-all hover:scale-110 w-11 h-11 sm:w-10 sm:h-10"><RotateCcw className="w-5 h-5" /></Button>
@@ -107,7 +159,7 @@ const StellarObservatory = () => {
                             {isControlsOpen && (
                                 <div className="absolute bottom-16 right-0 mb-4 animate-in slide-in-from-bottom-5 fade-in duration-300">
                                     <SkyLocationSelector
-                                        onLocationChange={(lat, lng, date) => setObserverLoc({ lat, lng, date })}
+                                        onLocationChange={handleLocationChange}
                                         onControlModeChange={setControlMode}
                                         controlMode={controlMode}
                                     />
@@ -123,6 +175,12 @@ const StellarObservatory = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Walkthrough */}
+            <ObservatoryWalkthrough
+                show={isWalkthroughOpen}
+                onClose={handleWalkthroughClose}
+            />
 
             {/* Memory Detail Modal */}
             <MemoryDetailModal

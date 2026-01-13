@@ -28,6 +28,37 @@ export const ProfileSettings = () => {
     location: profile?.location || '',
   });
 
+  // City Search State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    if (query.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (error) {
+      console.error('Geocoding error:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const selectCity = (city: any) => {
+    const coords = `${parseFloat(city.lat).toFixed(4)},${parseFloat(city.lon).toFixed(4)}`;
+    setFormData({ ...formData, location: coords });
+    setSearchResults([]);
+    setSearchQuery(city.display_name.split(',')[0]);
+  };
+
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
   };
@@ -140,19 +171,58 @@ export const ProfileSettings = () => {
             />
           </div>
 
-          {/* Location */}
-          <div className="space-y-2">
-            <Label htmlFor="location" className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Location
-            </Label>
-            <Input
-              id="location"
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              placeholder="Your location"
-              className="bg-background/50"
-            />
+          {/* Location / City Search */}
+          <div className="space-y-4">
+            <div className="relative space-y-2">
+              <Label htmlFor="city_search" className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-primary" />
+                Search Home City
+              </Label>
+              <div className="relative">
+                <Input
+                  id="city_search"
+                  placeholder="Enter city name (e.g. London, Tokyo)"
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="bg-background/50 h-10 pr-10"
+                />
+                {isSearching && (
+                  <div className="absolute right-3 top-3">
+                    <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                  </div>
+                )}
+              </div>
+              {searchResults.length > 0 && (
+                <div className="absolute top-[72px] left-0 right-0 bg-slate-900 border border-border/50 rounded-xl overflow-hidden z-50 shadow-2xl backdrop-blur-xl">
+                  {searchResults.map((result, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => selectCity(result)}
+                      className="w-full px-4 py-3 text-left hover:bg-primary/20 transition-colors border-b border-white/5 last:border-0"
+                    >
+                      <div className="text-sm font-medium">{result.display_name.split(',')[0]}</div>
+                      <div className="text-[10px] text-muted-foreground truncate">
+                        {result.display_name.split(',').slice(1).join(',').trim()}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location" className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+                Saved Coordinates (lat, lng)
+              </Label>
+              <Input
+                id="location"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                placeholder="40.7128, -74.0060"
+                className="bg-background/50 font-mono text-xs"
+              />
+            </div>
           </div>
 
           {/* Bio */}
