@@ -145,7 +145,38 @@ export const useMemories = () => {
     }
 
     await fetchMemories();
-    return `${window.location.origin}/memory/${token}`;
+    return `${window.location.origin}/observatory?token=${token}`;
+  };
+
+  const fetchSharedMemory = async (token: string): Promise<Memory | null> => {
+    const { data, error } = await supabase
+      .from('memories')
+      .select('*')
+      .eq('share_token', token)
+      .maybeSingle();
+
+    if (error || !data) {
+      console.error('Error fetching shared memory:', error);
+      return null;
+    }
+
+    // Check unlock status
+    const now = new Date();
+    const unlockDateTime = new Date(`${data.unlock_date}T${data.unlock_time}`);
+    const isUnlocked = now >= unlockDateTime || data.is_unlocked;
+
+    if (!isUnlocked) {
+      toast.error('This memory is still locked');
+      return null;
+    }
+
+    return {
+      ...data,
+      is_unlocked: true,
+      recipient_name: decrypt(data.recipient_name),
+      message: data.message ? decrypt(data.message) : null,
+      title: data.title ? decrypt(data.title) : null
+    } as Memory;
   };
 
   return {
@@ -154,6 +185,7 @@ export const useMemories = () => {
     createMemory,
     deleteMemory,
     generateShareToken,
+    fetchSharedMemory,
     refetch: fetchMemories,
   };
 };

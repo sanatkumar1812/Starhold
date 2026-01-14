@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useMemories } from '@/hooks/useMemories';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { Info, Map as MapIcon, Compass, Settings, X, ChevronLeft, ZoomIn, ZoomOut, RotateCcw, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { InteractiveMap, InteractiveMapHandle } from '@/components/InteractiveMap';
 import { SkyLocationSelector } from '@/components/SkyLocationSelector';
 import { MemoryDetailModal } from '@/components/MemoryDetailModal';
@@ -12,7 +12,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { ObservatoryWalkthrough } from '@/components/ObservatoryWalkthrough';
 
 const StellarObservatory = () => {
-    const { memories } = useMemories();
+    const { memories, fetchSharedMemory } = useMemories();
+    const [extraMemories, setExtraMemories] = useState<Memory[]>([]);
+
+    const allMemories = useMemo(() => {
+        const base = memories || [];
+        if (extraMemories.length === 0) return base;
+        const ids = new Set(base.map(m => m.id));
+        return [...base, ...extraMemories.filter(m => !ids.has(m.id))];
+    }, [memories, extraMemories]);
+
     const { user, profile, updateProfile } = useAuth();
     const hasLoadedInitialProfile = useRef(false);
 
@@ -76,6 +85,52 @@ const StellarObservatory = () => {
         setIsWalkthroughOpen(false);
     };
 
+    const [searchParams] = useSearchParams();
+    const memoryIdFromUrl = searchParams.get('memoryId');
+    const tokenFromUrl = searchParams.get('token');
+
+    // Deep Link handling (by Memory ID)
+    useEffect(() => {
+        if (memories?.length && memoryIdFromUrl) {
+            const memory = memories.find(m => m.id === memoryIdFromUrl);
+            if (memory) {
+                const timer = setTimeout(() => {
+                    handleMemoryClick(memory);
+                    if (mapRef.current && memory.star_coordinates) {
+                        const coords = memory.star_coordinates as any;
+                        if (typeof coords.ra === 'number' && typeof coords.dec === 'number') {
+                            mapRef.current.centerOn([coords.ra, coords.dec]);
+                        }
+                    }
+                }, 1000);
+                return () => clearTimeout(timer);
+            }
+        }
+    }, [memories, memoryIdFromUrl]);
+
+    // Deep Link handling (by Share Token)
+    useEffect(() => {
+        if (tokenFromUrl) {
+            const loadShared = async () => {
+                const mem = await fetchSharedMemory(tokenFromUrl);
+                if (mem) {
+                    setExtraMemories([mem]);
+                    const timer = setTimeout(() => {
+                        handleMemoryClick(mem);
+                        if (mapRef.current && mem.star_coordinates) {
+                            const coords = mem.star_coordinates as any;
+                            if (typeof coords.ra === 'number' && typeof coords.dec === 'number') {
+                                mapRef.current.centerOn([coords.ra, coords.dec]);
+                            }
+                        }
+                    }, 1000);
+                    return () => clearTimeout(timer);
+                }
+            };
+            loadShared();
+        }
+    }, [tokenFromUrl, fetchSharedMemory]);
+
     const handleMemoryClick = (memory: Memory) => {
         setSelectedMemory(memory);
         setIsModalOpen(true);
@@ -87,7 +142,7 @@ const StellarObservatory = () => {
             <div className="absolute inset-0 z-0">
                 <InteractiveMap
                     ref={mapRef}
-                    memories={memories || []}
+                    memories={allMemories}
                     onMemoryClick={handleMemoryClick}
                     observerLocation={observerLoc}
                     controlMode={controlMode}

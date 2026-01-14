@@ -20,6 +20,7 @@ export interface InteractiveMapHandle {
     zoomIn: () => void;
     zoomOut: () => void;
     resetView: () => void;
+    centerOn: (coords: [number, number]) => void;
 }
 
 export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapProps>(({ memories, onMemoryClick, observerLocation, controlMode = 'polar', className = '' }, ref) => {
@@ -832,7 +833,15 @@ export const InteractiveMap = forwardRef<InteractiveMapHandle, InteractiveMapPro
     useImperativeHandle(ref, () => ({
         zoomIn: () => handleZoom(200),
         zoomOut: () => handleZoom(-200),
-        resetView
+        resetView,
+        centerOn: (coords: [number, number]) => {
+            if (controlMode === 'pan') {
+                const h = celestialToHorizon(observerLocation?.date || new Date(), observerLocation?.lat || 0, observerLocation?.lng || 0, coords[0], coords[1]);
+                targetRotationRef.current = [-h.azimuth, -h.altitude, 0];
+            } else {
+                targetRotationRef.current = [-coords[0], -coords[1], 0];
+            }
+        }
     }));
 
     return (
