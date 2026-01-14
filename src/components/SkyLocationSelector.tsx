@@ -105,6 +105,7 @@ export const SkyLocationSelector = ({ onLocationChange, onControlModeChange, con
                     <MapPin className="w-3 h-3" /> Search City
                 </Label>
                 <Input
+                    id="obs-city-search"
                     placeholder="Enter city name..."
                     value={searchQuery}
                     onChange={(e) => handleSearch(e.target.value)}
@@ -161,7 +162,7 @@ export const SkyLocationSelector = ({ onLocationChange, onControlModeChange, con
                     </Label>
                     <span className="font-mono text-xs font-bold text-primary">{time}</span>
                 </div>
-                <div className="px-1">
+                <div id="obs-time-slider" className="px-1">
                     <Slider
                         defaultValue={[currentTotalMinutes]}
                         max={1439}
@@ -171,6 +172,7 @@ export const SkyLocationSelector = ({ onLocationChange, onControlModeChange, con
                     />
                 </div>
                 <Input
+                    id="obs-date-input"
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
@@ -182,7 +184,7 @@ export const SkyLocationSelector = ({ onLocationChange, onControlModeChange, con
                 <Label className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1">
                     Navigation Mode
                 </Label>
-                <div className="flex bg-black/40 rounded-xl p-1 border border-white/10 relative">
+                <div id="obs-nav-modes" className="flex bg-black/40 rounded-xl p-1 border border-white/10 relative">
                     <button
                         onClick={() => onControlModeChange?.('polar')}
                         className={`flex-1 py-1.5 rounded-lg text-[10px] font-medium transition-all ${controlMode === 'polar' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}

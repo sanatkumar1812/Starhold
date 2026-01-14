@@ -102,7 +102,7 @@ const StellarObservatory = () => {
                     <div className="flex flex-col items-start pointer-events-auto">
                         <div className="bg-black/40 backdrop-blur-md p-5 rounded-3xl border border-white/10 shadow-2xl space-y-4">
                             <Link to={user ? "/dashboard" : "/"}>
-                                <Button variant="ghost" size="sm" className="w-full justify-start text-white/50 hover:text-white hover:bg-white/5 gap-3 rounded-xl px-2 transition-all group mb-2">
+                                <Button id="obs-back-btn" variant="ghost" size="sm" className="w-full justify-start text-white/50 hover:text-white hover:bg-white/5 gap-3 rounded-xl px-2 transition-all group mb-2">
                                     <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                                         <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                                     </div>
@@ -113,7 +113,7 @@ const StellarObservatory = () => {
                             </Link>
 
                             <div className="flex flex-col gap-1 px-1">
-                                <h1 className="font-serif text-2xl text-foreground leading-tight tracking-wide">Celestial Observatory</h1>
+                                <h1 id="obs-title" className="font-serif text-2xl text-foreground leading-tight tracking-wide">Celestial Observatory</h1>
                                 <div className="flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                                     <span className="text-[10px] text-primary font-mono tracking-widest uppercase">Signal Active</span>
@@ -140,8 +140,9 @@ const StellarObservatory = () => {
                         </div>
 
                         {/* Zoom stack repositioned above Compass */}
-                        <div className="flex flex-col gap-2">
+                        <div id="obs-zoom-controls" className="flex flex-col gap-2">
                             <Button
+                                id="obs-help-btn"
                                 variant="secondary"
                                 size="icon"
                                 onClick={() => setIsWalkthroughOpen(true)}
@@ -166,6 +167,7 @@ const StellarObservatory = () => {
                                 </div>
                             )}
                             <Button
+                                id="obs-compass-btn"
                                 onClick={() => setIsControlsOpen(!isControlsOpen)}
                                 className={`w-14 h-14 rounded-full shadow-2xl transition-all duration-500 ${isControlsOpen ? 'bg-primary text-primary-foreground scale-110' : 'bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:scale-110'}`}
                             >
@@ -180,6 +182,8 @@ const StellarObservatory = () => {
             <ObservatoryWalkthrough
                 show={isWalkthroughOpen}
                 onClose={handleWalkthroughClose}
+                isControlsOpen={isControlsOpen}
+                setIsControlsOpen={setIsControlsOpen}
             />
 
             {/* Memory Detail Modal */}
