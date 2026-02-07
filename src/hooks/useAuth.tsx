@@ -148,27 +148,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const uploadAvatar = async (file: File): Promise<string | null> => {
-    if (!user) return null;
-
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${user.id}/avatar.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadError) {
-      toast.error('Failed to upload avatar');
-      console.error('Avatar upload error:', uploadError);
+    if (!user) {
+      console.warn('Upload attempted without authenticated user');
       return null;
     }
 
-    const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `avatar-${Math.random().toString(36).slice(2)}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
 
-    // Update profile with new avatar URL
-    await updateProfile({ avatar_url: data.publicUrl });
+      console.log('Attempting to upload avatar to path:', filePath);
 
-    return data.publicUrl;
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, {
+          upsert: true,
+          contentType: file.type
+        });
+
+      if (uploadError) {
+        console.error('Supabase storage upload error details:', uploadError);
+        toast.error(`Upload error: ${uploadError.message}`);
+        return null;
+      }
+
+      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+
+      if (!data.publicUrl) {
+        console.error('Failed to get public URL for uploaded avatar');
+        return null;
+      }
+
+      console.log('Avatar uploaded successfully, public URL:', data.publicUrl);
+
+      // Update profile with new avatar URL
+      const updateSuccess = await updateProfile({ avatar_url: data.publicUrl });
+
+      if (!updateSuccess) {
+        console.error('Failed to link avatar URL to profile');
+        return null;
+      }
+
+      return data.publicUrl;
+    } catch (err) {
+      console.error('Unexpected error during avatar upload:', err);
+      return null;
+    }
   };
 
   const updateEmail = async (email: string): Promise<boolean> => {

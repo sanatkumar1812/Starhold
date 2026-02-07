@@ -78,11 +78,19 @@ export const ProfileSettings = () => {
     }
 
     setIsLoading(true);
-    const url = await uploadAvatar(file);
-    if (url) {
-      toast.success('Avatar updated successfully');
+    try {
+      const url = await uploadAvatar(file);
+      if (url) {
+        toast.success('Avatar updated successfully');
+      } else {
+        toast.error('Failed to upload avatar. Please try again.');
+      }
+    } catch (error) {
+      console.error('Avatar change error:', error);
+      toast.error('An unexpected error occurred during upload');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -126,32 +134,36 @@ export const ProfileSettings = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Avatar */}
           <div className="flex items-center gap-6">
-            <div className="relative">
-              <Avatar className="w-20 h-20 cursor-pointer" onClick={handleAvatarClick}>
-                <AvatarImage src={profile?.avatar_url || undefined} alt="Profile" />
-                <AvatarFallback className="bg-primary/20 text-primary text-xl">
-                  {getInitials()}
-                </AvatarFallback>
-              </Avatar>
-              <button
-                type="button"
-                onClick={handleAvatarClick}
-                className="absolute bottom-0 right-0 p-1.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                <Camera className="w-3.5 h-3.5" />
-              </button>
+            <div className="relative group">
+              <label htmlFor="avatar-upload" className="cursor-pointer block relative">
+                <Avatar className="w-20 h-20 transition-opacity group-hover:opacity-80">
+                  <AvatarImage src={profile?.avatar_url || undefined} alt="Profile" />
+                  <AvatarFallback className="bg-primary/20 text-primary text-xl">
+                    {getInitials()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Camera className="w-6 h-6 text-white" />
+                </div>
+                <div
+                  className="absolute bottom-0 right-0 p-1.5 rounded-full bg-primary text-primary-foreground shadow-lg"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                </div>
+              </label>
               <input
-                ref={fileInputRef}
+                id="avatar-upload"
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
                 className="hidden"
+                disabled={isLoading}
               />
             </div>
             <div>
               <p className="text-sm font-medium">Profile Photo</p>
               <p className="text-xs text-muted-foreground">
-                Click to upload a new photo (max 5MB)
+                {isLoading ? 'Uploading...' : 'Click to upload a new photo (max 5MB)'}
               </p>
             </div>
           </div>
