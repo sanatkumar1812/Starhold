@@ -4,6 +4,7 @@ import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { Star, Rocket, Shield, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ScrollToTop } from '@/components/ScrollToTop';
 
 const About = () => {
     return (
@@ -87,6 +88,7 @@ const About = () => {
                 </main>
 
                 <Footer />
+                <ScrollToTop />
             </div>
         </div>
     );

@@ -1,62 +1,68 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Compass, Database, Radio, Cpu } from 'lucide-react';
 
-export const SciFiHUD = () => {
-    const [stats, setStats] = useState({
-        ra: '00h 00m 00s',
-        dec: '+00° 00\' 00"',
-        temp: '2.73K',
-        sync: 98
-    });
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setStats(prev => ({
-                ...prev,
-                sync: Math.min(100, prev.sync + (Math.random() > 0.8 ? 0.1 : 0))
-            }));
-        }, 2000);
-        return () => clearInterval(interval);
-    }, []);
-
+export const SciFiHUD: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     return (
-        <div className="fixed inset-0 pointer-events-none z-[60] overflow-hidden">
-            {/* Scanlines */}
-            <div className="absolute inset-0 scanline-overlay opacity-[0.03]" />
+        <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden font-mono">
+            {/* Corner Accents */}
+            <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-cyan-500/30 rounded-tl-2xl m-8" />
+            <div className="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-cyan-500/30 rounded-tr-2xl m-8" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-cyan-500/30 rounded-bl-2xl m-8" />
+            <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-cyan-500/30 rounded-br-2xl m-8" />
 
-            {/* Corner Brackets */}
-            <div className="absolute top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-primary/30" />
-            <div className="absolute top-8 right-8 w-12 h-12 border-t-2 border-r-2 border-primary/30" />
-            <div className="absolute bottom-8 left-8 w-12 h-12 border-b-2 border-l-2 border-primary/30" />
-            <div className="absolute bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-primary/30" />
-
-            {/* Technical Readouts - Top Left */}
-            <div className="absolute top-10 left-24 font-mono text-[10px] text-primary/40 flex flex-col gap-1 tracking-widest hidden lg:flex">
+            {/* Top Header */}
+            <div className="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-6 px-8 py-3 bg-black/40 backdrop-blur-md border border-cyan-500/20 rounded-full pointer-events-auto">
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary/40 animate-pulse" />
-                    <span>ARRAY_STATUS: NOMINAL</span>
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                    >
+                        <Compass className="w-5 h-5 text-cyan-400" />
+                    </motion.div>
+                    <span className="text-xs font-bold tracking-[0.3em] uppercase text-cyan-100">NAV-CPU v4.0.2</span>
                 </div>
-                <div>SECTOR_GRID: 24.0.1 // SHL</div>
-            </div>
-
-            {/* Technical Readouts - Bottom Right */}
-            <div className="absolute bottom-10 right-24 font-mono text-[10px] text-primary/40 text-right flex flex-col gap-1 tracking-widest hidden lg:flex">
-                <div>SYSTEM_TIME: {new Date().toLocaleTimeString([], { hour12: false })}</div>
-                <div>DATA_SYNC_INDEX: {stats.sync.toFixed(1)}%</div>
-                <div className="flex items-center justify-end gap-2">
-                    <span>ARCHIVE_READY</span>
-                    <div className="w-1.5 h-1.5 bg-primary/60 animate-blink" />
+                <div className="w-px h-4 bg-cyan-500/20" />
+                <div className="flex items-center gap-4 text-[10px] text-cyan-500/60 uppercase tracking-widest">
+                    <div className="flex items-center gap-1">
+                        <Database className="w-3 h-3" />
+                        <span>SIMBAD R-LINK</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <Radio className="w-3 h-3" />
+                        <span>4D-SYNC</span>
+                    </div>
                 </div>
             </div>
 
-            {/* Vertical Scale - Left */}
-            <div className="absolute left-10 top-1/2 -translate-y-1/2 h-32 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent hidden md:block">
-                {[0, 1, 2, 3, 4].map(i => (
-                    <div key={i} className="absolute left-0 w-2 h-px bg-primary/30" style={{ top: `${i * 25}%` }} />
-                ))}
+            {/* Sidebars */}
+            <div className="absolute inset-y-0 left-8 flex items-center pointer-events-auto">
+                {children}
             </div>
 
-            {/* Scanning Line */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary/10 animate-scanning blur-[1px] opacity-20" />
+            {/* Bottom Status */}
+            <div className="absolute bottom-8 right-8 flex flex-col items-end gap-2 pointer-events-auto">
+                <div className="flex items-center gap-3 px-4 py-2 bg-black/40 backdrop-blur-md border border-cyan-500/20 rounded-lg">
+                    <Cpu className="w-4 h-4 text-cyan-400" />
+                    <div className="flex flex-col">
+                        <span className="text-[9px] uppercase tracking-widest text-cyan-500/60 leading-none">AI Processor</span>
+                        <span className="text-[11px] font-bold text-cyan-400">ACTIVE: DEEP-SPACE_V4</span>
+                    </div>
+                </div>
+                <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="w-8 h-1 bg-cyan-500/40 rounded-full"
+                            animate={{ opacity: [0.2, 1, 0.2] }}
+                            transition={{ duration: 1.5, delay: i * 0.2, repeat: Infinity }}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            {/* Scanline Effect */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-50 bg-[length:100%_2px,3px_100%]" />
         </div>
     );
 };

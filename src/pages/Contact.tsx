@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Mail, MessageSquare, Send } from 'lucide-react';
+import { ScrollToTop } from '@/components/ScrollToTop';
 
 const Contact = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -109,6 +110,7 @@ const Contact = () => {
                 </main>
 
                 <Footer />
+                <ScrollToTop />
             </div>
         </div>
     );

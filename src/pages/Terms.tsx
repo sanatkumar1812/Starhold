@@ -1,6 +1,7 @@
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
+import { ScrollToTop } from '@/components/ScrollToTop';
 
 const Terms = () => {
     return (
@@ -50,6 +51,7 @@ const Terms = () => {
                 </main>
 
                 <Footer />
+                <ScrollToTop />
             </div>
         </div>
     );

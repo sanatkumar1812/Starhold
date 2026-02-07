@@ -15,7 +15,7 @@ export const Footer = () => {
               <span className="font-serif text-xl text-foreground">Starhold</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-sm">
-              Encode your most precious memories into the cosmos. A unique gift that transcends space and time.
+              Information Secured by Space and Time. A star-addressed system for personal memories and mission-critical commands.
             </p>
           </div>
 
@@ -23,10 +23,11 @@ export const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-serif text-foreground">Product</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/academy" className="hover:text-foreground transition-colors">Academy</Link></li>
+              <li><Link to="/for-you" className="hover:text-foreground transition-colors font-medium text-cosmic-purple/80">For You</Link></li>
+              <li><Link to="/for-missions" className="hover:text-foreground transition-colors font-medium text-cosmic-blue/80">For Missions</Link></li>
               <li><Link to="/observatory" className="hover:text-foreground transition-colors">Observatory</Link></li>
-              <li><Link to="/#how-it-works" className="hover:text-foreground transition-colors">How it Works</Link></li>
-              <li><Link to="/contact" className="hover:text-foreground transition-colors">Support</Link></li>
+              <li><Link to="/academy" className="hover:text-foreground transition-colors">Academy</Link></li>
+              <li><Link to="/for-you#how-it-works" className="hover:text-foreground transition-colors">How it Works</Link></li>
             </ul>
           </div>
 

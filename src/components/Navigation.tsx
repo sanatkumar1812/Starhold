@@ -13,22 +13,20 @@ export const Navigation = () => {
 
   const NavLinks = () => (
     <>
-      <Link to="/academy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
-        Academy
+      <Link to="/for-you" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-cosmic-purple hover:text-cosmic-purple/80 transition-colors">
+        For You
+      </Link>
+      <Link to="/for-missions" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-cosmic-blue hover:text-cosmic-blue/80 transition-colors">
+        For Missions
       </Link>
       <Link to="/observatory" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
         <Compass className="w-4 h-4" />
-        Enter the Cosmos
+        Observatory
       </Link>
-      {isHomePage && (
-        <>
-          <a href="#how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            How it Works
-          </a>
-          <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Features
-          </a>
-        </>
+      {location.pathname !== '/for-missions' && (
+        <Link to="/academy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+          Academy
+        </Link>
       )}
       <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
         About
@@ -56,14 +54,14 @@ export const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 flex items-center justify-center">
-              <img src="https://sanatkumar1812.github.io/Starhold/logo.svg" alt="Starhold Logo" className="w-10 h-10" />
+              <img src="/logo-small.svg" alt="Starhold Logo" className="w-10 h-10" />
             </div>
             <div>
               <h1 className="font-serif text-xl font-semibold text-foreground">
                 Starhold
               </h1>
               <p className="text-xs text-muted-foreground hidden sm:block">
-                Cosmic Memory Archive
+                Secured by Space and Time
               </p>
             </div>
           </Link>

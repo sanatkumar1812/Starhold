@@ -15,7 +15,12 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import StellarAcademy from "./pages/StellarAcademy";
 import StellarObservatory from "./pages/StellarObservatory";
+import AutonomousNavigation from "./pages/AutonomousNavigation";
+import FourDNavPage from "./pages/FourDNavPage";
+import B2CDetailPage from "./pages/B2CDetailPage";
+import B2BDetailPage from "./pages/B2BDetailPage";
 import NotFound from "./pages/NotFound";
+import ScrollToTopOnMount from "@/components/ScrollToTopOnMount";
 
 const queryClient = new QueryClient();
 
@@ -26,18 +31,23 @@ const App = () => (
         <Toaster />
         <Sonner />
         <HashRouter>
+          <ScrollToTopOnMount />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/starmap" element={<StarMapPage />} />
             <Route path="/memory/:token" element={<SharedMemory />} />
+            <Route path="/for-you" element={<B2CDetailPage />} />
+            <Route path="/for-missions" element={<B2BDetailPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/academy" element={<StellarAcademy />} />
             <Route path="/observatory" element={<StellarObservatory />} />
+            <Route path="/4d" element={<AutonomousNavigation />} />
+            <Route path="/4d2" element={<FourDNavPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -4,13 +4,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/components/HeroSection';
-import { HowItWorks } from '@/components/HowItWorks';
-import { Features } from '@/components/Features';
-import { CosmicTimeline } from '@/components/CosmicTimeline';
+import { UnifiedInfrastructure } from '@/components/UnifiedInfrastructure';
 import { MemoryCreator } from '@/components/MemoryCreator';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { ScrollToTop } from '@/components/ScrollToTop';
-import { SciFiHUD } from '@/components/SciFiHUD';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Quote } from 'lucide-react';
@@ -65,22 +62,17 @@ const Index = () => {
                   setIsCreating(true);
                 }
               }}
-              onLearnMore={scrollToHowItWorks}
+              onLearnMore={() => {
+                const element = document.getElementById('unified-infra');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             />
 
-            <div id="how-it-works">
+            <div id="unified-infra">
               <ScrollReveal>
-                <HowItWorks />
-              </ScrollReveal>
-            </div>
-
-            <ScrollReveal delay={200}>
-              <CosmicTimeline />
-            </ScrollReveal>
-
-            <div id="features">
-              <ScrollReveal>
-                <Features />
+                <UnifiedInfrastructure />
               </ScrollReveal>
             </div>
 
@@ -95,35 +87,6 @@ const Index = () => {
                   <div className="space-y-2">
                     <p className="font-serif text-xl text-primary">— Vincent van Gogh</p>
                     <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Post-Impressionist Visionary</p>
-                  </div>
-                </div>
-              </section>
-            </ScrollReveal>
-
-            {/* CTA Section */}
-            <ScrollReveal>
-              <section className="py-32 px-4 relative">
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
-                <div className="max-w-3xl mx-auto text-center space-y-8 relative z-10">
-                  <h2 className="font-serif text-5xl md:text-6xl text-foreground leading-tight">
-                    Begin Your Journey <br />
-                    <span className="text-gradient-gold">to the Infinite</span>
-                  </h2>
-                  <p className="text-muted-foreground text-lg leading-relaxed max-w-xl mx-auto">
-                    Create a gift that will be remembered for generations—a moment frozen in time,
-                    waiting among the cosmos.
-                  </p>
-                  <div className="pt-8">
-                    <Button variant="gold" size="xl" onClick={() => {
-                      if (!isAuthenticated) {
-                        navigate('/auth?redirect=create');
-                      } else {
-                        setIsCreating(true);
-                      }
-                    }} className="px-12 py-8 text-xl rounded-2xl shadow-[0_0_30px_rgba(234,179,8,0.2)] hover:shadow-[0_0_50px_rgba(234,179,8,0.4)] transition-all duration-500">
-                      Create Your Stellar Vault
-                    </Button>
-                    <p className="mt-6 text-xs font-mono text-muted-foreground uppercase tracking-widest">No orbital fees for initial digitization</p>
                   </div>
                 </div>
               </section>

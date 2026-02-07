@@ -3,6 +3,7 @@ import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
+import { ScrollToTop } from '@/components/ScrollToTop';
 import { Library, CheckCircle2, HelpCircle } from 'lucide-react';
 import {
     Tooltip,
@@ -191,6 +192,7 @@ const StellarAcademy = () => {
                 </main>
 
                 <Footer />
+                <ScrollToTop />
             </div>
         </div>
     );
