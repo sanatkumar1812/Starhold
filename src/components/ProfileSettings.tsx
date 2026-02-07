@@ -80,11 +80,7 @@ export const ProfileSettings = () => {
     setIsLoading(true);
     try {
       const url = await uploadAvatar(file);
-      if (url) {
-        toast.success('Avatar updated successfully');
-      } else {
-        toast.error('Failed to upload avatar. Please try again.');
-      }
+      // No need for success toast here, useAuth handles it
     } catch (error) {
       console.error('Avatar change error:', error);
       toast.error('An unexpected error occurred during upload');

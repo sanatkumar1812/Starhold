@@ -169,14 +169,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (uploadError) {
         console.error('Supabase storage upload error details:', uploadError);
-        toast.error(`Upload error: ${uploadError.message}`);
+        // Be more specific if it's a common error
+        if (uploadError.message.includes('bucket not found')) {
+          toast.error('Storage bucket "avatars" not found. Please create it in Supabase.');
+        } else if (uploadError.message.includes('permission denied') || (uploadError as any).status === 403) {
+          toast.error('Permission denied. Please check Supabase RLS policies for "avatars" bucket.');
+        } else {
+          toast.error(`Upload error: ${uploadError.message}`);
+        }
         return null;
       }
 
       const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
 
-      if (!data.publicUrl) {
+      if (!data?.publicUrl) {
         console.error('Failed to get public URL for uploaded avatar');
+        toast.error('Upload succeeded but failed to generate public link.');
         return null;
       }
 
@@ -187,9 +195,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!updateSuccess) {
         console.error('Failed to link avatar URL to profile');
+        // updateProfile already shows a toast
         return null;
       }
 
+      toast.success('Profile picture updated successfully');
       return data.publicUrl;
     } catch (err) {
       console.error('Unexpected error during avatar upload:', err);
