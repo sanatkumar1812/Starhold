@@ -229,7 +229,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteAccount = async (): Promise<boolean> => {
     try {
-      const { error } = await supabase.rpc('delete_user_account');
+      const { error } = await (supabase as any).rpc('delete_user_account');
       if (error) {
         if (error.message.includes('function delete_user_account() does not exist')) {
           toast.error('Account deletion requires backend configuration. Please contact support.');
