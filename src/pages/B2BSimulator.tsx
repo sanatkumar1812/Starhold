@@ -1,7 +1,5 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CosmicBackground } from '@/components/CosmicBackground';
-import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
     Satellite, Shield, Lock, Radio, Eye, CheckCircle2, XCircle, Cpu,
-    Terminal, Globe, Zap, Settings, Download, Camera, Share2, Info
+    Terminal, Globe, Zap, Settings, Download, Camera, Share2, Info, ArrowLeft
 } from 'lucide-react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Stars, Float, PerspectiveCamera, Html, useHelper } from '@react-three/drei';
@@ -171,6 +169,7 @@ const PulsingStar = ({ position, name, isTarget }: { position: [number, number, 
 // --- Main Page Component ---
 
 const B2BSimulator = () => {
+    const navigate = useNavigate();
     const [isB2C, setIsB2C] = useState(false);
     const [selectedStar, setSelectedStar] = useState(GAIA_STARS[0]);
     const [selectedSat, setSelectedSat] = useState(SATELLITES[0]);
@@ -255,9 +254,19 @@ const B2BSimulator = () => {
         <div className="min-h-screen relative overflow-hidden bg-[#0a0a1a] text-white">
             <CosmicBackground />
             <div className="relative z-10 flex flex-col h-screen">
-                <Navigation />
+                <div className="absolute top-6 left-6 z-50">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-white/60 hover:text-white hover:bg-white/10 gap-2 backdrop-blur-md border border-white/5"
+                        onClick={() => navigate(-1)}
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Back to Mission Page
+                    </Button>
+                </div>
 
-                <main className="flex-1 flex flex-col md:flex-row p-4 pt-24 gap-4 overflow-hidden">
+                <main className="flex-1 flex flex-col md:flex-row p-4 pt-20 gap-4 overflow-hidden">
                     {/* Left Panel: Inputs */}
                     <Card className="flex-none w-full md:w-80 bg-black/40 border-cosmic-blue/20 p-4 space-y-6 flex flex-col backdrop-blur-md">
                         <div className="flex items-center gap-2 pb-2 border-b border-cosmic-blue/20">
@@ -471,7 +480,6 @@ const B2BSimulator = () => {
                         </div>
                     </Card>
                 </main>
-                <Footer />
             </div>
         </div>
     );
