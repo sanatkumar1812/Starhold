@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { Button } from '@/components/ui/button';
