@@ -208,9 +208,9 @@ const B2BDetailPage = () => {
                                                 Full simulation showing satellite orbit, star tracker FOV, star field,
                                                 command authorization flow, and technical HUD will be implemented here
                                             </p>
-                                            <Link to="/4d2">
-                                                <Button variant="outline" size="sm" className="mt-4 border-cosmic-blue/30 text-cosmic-blue">
-                                                    View Similar Simulation (4D Nav) →
+                                            <Link to="/4d">
+                                                <Button size="lg" className="mt-4 bg-cosmic-blue hover:bg-cosmic-blue/80 text-white shadow-[0_0_20px_rgba(0,212,255,0.3)]">
+                                                    Launch Mission Simulator →
                                                 </Button>
                                             </Link>
                                         </div>

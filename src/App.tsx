@@ -15,10 +15,9 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import StellarAcademy from "./pages/StellarAcademy";
 import StellarObservatory from "./pages/StellarObservatory";
-import AutonomousNavigation from "./pages/AutonomousNavigation";
-import FourDNavPage from "./pages/FourDNavPage";
 import B2CDetailPage from "./pages/B2CDetailPage";
 import B2BDetailPage from "./pages/B2BDetailPage";
+import B2BSimulator from "./pages/B2BSimulator";
 import NotFound from "./pages/NotFound";
 import ScrollToTopOnMount from "@/components/ScrollToTopOnMount";
 
@@ -46,8 +45,7 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/academy" element={<StellarAcademy />} />
             <Route path="/observatory" element={<StellarObservatory />} />
-            <Route path="/4d" element={<AutonomousNavigation />} />
-            <Route path="/4d2" element={<FourDNavPage />} />
+            <Route path="/4d" element={<B2BSimulator />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
