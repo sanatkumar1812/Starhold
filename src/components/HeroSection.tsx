@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sparkles, ArrowDown } from 'lucide-react';
 
@@ -8,6 +9,7 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) => {
+  const navigate = useNavigate();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -59,7 +61,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
           <Button
             variant="gold"
             size="lg"
-            onClick={() => window.location.href = '/#/for-you'}
+            onClick={() => navigate('/for-you')}
             className="px-8 py-6 text-lg rounded-xl shadow-[0_0_30px_rgba(234,179,8,0.2)] hover:shadow-[0_0_50px_rgba(234,179,8,0.4)] transition-all duration-500"
           >
             For Personal Memories
@@ -67,7 +69,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
           <Button
             variant="outline"
             size="lg"
-            onClick={() => window.location.href = '/#/for-missions'}
+            onClick={() => navigate('/for-missions')}
             className="px-8 py-6 text-lg rounded-xl border-cosmic-blue/30 text-cosmic-blue hover:bg-cosmic-blue/10 transition-all duration-500"
           >
             For Mission Systems
