@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
@@ -5,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Mail, MessageSquare, Send } from 'lucide-react';
+import { Mail, MessageSquare, Send, Loader2 } from 'lucide-react';
 import {
     Select,
     SelectContent,
@@ -16,28 +17,38 @@ import {
 import { ScrollToTop } from '@/components/ScrollToTop';
 
 const Contact = () => {
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsSubmitting(true);
+
         const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
 
-        // Construct mailto link
-        const usage = data.usageType === 'personal' ? 'Personal' : 'Mission Systems';
-        const subject = `Starhold Transmission: [${usage}] from ${data.name}`;
-        const bodyValue = `Identifier: ${data.name}\nFrequency: ${data.email}\nUsage Path: ${usage}\n\nTransmission Content:\n${data.message}`;
+        try {
+            const response = await fetch("https://sanatkumar1812.getform.com/g07g2", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json",
+                },
+            });
 
-        const mailtoUrl = `mailto:sanatkumar1812@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyValue)}`;
-
-        window.location.href = mailtoUrl;
-
-        toast.success("Transmission Initialized", {
-            description: "Your local mail client has been opened to complete the transmission to sanatkumar1812@gmail.com."
-        });
-
-        // Optional: Reset form after a short delay
-        setTimeout(() => {
-            (e.target as HTMLFormElement).reset();
-        }, 1000);
+            if (response.ok) {
+                toast.success("Transmission Received", {
+                    description: "Our technicians have received your signal and will respond shortly."
+                });
+                (e.target as HTMLFormElement).reset();
+            } else {
+                throw new Error("Transmission failed");
+            }
+        } catch (error) {
+            toast.error("Transmission Failed", {
+                description: "Unable to reach the relay station. Please try again later."
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -130,9 +141,18 @@ const Contact = () => {
                                     />
                                 </div>
 
-                                <Button variant="gold" size="xl" className="w-full mt-4 group">
-                                    <Send className="w-4 h-4 mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                    Initiate Transmission
+                                <Button
+                                    variant="gold"
+                                    size="xl"
+                                    className="w-full mt-4 group"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? (
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    ) : (
+                                        <Send className="w-4 h-4 mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                    )}
+                                    {isSubmitting ? "Processing..." : "Initiate Transmission"}
                                 </Button>
                             </form>
                         </div>
