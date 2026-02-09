@@ -26,12 +26,9 @@ const Contact = () => {
         const formData = new FormData(e.currentTarget);
 
         try {
-            const response = await fetch("https://sanatkumar1812.getform.com/g07g2", {
+            const response = await fetch("https://formsubmit.co/ajax/sanatkumar1812@gmail.com", {
                 method: "POST",
                 body: formData,
-                headers: {
-                    "Accept": "application/json",
-                },
             });
 
             if (response.ok) {
