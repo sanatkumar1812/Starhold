@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Satellite, Shield, Lock, Radio, Eye, CheckCircle2, XCircle, Cpu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ScrollToTop } from '@/components/ScrollToTop';
+import { B2BPreviewSimulator } from '@/components/B2BPreviewSimulator';
 
 const B2BDetailPage = () => {
     return (
@@ -197,24 +198,8 @@ const B2BDetailPage = () => {
                                     </p>
                                 </div>
 
-                                <div className="glass p-12 rounded-[3rem] border-cosmic-blue/20">
-                                    <div className="aspect-video rounded-2xl bg-slate-950/50 border border-cosmic-blue/20 flex items-center justify-center">
-                                        <div className="text-center space-y-4">
-                                            <Satellite className="w-16 h-16 text-cosmic-blue mx-auto animate-pulse" />
-                                            <p className="text-muted-foreground font-mono text-sm">
-                                                Interactive 3D simulation component
-                                            </p>
-                                            <p className="text-xs text-muted-foreground/60 max-w-md">
-                                                Full simulation showing satellite orbit, star tracker FOV, star field,
-                                                command authorization flow, and technical HUD will be implemented here
-                                            </p>
-                                            <Link to="/4d">
-                                                <Button size="lg" className="mt-4 bg-cosmic-blue hover:bg-cosmic-blue/80 text-white shadow-[0_0_20px_rgba(0,212,255,0.3)]">
-                                                    Launch Mission Simulator →
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </div>
+                                <div className="glass p-8 md:p-12 rounded-[3rem] border-cosmic-blue/20">
+                                    <B2BPreviewSimulator />
                                 </div>
                             </section>
                         </ScrollReveal>
