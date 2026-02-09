@@ -54,7 +54,7 @@ export const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 flex items-center justify-center">
-              <img src="/logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
+              <img src="logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="font-serif text-xl font-semibold text-foreground">
