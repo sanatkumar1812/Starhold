@@ -6,6 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Mail, MessageSquare, Send } from 'lucide-react';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { ScrollToTop } from '@/components/ScrollToTop';
 
 const Contact = () => {
@@ -13,14 +20,24 @@ const Contact = () => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
-        console.log("Transmission logged:", data);
 
-        toast.success("Transmission Received", {
-            description: "Our technicians have received your signal and will respond shortly."
+        // Construct mailto link
+        const usage = data.usageType === 'personal' ? 'Personal' : 'Mission Systems';
+        const subject = `Starhold Transmission: [${usage}] from ${data.name}`;
+        const bodyValue = `Identifier: ${data.name}\nFrequency: ${data.email}\nUsage Path: ${usage}\n\nTransmission Content:\n${data.message}`;
+
+        const mailtoUrl = `mailto:sanatkumar1812@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyValue)}`;
+
+        window.location.href = mailtoUrl;
+
+        toast.success("Transmission Initialized", {
+            description: "Your local mail client has been opened to complete the transmission to sanatkumar1812@gmail.com."
         });
 
-        // Clear form
-        (e.target as HTMLFormElement).reset();
+        // Optional: Reset form after a short delay
+        setTimeout(() => {
+            (e.target as HTMLFormElement).reset();
+        }, 1000);
     };
 
     return (
@@ -88,6 +105,19 @@ const Contact = () => {
                                         required
                                         className="bg-background/40 border-primary/20 focus:border-primary/50"
                                     />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest pl-1">How are you using starhold?</label>
+                                    <Select name="usageType" required>
+                                        <SelectTrigger className="bg-background/40 border-primary/20 focus:border-primary/50">
+                                            <SelectValue placeholder="Select usage type..." />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-slate-900 border-primary/20 text-white">
+                                            <SelectItem value="personal">For personal use</SelectItem>
+                                            <SelectItem value="mission">For mission systems</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
 
                                 <div className="space-y-2">
