@@ -57,7 +57,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         </p>
 
         {/* Dual CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up stagger-3">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-10 animate-fade-in-up stagger-3">
           <Button
             variant="gold"
             size="lg"
