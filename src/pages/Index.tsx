@@ -5,6 +5,7 @@ import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/components/HeroSection';
 import { UnifiedInfrastructure } from '@/components/UnifiedInfrastructure';
+import { UniversalFeatures } from '@/components/UniversalFeatures';
 import { MemoryCreator } from '@/components/MemoryCreator';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { ScrollToTop } from '@/components/ScrollToTop';
@@ -69,6 +70,8 @@ const Index = () => {
                 }
               }}
             />
+
+            <UniversalFeatures />
 
             <div id="unified-infra">
               <ScrollReveal>
