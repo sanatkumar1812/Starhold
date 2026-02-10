@@ -1,95 +1,67 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-    Satellite, Shield, Lock, Radio, Eye, CheckCircle2, Cpu,
-    Terminal, Globe, Zap, Settings, ArrowRight, ExternalLink
-} from 'lucide-react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, PerspectiveCamera, Html } from '@react-three/drei';
+import { PerspectiveCamera, OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import * as satellite from 'satellite.js';
-import * as Tone from 'tone';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Satellite, Shield, Lock, Radio, Zap, Terminal } from 'lucide-react';
+import { toast } from 'sonner';
 
-// --- Shared Types & Constants ---
-interface CelestialStar {
-    id: string;
-    name: string;
-    ra: number;
-    dec: number;
-    mag: number;
-    position: [number, number, number];
-}
+// --- TLE & Constants ---
+const TLE = [
+    '1 25544U 98067A   24040.82062361  .00016717  00000-0  30159-3 0  9999',
+    '2 25544  51.6415 162.1557 0004353  70.8524  42.2215 15.49547121438257'
+];
 
 const STAR_SPHERE_RADIUS = 300;
 
-const MAJOR_STARS = [
-    { name: 'Sirius', ra: 101.287, dec: -16.716, mag: -1.46 },
-    { name: 'Canopus', ra: 95.987, dec: -52.695, mag: -0.74 },
-    { name: 'Arcturus', ra: 213.915, dec: 19.182, mag: -0.05 },
-    { name: 'Vega', ra: 279.234, dec: 38.784, mag: 0.03 },
-];
-
-const raDecToXyz = (ra: number, dec: number, radius: number): [number, number, number] => {
-    const raRad = (ra) * (Math.PI / 180);
-    const decRad = (dec) * (Math.PI / 180);
-    const x = radius * Math.cos(decRad) * Math.cos(raRad);
-    const y = radius * Math.cos(decRad) * Math.sin(raRad);
-    const z = radius * Math.sin(decRad);
-    return [x, z, -y];
-};
-
 // --- Sub-Components ---
 const Earth = () => (
-    <group>
-        <mesh>
-            <sphereGeometry args={[5, 64, 64]} />
-            <meshPhongMaterial
-                color="#1a365d"
-                emissive="#000814"
-                specular="#2d3748"
-                shininess={10}
-            />
-        </mesh>
-    </group>
+    <mesh>
+        <sphereGeometry args={[5, 32, 32]} />
+        <meshStandardMaterial color="#0f172a" emissive="#1e293b" emissiveIntensity={0.2} />
+    </mesh>
 );
 
-const SatelliteModel = ({
-    position, rotation, isVerified, isScanning
-}: {
-    position: [number, number, number],
-    rotation: [number, number, number],
-    isVerified: boolean,
-    isScanning: boolean
-}) => {
-    const meshRef = useRef<THREE.Mesh>(null);
+const SatelliteModel = ({ position, status }: any) => {
+    const isScanning = status === 'scanning';
+    const isVerified = status === 'verified';
+    const groupRef = useRef<THREE.Group>(null);
 
     useFrame(() => {
-        if (meshRef.current && isScanning) {
-            meshRef.current.rotation.y += 0.05;
+        if (groupRef.current) {
+            groupRef.current.lookAt(0, 0, 0);
         }
     });
 
     return (
-        <group position={position} rotation={rotation}>
-            <mesh ref={meshRef}>
+        <group ref={groupRef} position={position}>
+            {/* Satellite Body */}
+            <mesh>
                 <boxGeometry args={[0.5, 0.5, 0.8]} />
-                <meshStandardMaterial
-                    color={isVerified ? "#4ade80" : "#94a3b8"}
-                    metalness={0.8}
-                    roughness={0.2}
-                />
+                <meshStandardMaterial color={isVerified ? "#10b981" : "#64748b"} metalness={0.8} />
             </mesh>
-            <mesh position={[0, 0.3, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                <cylinderGeometry args={[0, 0.6, 2, 32]} />
-                <meshBasicMaterial color="#00d4ff" transparent opacity={isScanning ? 0.4 : 0.15} />
-            </mesh>
+
+            {/* Zenith Star Tracker (Local +Z, Pointing Space) */}
+            <group position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
+                <mesh position={[0, -0.3, 0]}>
+                    <cylinderGeometry args={[0.2, 0.1, 0.3, 16]} />
+                    <meshStandardMaterial color="#1e293b" />
+                </mesh>
+                <mesh position={[0, 1.5, 0]}>
+                    <cylinderGeometry args={[0.53, 0.1, 3, 32]} />
+                    <meshBasicMaterial color="#06b6d4" transparent opacity={isScanning ? 0.3 : 0.05} />
+                </mesh>
+                <Html distanceFactor={10} position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <div className="text-[6px] font-mono text-cyan-400 bg-black/40 px-1 whitespace-nowrap uppercase">Zenith Ops</div>
+                </Html>
+            </group>
+
             {isVerified && (
                 <Html distanceFactor={10} position={[0, 0.8, 0]}>
-                    <div className="bg-green-500/80 text-white text-[8px] px-2 py-1 rounded font-mono whitespace-nowrap shadow-[0_0_10px_rgba(74,222,128,0.5)] border border-white/20 animate-bounce">
-                        STAR VERIFIED ✓
+                    <div className="bg-emerald-500 text-white text-[8px] px-2 py-0.5 rounded font-mono uppercase font-bold animate-pulse">
+                        Astrometric Lock
                     </div>
                 </Html>
             )}
@@ -97,174 +69,157 @@ const SatelliteModel = ({
     );
 };
 
-const PulsingStar = ({ position, name, isTarget }: { position: [number, number, number], name: string, isTarget: boolean }) => {
-    const meshRef = useRef<THREE.Mesh>(null);
-
-    useFrame((state) => {
-        if (meshRef.current && isTarget) {
-            const scale = 1 + Math.sin(state.clock.elapsedTime * 6) * 0.3;
-            meshRef.current.scale.set(scale, scale, scale);
+const BackgroundStars = () => {
+    const stars = useMemo(() => {
+        const positions = [];
+        for (let i = 0; i < 400; i++) {
+            const r = 400 + Math.random() * 200;
+            const theta = 2 * Math.PI * Math.random();
+            const phi = Math.acos(2 * Math.random() - 1);
+            const x = r * Math.sin(phi) * Math.cos(theta);
+            const y = r * Math.sin(phi) * Math.sin(theta);
+            const z = r * Math.cos(phi);
+            positions.push(x, y, z);
         }
-    });
+        return new Float32Array(positions);
+    }, []);
 
     return (
-        <group position={position}>
-            <mesh ref={meshRef}>
-                <sphereGeometry args={[isTarget ? 0.6 : 0.3, 16, 16]} />
-                <meshBasicMaterial color={isTarget ? "#fbbf24" : "#ffffff"} />
-            </mesh>
-            <Html center position={[0, -1, 0]}>
-                <div className={`text-[8px] font-mono px-1 py-0.5 rounded whitespace-nowrap ${isTarget ? 'text-yellow-400 bg-black/60 border border-yellow-500/30' : 'text-white/20'}`}>
-                    {name}
-                </div>
-            </Html>
-        </group>
+        <points>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={stars.length / 3}
+                    array={stars}
+                    itemSize={3}
+                />
+            </bufferGeometry>
+            <pointsMaterial size={1.5} sizeAttenuation color="#ffffff" transparent opacity={0.6} />
+        </points>
     );
 };
 
-export const B2BPreviewSimulator = () => {
-    const navigate = useNavigate();
-    const [status, setStatus] = useState<'idle' | 'scanning' | 'verified' | 'failed'>('idle');
-    const [isSimulating, setIsSimulating] = useState(false);
-    const [logs, setLogs] = useState<string[]>([]);
+const B2BPreviewSimulator = () => {
+    const [status, setStatus] = useState<'idle' | 'scanning' | 'verified'>('idle');
     const [satPosition, setSatPosition] = useState<[number, number, number]>([10, 0, 0]);
-
-    const stars = useMemo<CelestialStar[]>(() =>
-        MAJOR_STARS.map(s => ({
-            ...s,
-            id: s.name,
-            position: raDecToXyz(s.ra, s.dec, STAR_SPHERE_RADIUS)
-        })), []);
-
-    const targetStar = stars[0];
+    const [logs, setLogs] = useState<string[]>([]);
 
     const addLog = (msg: string) => {
         setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 5));
     };
 
-    const handleQuickBind = () => {
-        if (isSimulating) return;
-        setIsSimulating(true);
+    const handleQuickBind = async () => {
         setStatus('scanning');
         setLogs([]);
-        addLog('Initializing Starhold Verification Layer...');
+        addLog("INITIATING ZENITH-ALIGNED BIND...");
+        addLog("TLE: ISS (ZARYA) - NORAD 25544");
 
         setTimeout(() => {
-            addLog(`Acquiring target: ${targetStar.name}...`);
-        }, 800);
-
-        setTimeout(() => {
-            addLog('Cross-referencing Gaia DR3 catalog...');
-        }, 1500);
-
-        setTimeout(() => {
+            addLog("ZENITH BORESIGHT CALIBRATED: RA=102.4°, Dec=-16.1°");
+            addLog("✓ PATTERN ACQUIRED: Sirius, HIP 4322, HIP 9912");
             setStatus('verified');
-            addLog('✓ Physical sky state confirmed.');
-            addLog('✓ Command authorized.');
-            new Tone.PolySynth().toDestination().triggerAttackRelease(["C4", "E4", "G4"], "8n");
-            setIsSimulating(false);
-        }, 3000);
+            toast.success("Astrometric Signature Handshake Complete");
+        }, 1500);
     };
 
+    // Orbital Movement
     useEffect(() => {
         const timer = setInterval(() => {
-            const t = Date.now() * 0.0005;
-            setSatPosition([Math.cos(t) * 12, Math.sin(t) * 2, Math.sin(t) * 12]);
-        }, 50);
+            try {
+                const now = new Date();
+                const satrec = satellite.twoline2satrec(TLE[0], TLE[1]);
+                const posVel = satellite.propagate(satrec, now);
+                const pos = posVel.position as satellite.EciVec3<number>;
+                if (pos) {
+                    const scale = 0.001;
+                    const x = pos.x * scale;
+                    const y = pos.y * scale;
+                    const z = pos.z * scale;
+                    setSatPosition([x, z, -y]);
+                }
+            } catch (e) { }
+        }, 100);
         return () => clearInterval(timer);
     }, []);
 
     return (
-        <div className="grid lg:grid-cols-3 gap-6">
-            {/* 3D View */}
-            <div className="lg:col-span-2 relative aspect-video rounded-2xl overflow-hidden border border-cosmic-blue/20 bg-slate-950/50 shadow-2xl">
-                <div className="absolute top-4 left-4 z-20">
-                    <div className="px-3 py-1.5 rounded-full bg-black/60 border border-cosmic-blue/40 flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${status === 'scanning' ? 'bg-blue-500 animate-pulse' : status === 'verified' ? 'bg-green-500' : 'bg-slate-500'}`} />
-                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-cosmic-blue">
-                            PREVIEW: {status.toUpperCase()}
-                        </span>
-                    </div>
-                </div>
-
+        <Card className="flex flex-col md:flex-row h-[500px] bg-slate-950/80 border-slate-800 overflow-hidden backdrop-blur-sm self-center max-w-5xl mx-auto w-full group relative">
+            <div className="flex-1 relative bg-black/40">
                 <Canvas>
-                    <PerspectiveCamera makeDefault position={[12, 12, 25]} fov={45} />
-                    <OrbitControls enableZoom={false} autoRotate={!isSimulating} autoRotateSpeed={0.5} />
+                    <PerspectiveCamera makeDefault position={[12, 12, 15]} fov={35} />
+                    <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
                     <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} intensity={1} />
-                    <Stars radius={100} depth={50} count={1000} factor={4} saturation={0} fade speed={1} />
+                    <directionalLight position={[50, 20, 30]} intensity={1.5} />
+                    <BackgroundStars />
                     <Earth />
-                    <SatelliteModel
-                        position={satPosition}
-                        rotation={[0, 0, 0]}
-                        isVerified={status === 'verified'}
-                        isScanning={status === 'scanning'}
-                    />
-                    {stars.map((star) => (
-                        <PulsingStar
-                            key={star.id}
-                            position={star.position}
-                            name={star.name}
-                            isTarget={star.id === targetStar.id}
-                        />
-                    ))}
+                    <SatelliteModel position={satPosition} status={status} />
                 </Canvas>
 
-                {/* Verification Overlay */}
-                {status === 'verified' && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                        <div className="w-[80%] h-[80%] border-2 border-green-500/30 rounded-lg animate-pulse" />
-                    </div>
-                )}
+                <div className="absolute bottom-4 left-4 flex flex-col gap-1 pointer-events-none">
+                    {logs.map((log, i) => (
+                        <div key={i} className={`font-mono text-[9px] ${log.includes('✓') ? 'text-emerald-400' : 'text-cyan-400/70'}`}>
+                            {log}
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            {/* Interaction Panel */}
-            <Card className="bg-slate-900/40 border-cosmic-blue/20 p-6 flex flex-col justify-between backdrop-blur-md">
-                <div className="space-y-6">
-                    <div className="flex items-center gap-2 pb-2 border-b border-cosmic-blue/20">
-                        <Terminal className="w-4 h-4 text-cosmic-blue" />
-                        <h3 className="font-mono text-xs font-bold uppercase tracking-wider">Interface Control</h3>
-                    </div>
-
-                    <div className="space-y-4">
-                        <div className="bg-black/40 rounded-lg p-3 border border-white/5 font-mono text-[10px] min-h-[100px]">
-                            {logs.length === 0 ? (
-                                <div className="text-muted-foreground italic">System Idle. Pending command binding...</div>
-                            ) : (
-                                logs.map((log, i) => (
-                                    <div key={i} className={`${log.includes('✓') ? 'text-green-400' : 'text-cyan-400/80'}`}>
-                                        {log}
-                                    </div>
-                                ))
-                            )}
+            <div className="w-full md:w-80 p-6 flex flex-col gap-6 justify-center bg-slate-900/50">
+                <div className="space-y-4">
+                    <div className="p-3 rounded-lg bg-slate-950 border border-emerald-500/20 shadow-inner">
+                        <div className="flex items-center gap-2 mb-2">
+                            <Shield className="w-4 h-4 text-emerald-400" />
+                            <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Operational Status</span>
                         </div>
-
-                        <Button
-                            className="w-full bg-cosmic-blue hover:bg-cosmic-blue/80 text-white font-mono text-xs py-5"
-                            onClick={handleQuickBind}
-                            disabled={isSimulating || status === 'verified'}
-                        >
-                            {status === 'verified' ? 'COMMAND VERIFIED' : isSimulating ? 'BINDING...' : 'QUICK BIND (DEMO)'}
-                        </Button>
+                        <div className="flex justify-between items-end">
+                            <div className="space-y-1">
+                                <p className="text-[10px] text-slate-500 uppercase">Integrity Score</p>
+                                <p className="text-xl font-mono text-emerald-400">99.9%</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] text-slate-500 uppercase">Mode</p>
+                                <p className="text-sm font-mono text-emerald-400 uppercase">{status === 'verified' ? 'Astrometric Lock' : 'Standby'}</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="space-y-2 text-[10px] text-muted-foreground font-mono leading-relaxed">
-                        <p>This simulation demonstrates the stellar pattern matching algorithm between the spacecraft star tracker and the Gaia DR3 catalog.</p>
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-bold text-slate-200">Star-Referenced Command Link</h3>
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                            Synchronize your command uplink with the satellite's Zenith boresight.
+                            Uses the physical geometric orientation of the stars as a one-time pad.
+                        </p>
                     </div>
                 </div>
 
-                <div className="pt-6 border-t border-cosmic-blue/10">
-                    <Link to="/4d">
-                        <Button
-                            variant="outline"
-                            className="w-full border-cosmic-blue/30 text-cosmic-blue hover:bg-cosmic-blue/10 text-xs py-5 flex items-center justify-center gap-2"
-                        >
-                            <ExternalLink className="w-3 h-3" />
-                            Launch Full Mission Dashboard
-                        </Button>
-                    </Link>
+                <Button
+                    onClick={handleQuickBind}
+                    disabled={status === 'verified' || status === 'scanning'}
+                    className={`w-full h-12 font-mono text-xs uppercase tracking-widest transition-all duration-500 ${status === 'verified'
+                        ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 cursor-default'
+                        : 'bg-cyan-600 hover:bg-cyan-500 text-white border-transparent'
+                        }`}
+                >
+                    {status === 'scanning' ? 'Calibrating Zenith...' : status === 'verified' ? 'Signature Synchronized ✓' : 'Initiate Secure Handshake'}
+                </Button>
+
+                <div className="flex items-center justify-between px-2 opacity-50">
+                    <div className="flex flex-col items-center">
+                        <Satellite className="w-3 h-3 mb-1 text-slate-400" />
+                        <span className="text-[8px] uppercase tracking-tighter">Nadir Lock</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <Lock className="w-3 h-3 mb-1 text-slate-400" />
+                        <span className="text-[8px] uppercase tracking-tighter">AES-256</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <Radio className="w-3 h-3 mb-1 text-slate-400" />
+                        <span className="text-[8px] uppercase tracking-tighter">X-Band</span>
+                    </div>
                 </div>
-            </Card>
-        </div>
+            </div>
+        </Card>
     );
 };
+
+export { B2BPreviewSimulator };

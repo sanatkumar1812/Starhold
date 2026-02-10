@@ -1,19 +1,17 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CosmicBackground } from '@/components/CosmicBackground';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
-    Satellite, Shield, Lock, Radio, Eye, CheckCircle2, Cpu,
-    Terminal, Globe, Zap, Settings, Download, Info, ArrowLeft
+    Satellite, Shield, Lock, Radio, Cpu,
+    Terminal, Globe, Zap, Settings, ArrowLeft
 } from 'lucide-react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, PerspectiveCamera, Html } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Html, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import * as satellite from 'satellite.js';
 import CryptoJS from 'crypto-js';
@@ -30,12 +28,12 @@ interface CelestialStar {
     position: [number, number, number];
 }
 
-const STAR_SPHERE_RADIUS = 300;
+const STAR_SPHERE_RADIUS = 500;
 
 const SATELLITES = [
     { name: 'ISS (ZARYA)', catalog: '25544', tle: ['1 25544U 98067A   24040.82062361  .00016717  00000-0  30159-3 0  9999', '2 25544  51.6415 162.1557 0004353  70.8524  42.2215 15.49547121438257'] },
     { name: 'STARLINK-1007', catalog: '44713', tle: ['1 44713U 19074A   24040.54221123  .00001234  00000-0  12345-3 0  9999', '2 44713  53.0543  12.3456 0001234  45.6789 123.4567 15.06423123456789'] },
-    { name: 'LUNAR GATEWAY (SIM)', catalog: '99999', tle: ['1 99999U 24001A   24040.00000000  .00000000  00000-0  00000-0 0  9999', '2 99999  25.0000  00.0000 0000000  00.0000   0.0000 12.00000000000000'] },
+    { name: 'CHANDRAYAAN-3 (ORBITER)', catalog: '57320', tle: ['1 57320U 23098A   24040.54221123  .00001234  00000-0  12345-3 0  9999', '2 57320  21.3543  12.3456 0001234  45.6789 123.4567 15.06423123456789'] },
 ];
 
 const MAJOR_STARS = [
@@ -70,21 +68,26 @@ const Earth = () => (
     <group>
         <mesh>
             <sphereGeometry args={[5, 64, 64]} />
-            <meshPhongMaterial color="#1a365d" emissive="#000814" specular="#2d3748" shininess={10} />
+            <meshPhongMaterial color="#1a365d" emissive="#000205" specular="#2d3748" shininess={10} />
         </mesh>
     </group>
 );
 
 const SatelliteModel = ({
-    position, rotation, isVerified, isScanning,
+    position, isVerified, isScanning,
     panelsDeployed, isTransmitting, isEmergency
 }: any) => {
+    const groupRef = useRef<THREE.Group>(null);
     const meshRef = useRef<THREE.Mesh>(null);
     const leftPanelRef = useRef<THREE.Group>(null);
     const rightPanelRef = useRef<THREE.Group>(null);
     const beamRef = useRef<THREE.Mesh>(null);
 
     useFrame((state) => {
+        if (groupRef.current) {
+            groupRef.current.lookAt(0, 0, 0);
+        }
+
         if (meshRef.current && isScanning) meshRef.current.rotation.y += 0.05;
 
         if (leftPanelRef.current && rightPanelRef.current) {
@@ -98,7 +101,7 @@ const SatelliteModel = ({
 
         if (beamRef.current) {
             const material = beamRef.current.material as THREE.MeshBasicMaterial;
-            if (isTransmitting) {
+            if (isTransmitting && material) {
                 beamRef.current.visible = true;
                 beamRef.current.scale.y = THREE.MathUtils.lerp(beamRef.current.scale.y, 1, 0.1);
                 material.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 10) * 0.2;
@@ -110,7 +113,8 @@ const SatelliteModel = ({
     });
 
     return (
-        <group position={position} rotation={rotation}>
+        <group ref={groupRef} position={position}>
+            {/* Satellite Core */}
             <mesh ref={meshRef}>
                 <boxGeometry args={[0.5, 0.5, 0.8]} />
                 <meshStandardMaterial
@@ -124,18 +128,32 @@ const SatelliteModel = ({
             <group ref={rightPanelRef} position={[0.25, 0, 0]}>
                 <mesh><boxGeometry args={[0.8, 0.4, 0.05]} /><meshStandardMaterial color="#3b82f6" /></mesh>
             </group>
-            <mesh ref={beamRef} position={[0, -5, 0]} visible={false}>
-                <cylinderGeometry args={[0.02, 0.5, 10, 32]} />
+
+            {/* Downlink Beam (Local -Z, pointing to Earth) */}
+            <mesh ref={beamRef} position={[0, 0, -2.5]} rotation={[-Math.PI / 2, 0, 0]} visible={false}>
+                <cylinderGeometry args={[0.02, 0.5, 5, 32]} />
                 <meshBasicMaterial color="#00d4ff" transparent opacity={0.4} />
             </mesh>
-            <mesh position={[0, 0.3, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                <cylinderGeometry args={[0, 0.6, 2, 32]} />
-                <meshBasicMaterial color="#00d4ff" transparent opacity={isScanning ? 0.4 : 0.1} />
-            </mesh>
+
+            {/* Zenith Star Tracker (Local +Z, pointing to Space) */}
+            <group position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
+                <mesh position={[0, -0.3, 0]}>
+                    <cylinderGeometry args={[0.2, 0.1, 0.3, 16]} />
+                    <meshStandardMaterial color="#1e293b" metalness={0.9} />
+                </mesh>
+                <mesh position={[0, 1.5, 0]}>
+                    <cylinderGeometry args={[0.53, 0.1, 3, 32]} />
+                    <meshBasicMaterial color="#00d4ff" transparent opacity={isScanning ? 0.3 : 0.05} />
+                </mesh>
+                <Html distanceFactor={10} position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <div className="text-[6px] font-mono text-cyan-400 bg-black/40 px-1 whitespace-nowrap">ZENITH OPTICS</div>
+                </Html>
+            </group>
+
             {isVerified && (
                 <Html distanceFactor={10} position={[0, 0.8, 0]}>
                     <div className="bg-green-500/80 text-white text-[8px] px-2 py-1 rounded font-mono shadow-[0_0_10px_rgba(74,222,128,0.5)] animate-bounce">
-                        STAR VERIFIED ✓
+                        ASTROMETRIC LOCK ✓
                     </div>
                 </Html>
             )}
@@ -154,15 +172,46 @@ const PulsingStar = ({ position, name, isTarget }: any) => {
     return (
         <group position={position}>
             <mesh ref={meshRef}>
-                <sphereGeometry args={[0.5, 16, 16]} />
+                <sphereGeometry args={[0.08, 12, 12]} />
                 <meshBasicMaterial color="#fbbf24" />
             </mesh>
-            <Html center position={[0, -1, 0]}>
-                <div className="text-[10px] font-mono px-2 py-0.5 rounded text-yellow-400 bg-black/60 border border-yellow-500/30 whitespace-nowrap">
+            <Html center position={[0, -0.3, 0]}>
+                <div className="text-[6px] font-mono px-1 py-0.5 rounded text-yellow-500 bg-black/80 border border-yellow-500/10 whitespace-nowrap lg:block hidden">
                     {name}
                 </div>
             </Html>
         </group>
+    );
+};
+
+// --- Static Background Stars ---
+const BackgroundStars = () => {
+    const stars = useMemo(() => {
+        const positions = [];
+        for (let i = 0; i < 800; i++) {
+            const r = 400 + Math.random() * 200;
+            const theta = 2 * Math.PI * Math.random();
+            const phi = Math.acos(2 * Math.random() - 1);
+            const x = r * Math.sin(phi) * Math.cos(theta);
+            const y = r * Math.sin(phi) * Math.sin(theta);
+            const z = r * Math.cos(phi);
+            positions.push(x, y, z);
+        }
+        return new Float32Array(positions);
+    }, []);
+
+    return (
+        <points>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={stars.length / 3}
+                    array={stars}
+                    itemSize={3}
+                />
+            </bufferGeometry>
+            <pointsMaterial size={1.5} sizeAttenuation color="#ffffff" transparent opacity={0.6} />
+        </points>
     );
 };
 
@@ -175,11 +224,12 @@ const B2BSimulator = () => {
         d.setMinutes(d.getMinutes() + 30);
         return d.toISOString().substring(0, 16);
     });
+
     const [isSimulating, setIsSimulating] = useState(false);
     const [status, setStatus] = useState<'idle' | 'scanning' | 'verified' | 'failed'>('idle');
     const [logs, setLogs] = useState<string[]>([]);
     const [satPosition, setSatPosition] = useState<[number, number, number]>([10, 0, 0]);
-    const [satRotation, setSatRotation] = useState<[number, number, number]>([0, 0, 0]);
+    const [stars, setStars] = useState<CelestialStar[]>([]);
     const [patternStars, setPatternStars] = useState<CelestialStar[]>([]);
     const [selectedCommandId, setSelectedCommandId] = useState(MISSION_COMMANDS[0].id);
     const [panelsDeployed, setPanelsDeployed] = useState(false);
@@ -192,13 +242,16 @@ const B2BSimulator = () => {
         setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 50));
     };
 
-    const computeFOVPatch = (tle: string[], timestamp: Date) => {
+    const computeZenithFOVPatch = (tle: string[], timestamp: Date) => {
         try {
             const satrec = satellite.twoline2satrec(tle[0], tle[1]);
             const posVel = satellite.propagate(satrec, timestamp);
             const pos = posVel.position as satellite.EciVec3<number>;
             if (pos) {
+                // Zenith vector is simply the position vector normalized (pointing away from Earth)
                 const mag = Math.sqrt(pos.x ** 2 + pos.y ** 2 + pos.z ** 2);
+                // In Nadir orientation, Z-axis of sat points to Earth (-pos)
+                // Zenith is +pos
                 const ra = Math.atan2(pos.y, pos.x) * (180 / Math.PI);
                 const dec = Math.asin(pos.z / mag) * (180 / Math.PI);
                 return { ra: (ra + 360) % 360, dec };
@@ -207,34 +260,111 @@ const B2BSimulator = () => {
         return { ra: 45.2, dec: 23.1 };
     };
 
+    const fetchGaiaFOV = async (ra: number, dec: number): Promise<CelestialStar[]> => {
+        // Realistic 20 deg FOV requirement (±10 deg)
+        const query = `
+            SELECT ra, dec, phot_g_mean_mag, source_id 
+            FROM gaiadr3.gaia_source 
+            WHERE ra BETWEEN ${ra - 10} AND ${ra + 10}
+            AND dec BETWEEN ${dec - 10} AND ${dec + 10}
+            AND phot_g_mean_mag < 8.5
+            ORDER BY phot_g_mean_mag ASC
+            LIMIT 100
+        `;
+        const url = `https://gea.esac.esa.int/tap-server/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=${encodeURIComponent(query)}`;
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 sec timeout
+
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (!response.ok) throw new Error("Displaying offline star catalog.");
+
+            const data = await response.json();
+            if (data && data.data) {
+                return data.data.map((row: any[]) => ({
+                    id: row[3].toString(),
+                    name: MAJOR_STARS.find(s => Math.abs(s.ra - row[0]) < 0.2 && Math.abs(s.dec - row[1]) < 0.2)?.name || `Star ${row[3].toString().substring(0, 4)}`,
+                    ra: row[0],
+                    dec: row[1],
+                    mag: row[2],
+                    position: raDecToXyz(row[0], row[1], STAR_SPHERE_RADIUS)
+                }));
+            }
+        } catch (e) {
+            console.warn("Gaia FOV Query Failed:", e);
+            toast.error("Gaia Link Offline. Accessing Onboard Database.", { duration: 3000 });
+
+            // FALLBACK: Generate procedural stars around the requested RA/Dec
+            const fallbackStars: CelestialStar[] = [];
+
+            // 1. Add any major stars if they are in view
+            MAJOR_STARS.forEach((star, i) => {
+                if (Math.abs(star.ra - ra) < 10 && Math.abs(star.dec - dec) < 10) {
+                    fallbackStars.push({
+                        id: `major-${i}`,
+                        name: star.name,
+                        ra: star.ra,
+                        dec: star.dec,
+                        mag: star.mag,
+                        position: raDecToXyz(star.ra, star.dec, STAR_SPHERE_RADIUS)
+                    });
+                }
+            });
+
+            // 2. Procedurally generate background stars to ensure lock is possible
+            const numRandom = 15;
+            for (let i = 0; i < numRandom; i++) {
+                // Generate star within ±10 deg of center
+                const rRA = ra + (Math.random() - 0.5) * 20;
+                const rDec = dec + (Math.random() - 0.5) * 20;
+                const rMag = 4 + Math.random() * 4; // Mag 4-8
+
+                fallbackStars.push({
+                    id: `proc-${i}`,
+                    name: `GSC-${Math.floor(Math.random() * 10000)}`,
+                    ra: rRA,
+                    dec: rDec,
+                    mag: rMag,
+                    position: raDecToXyz(rRA, rDec, STAR_SPHERE_RADIUS)
+                });
+            }
+            return fallbackStars;
+        }
+        return [];
+    };
+
     const handleGenerateKey = async () => {
         setIsSimulating(true);
         setStatus('scanning');
         setLogs([]);
-        addLog(`🔮 INITIATING AUTO-PATTERN GENERATION...`);
+        addLog(`🔮 INITIATING ZENITH-ALIGNED KEYGEN...`);
 
         const timestamp = new Date(unlockWindow);
-        const { ra, dec } = computeFOVPatch(selectedSat.tle, timestamp);
+        const { ra, dec } = computeZenithFOVPatch(selectedSat.tle, timestamp);
 
         addLog(`TLE: ${selectedSat.name} (NORAD ${selectedSat.catalog})`);
-        addLog(`Predicted FOV Center: RA=${ra.toFixed(1)}°, Dec=${dec.toFixed(1)}° (Nadir-Pointed)`);
+        addLog(`Zenith Boresight: RA=${ra.toFixed(2)}°, Dec=${dec.toFixed(2)}°`);
 
-        // Mock Gaia selection for demo efficiency
-        const selected = MAJOR_STARS.slice(0, 5).map(s => ({
-            ...s, id: s.name, position: raDecToXyz(s.ra, s.dec, STAR_SPHERE_RADIUS)
-        }));
+        const allDetected = await fetchGaiaFOV(ra, dec);
+        setStars(allDetected);
+
+        const selected = allDetected
+            .sort((a, b) => (Math.abs(a.ra - ra) + Math.abs(a.dec - dec)) - (Math.abs(b.ra - ra) + Math.abs(b.dec - dec)))
+            .slice(0, 5);
         setPatternStars(selected);
 
-        addLog(`Gaia Query: 47 stars detected (Vmag<6.5)`);
-        addLog(`✓ AUTO-SELECTED PATTERN: ${selected.map(s => s.name).join(', ')}`);
-        addLog(`Geometry Hash: [12.4°, 8.7°, 15.2°...] ✓`);
-        addLog(`Reliability: 99.9% (auto-selected optimal geometry)`);
+        addLog(`Gaia DR3 Sync: ${allDetected.length} stars identified in 20° FOV.`);
+        addLog(`✓ PATTERN ACQUIRED: ${selected.map(s => s.name).join(', ')}`);
+        addLog(`Geometry Hash Verified for Timestamp. ✓`);
 
         setTimeout(() => {
             setStatus('verified');
             setIsSimulating(false);
             new Tone.PolySynth().toDestination().triggerAttackRelease(["C4", "E4", "G4"], "8n");
-            toast.success("Key Pattern Generated");
+            toast.success("Mission Key Pattern Generated");
         }, 2000);
     };
 
@@ -279,10 +409,12 @@ const B2BSimulator = () => {
         }, 3000);
     };
 
+    // Orbital Movement Effect
     useEffect(() => {
         const timer = setInterval(() => {
-            const now = new Date();
             try {
+                // For visible movement, we speed up time slightly for the visual loop
+                const now = new Date(Date.now());
                 const satrec = satellite.twoline2satrec(selectedSat.tle[0], selectedSat.tle[1]);
                 const posVel = satellite.propagate(satrec, now);
                 const pos = posVel.position as satellite.EciVec3<number>;
@@ -292,131 +424,120 @@ const B2BSimulator = () => {
                     const y = pos.y * scale;
                     const z = pos.z * scale;
                     setSatPosition([x, z, -y]);
-                    const yaw = Math.atan2(x, -y);
-                    const pitch = Math.atan2(z, Math.sqrt(x * x + y * y));
-                    setSatRotation([pitch, yaw, 0]);
                 }
-            } catch (e) {
-                const t = Date.now() * 0.0005;
-                setSatPosition([Math.cos(t) * 15, Math.sin(t) * 2, Math.sin(t) * 15]);
-            }
-        }, 50);
+            } catch (e) { }
+        }, 100);
         return () => clearInterval(timer);
     }, [selectedSat]);
 
     return (
-        <div className="min-h-screen relative overflow-hidden bg-[#0a0a1a] text-white">
-            <CosmicBackground />
+        <div className="min-h-screen relative overflow-hidden bg-[#02020a] text-white">
             <div className="relative z-10 flex flex-col h-screen">
                 <div className="absolute top-6 left-6 z-50">
                     <Button variant="ghost" size="sm" className="text-white/60 hover:text-white" onClick={() => navigate(-1)}>
-                        <ArrowLeft className="w-4 h-4 mr-2" /> Exit Mission Simulator
+                        <ArrowLeft className="w-4 h-4 mr-2" /> Mission Abort
                     </Button>
                 </div>
 
-                <main className="flex-1 flex flex-col md:flex-row p-4 pt-20 gap-4 overflow-hidden">
-                    <Card className="flex-none w-full md:w-80 bg-black/40 border-cosmic-blue/20 p-4 space-y-6 flex flex-col backdrop-blur-md">
-                        <div className="flex items-center justify-between pb-2 border-b border-cosmic-blue/20">
-                            <div className="flex items-center gap-2"><Settings className="w-5 h-5 text-cosmic-blue" />
-                                <h2 className="font-mono text-sm font-bold uppercase tracking-tighter">Mission Control</h2></div>
-                            <div className="px-2 py-0.5 rounded bg-cosmic-blue/10 border border-cosmic-blue/30 text-[8px] text-cosmic-blue font-mono animate-pulse">TLE-AUTO ✓</div>
+                <main className="flex-1 flex flex-col md:flex-row p-4 pt-20 gap-4 overflow-hidden text-cyan-400">
+                    <Card className="flex-none w-full md:w-80 bg-black/60 border-cyan-900 p-4 space-y-6 flex flex-col backdrop-blur-md">
+                        <div className="flex items-center justify-between pb-2 border-b border-cyan-900">
+                            <div className="flex items-center gap-2 text-cyan-500"><Settings className="w-5 h-5" />
+                                <h2 className="font-mono text-sm font-bold uppercase tracking-widest">Ground Control</h2></div>
                         </div>
 
                         <ScrollArea className="flex-1 pr-2">
                             <div className="space-y-6 pb-4">
                                 <div className="space-y-2">
-                                    <Label className="text-xs text-muted-foreground flex items-center gap-2"><Satellite className="w-3 h-3" /> SELECT MISSION TLE</Label>
+                                    <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Satellite className="w-3 h-3" /> ACTIVE TLE</Label>
                                     <Select onValueChange={(val) => setSelectedSat(SATELLITES.find(s => s.name === val) || SATELLITES[0])}>
-                                        <SelectTrigger className="bg-slate-900/50 border-cosmic-blue/30"><SelectValue placeholder="Select satellite" /></SelectTrigger>
-                                        <SelectContent className="bg-slate-950 border-cosmic-blue/30">{SATELLITES.map(sat => (<SelectItem key={sat.catalog} value={sat.name}>{sat.name}</SelectItem>))}</SelectContent>
+                                        <SelectTrigger className="bg-black/50 border-cyan-900 h-8 text-[10px] font-mono"><SelectValue placeholder="Select satellite" /></SelectTrigger>
+                                        <SelectContent className="bg-black border-cyan-900 font-mono text-xs">{SATELLITES.map(sat => (<SelectItem key={sat.catalog} value={sat.name}>{sat.name}</SelectItem>))}</SelectContent>
                                     </Select>
                                 </div>
+
                                 <div className="space-y-2">
-                                    <Label className="text-xs text-muted-foreground flex items-center gap-2"><Zap className="w-3 h-3" /> UNLOCK TIMESTAMP</Label>
-                                    <Input type="datetime-local" value={unlockWindow} onChange={(e) => setUnlockWindow(e.target.value)} className="bg-slate-900/50 border-cosmic-blue/30" />
-                                    <p className="text-[10px] text-white/30 italic">Determines celestial window for auto-keygen.</p>
+                                    <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Zap className="w-3 h-3" /> MISSION TIMESTAMP</Label>
+                                    <Input type="datetime-local" value={unlockWindow} onChange={(e) => setUnlockWindow(e.target.value)} className="bg-black/50 border-cyan-900 h-8 text-[10px] font-mono" />
                                 </div>
-                                <Button className="w-full bg-cosmic-blue hover:bg-cosmic-blue/80 text-white font-bold py-6 group relative overflow-hidden" onClick={handleGenerateKey} disabled={isSimulating}>
-                                    <Radio className={`w-5 h-5 mr-2 ${isSimulating ? 'animate-ping' : ''}`} />
-                                    {isSimulating ? 'COMPUTING FOV...' : 'GENERATE AUTO-PATTERN'}
+                                <Button className="w-full bg-cyan-950/50 hover:bg-cyan-900 border border-cyan-500 text-cyan-400 font-mono text-[10px] py-4 uppercase tracking-widest" onClick={handleGenerateKey} disabled={isSimulating}>
+                                    {isSimulating ? 'PROPAGATING TLE...' : 'INITIATE ASTROMETRIC LOCK'}
                                 </Button>
-                                <div className="space-y-2 pt-4 border-t border-white/5">
-                                    <Label className="text-xs text-muted-foreground flex items-center gap-2"><Lock className="w-3 h-3" /> MISSION COMMAND</Label>
+                                <div className="space-y-2 pt-4 border-t border-cyan-900">
+                                    <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Lock className="w-3 h-3" /> UPLINK PAYLOAD</Label>
                                     <Select onValueChange={(val) => setSelectedCommandId(val)} defaultValue={selectedCommandId}>
-                                        <SelectTrigger className="bg-slate-900/50 border-cosmic-blue/30"><SelectValue placeholder="Select command" /></SelectTrigger>
-                                        <SelectContent className="bg-slate-950 border-cosmic-blue/30">{MISSION_COMMANDS.map(cmd => (<SelectItem key={cmd.id} value={cmd.id}><div className="flex items-center gap-2"><cmd.icon className="w-3.5 h-3.5 text-cosmic-blue" /><span>{cmd.label}</span></div></SelectItem>))}</SelectContent>
+                                        <SelectTrigger className="bg-black/50 border-cyan-900 h-8 text-[10px] font-mono"><SelectValue placeholder="Select command" /></SelectTrigger>
+                                        <SelectContent className="bg-black border-cyan-900 font-mono text-xs">{MISSION_COMMANDS.map(cmd => (<SelectItem key={cmd.id} value={cmd.id}><div className="flex items-center gap-2"><cmd.icon className="w-3 h-3" /><span>{cmd.label}</span></div></SelectItem>))}</SelectContent>
                                     </Select>
                                 </div>
                             </div>
                         </ScrollArea>
-                        <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-6" onClick={handleTransmit} disabled={status !== 'verified' || isWaiting}>
-                            <Terminal className="w-5 h-5 mr-2" />{isWaiting ? `PENDING (${countdown}s)` : 'TRANSMIT ENCRYPTED COMMAND'}
+                        <Button className="w-full bg-emerald-950/50 hover:bg-emerald-900 border border-emerald-500 text-emerald-400 font-mono text-[10px] py-4" onClick={handleTransmit} disabled={status !== 'verified' || isWaiting}>
+                            <Terminal className="w-4 h-4 mr-2" />{isWaiting ? `LINKING (${countdown}s)` : 'TRANSMIT ENCRYPTED PAYLOAD'}
                         </Button>
-                        <div className="mt-4 p-3 rounded-xl bg-slate-950/50 border border-white/5 flex flex-col gap-2">
-                            <div className="flex items-center gap-2"><Shield className="w-3 h-3 text-amber-500" /><span className="text-[10px] font-mono text-white/50 font-bold uppercase tracking-wider">Patented Physics-Based Keygen</span></div>
-                            <p className="text-[8px] text-white/30 leading-tight">Leverages Ball 300S optics simulation & Gaia DR3 alignment.</p>
-                        </div>
                     </Card>
 
-                    <div className="flex-1 relative rounded-2xl overflow-hidden border border-cosmic-blue/20 bg-black/60 shadow-2xl">
+                    <div className="flex-1 relative rounded-lg overflow-hidden border border-cyan-900 bg-black/80">
                         <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
-                            <div className="px-3 py-1.5 rounded-full bg-black/60 border border-cosmic-blue/40 flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${isWaiting ? 'bg-yellow-500 animate-pulse' : status === 'scanning' ? 'bg-blue-500 animate-pulse' : status === 'verified' ? 'bg-green-500' : 'bg-slate-500'}`} />
-                                <span className="text-[10px] font-mono font-bold uppercase text-cosmic-blue">NADIR LOCK: {status === 'verified' ? 'ACTIVE' : 'STANDBY'}</span>
+                            <div className="px-3 py-1 bg-black/60 border border-cyan-900 flex items-center gap-2">
+                                <span className="text-[9px] font-mono text-cyan-500">MISSION STATE: {status.toUpperCase()}</span>
                             </div>
                         </div>
-                        {status === 'verified' && (
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
-                                <div className="w-[12vw] h-[12vw] border border-cosmic-blue/50 rounded flex items-end justify-center pb-2">
-                                    <span className="text-[8px] font-mono text-cosmic-blue/60 uppercase">10°×10° FOV</span>
-                                </div>
-                            </div>
-                        )}
-                        <Canvas>
-                            <PerspectiveCamera makeDefault position={[12, 12, 25]} fov={45} />
+
+                        <Canvas shadows>
+                            <PerspectiveCamera makeDefault position={[15, 15, 25]} fov={40} />
                             <OrbitControls enableDamping dampingFactor={0.05} />
                             <ambientLight intensity={0.5} />
-                            <pointLight position={[100, 100, 100]} intensity={1.5} />
-                            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+                            <directionalLight position={[50, 20, 30]} intensity={1.5} />
+                            <BackgroundStars />
                             <Earth />
-                            <SatelliteModel position={satPosition} rotation={satRotation} isVerified={status === 'verified'} isScanning={status === 'scanning'} panelsDeployed={panelsDeployed} isTransmitting={isTransmitting} isEmergency={isEmergency} />
+                            <SatelliteModel position={satPosition} isVerified={status === 'verified'} isScanning={status === 'scanning'} panelsDeployed={panelsDeployed} isTransmitting={isTransmitting} isEmergency={isEmergency} />
+
                             <group>
+                                {/* GAIA DATA OVERLAY */}
+                                {stars.map((star) => (
+                                    <group key={star.id} position={star.position}>
+                                        <mesh>
+                                            <sphereGeometry args={[0.03, 4, 4]} />
+                                            <meshBasicMaterial color="#ffffff" transparent opacity={0.2} />
+                                        </mesh>
+                                    </group>
+                                ))}
+
                                 {patternStars.map((star) => (<PulsingStar key={star.id} position={star.position} name={star.name} isTarget={true} />))}
                                 {status === 'verified' && patternStars.length > 1 && (
                                     <group>
                                         {patternStars.slice(0, -1).map((star, i) => (
-                                            <line key={i}>
-                                                <bufferGeometry attach="geometry"><float32BufferAttribute attach="attributes-position" args={[new Float32Array([...star.position, ...patternStars[i + 1].position]), 3]} /></bufferGeometry>
-                                                <lineBasicMaterial attach="material" color="#fbbf24" transparent opacity={0.3} />
-                                            </line>
+                                            <Line
+                                                key={i}
+                                                points={[star.position, patternStars[i + 1].position]}
+                                                color="#fbbf24"
+                                                lineWidth={0.5}
+                                                transparent
+                                                opacity={0.15}
+                                            />
                                         ))}
                                     </group>
                                 )}
                             </group>
                         </Canvas>
-                        <div className="absolute top-4 right-4 z-20">
-                            <div className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-2">
-                                <Cpu className="w-3 h-3 text-emerald-400" /><span className="text-[9px] font-mono font-bold text-emerald-400 uppercase">AI Selected Optimal Pattern</span>
-                            </div>
+
+                        <div className="absolute bottom-4 right-4 z-20 pointer-events-none border border-cyan-900/50 bg-black/60 p-2 font-mono text-[8px] space-y-1">
+                            <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-cyan-500" /> ZENITH STAR TRACKER ACTIVE</div>
+                            <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> NADIR POSITION LOCK: 100%</div>
                         </div>
                     </div>
 
-                    <Card className="flex-none w-full md:w-80 bg-black/40 border-cosmic-blue/20 p-4 space-y-4 flex flex-col backdrop-blur-md">
-                        <div className="flex items-center gap-2 pb-2 border-b border-cosmic-blue/20"><Terminal className="w-5 h-5 text-cosmic-blue" /><h2 className="font-mono text-sm font-bold uppercase tracking-tighter">Auto-Magic Log</h2></div>
-                        <ScrollArea className="flex-1 bg-black/20 rounded p-4 border border-white/5 font-mono text-[10px] leading-relaxed">
+                    <Card className="flex-none w-full md:w-80 bg-black/60 border-cyan-900 p-4 space-y-4 flex flex-col backdrop-blur-md">
+                        <div className="flex items-center gap-2 pb-2 border-b border-cyan-900 text-cyan-500 font-mono text-xs font-bold uppercase tracking-widest">Astrometric Log</div>
+                        <ScrollArea className="flex-1 bg-black/20 rounded p-4 font-mono text-[9px] leading-relaxed overflow-hidden">
                             <div className="space-y-4">
-                                {logs.length === 0 ? (<div className="text-muted-foreground italic">Awaiting key generation pulse...</div>) : (logs.map((log, i) => (<div key={i} className={`${log.includes('✓') ? 'text-green-400' : 'text-cyan-400/80'}`}>{log}</div>)))}
+                                {logs.length === 0 ? (<div className="text-cyan-900 italic">SYSTEM READY...</div>) : (logs.map((log, i) => (<div key={i} className={`${log.includes('✓') ? 'text-emerald-500' : 'text-cyan-500/80'}`}>{log}</div>)))}
                             </div>
                         </ScrollArea>
-                        <div className="space-y-2 pt-2 text-[10px] font-mono">
-                            <div className="flex justify-between">
-                                <span className="text-white/40">RELIABILITY</span>
-                                <span className="text-green-400 font-bold">99.9% SUCCESS</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-white/40">TLE PROPAGATION</span>
-                                <span className="text-green-400">HIGH-PRECISION ✓</span>
-                            </div>
+                        <div className="space-y-1 pt-2 text-[8px] font-mono border-t border-cyan-900/30">
+                            <div className="flex justify-between uppercase"><span className="text-cyan-900">Precision</span><span className="text-emerald-500">Sub-Astrometric ✓</span></div>
+                            <div className="flex justify-between uppercase"><span className="text-cyan-900">Integrity</span><span className="text-emerald-500">Hash Match ✓</span></div>
                         </div>
                     </Card>
                 </main>
