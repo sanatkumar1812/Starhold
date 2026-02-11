@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Satellite, Shield, Lock, Radio, Zap, Terminal, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 // --- TLE & Constants ---
 const TLE = [
@@ -95,6 +96,7 @@ const BackgroundStars = () => {
 };
 
 const B2BPreviewSimulator = () => {
+    const navigate = useNavigate();
     const [status, setStatus] = useState<'idle' | 'scanning' | 'verified'>('idle');
     const [satPosition, setSatPosition] = useState<[number, number, number]>([10, 0, 0]);
     const [satRotation, setSatRotation] = useState<[number, number, number]>([0, 0, 0]);
@@ -211,7 +213,7 @@ const B2BPreviewSimulator = () => {
                 </Button>
 
                 <Button
-                    onClick={() => window.location.href = '/4d'}
+                    onClick={() => navigate('/4d')}
                     variant="outline"
                     className="w-full h-10 font-mono text-xs uppercase tracking-wide bg-slate-950/50 hover:bg-slate-900 text-cyan-400 border-cyan-500/30 hover:border-cyan-400"
                 >
