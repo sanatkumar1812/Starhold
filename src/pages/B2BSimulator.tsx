@@ -74,21 +74,16 @@ const Earth = () => (
 );
 
 const SatelliteModel = ({
-    position, isVerified, isScanning,
+    position, rotation, isVerified, isScanning,
     panelsDeployed, isTransmitting, isEmergency
 }: any) => {
-    const groupRef = useRef<THREE.Group>(null);
     const meshRef = useRef<THREE.Mesh>(null);
     const leftPanelRef = useRef<THREE.Group>(null);
     const rightPanelRef = useRef<THREE.Group>(null);
     const beamRef = useRef<THREE.Mesh>(null);
 
     useFrame((state) => {
-        if (groupRef.current) {
-            groupRef.current.lookAt(0, 0, 0);
-        }
-
-        if (meshRef.current && isScanning) meshRef.current.rotation.y += 0.05;
+        // Removed scanning rotation to prevent satellite body from spinning
 
         if (leftPanelRef.current && rightPanelRef.current) {
             const targetX = panelsDeployed ? 0.6 : 0.25;
@@ -113,7 +108,7 @@ const SatelliteModel = ({
     });
 
     return (
-        <group ref={groupRef} position={position}>
+        <group position={position} rotation={rotation}>
             {/* Satellite Core */}
             <mesh ref={meshRef}>
                 <boxGeometry args={[0.5, 0.5, 0.8]} />
@@ -129,26 +124,30 @@ const SatelliteModel = ({
                 <mesh><boxGeometry args={[0.8, 0.4, 0.05]} /><meshStandardMaterial color="#3b82f6" /></mesh>
             </group>
 
-            {/* Downlink Beam (Local -Z, pointing to Earth) */}
-            <mesh ref={beamRef} position={[0, 0, -2.5]} rotation={[-Math.PI / 2, 0, 0]} visible={false}>
+            {/* Downlink Beam (Points to Earth along +Z) */}
+            <mesh ref={beamRef} position={[0, 0, 2.5]} visible={false}>
                 <cylinderGeometry args={[0.02, 0.5, 5, 32]} />
                 <meshBasicMaterial color="#00d4ff" transparent opacity={0.4} />
             </mesh>
 
-            {/* Zenith Star Tracker (Local +Z, pointing to Space) */}
-            <group position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
-                <mesh position={[0, -0.3, 0]}>
+
+            {/* Zenith Star Tracker (On -Z face, pointing away from Earth) */}
+            <group position={[0, 0, -0.4]} rotation={[-Math.PI / 2, 0, 0]}>
+                {/* Tracker body */}
+                <mesh position={[0, 0.15, 0]}>
                     <cylinderGeometry args={[0.2, 0.1, 0.3, 16]} />
                     <meshStandardMaterial color="#1e293b" metalness={0.9} />
                 </mesh>
-                <mesh position={[0, 1.5, 0]}>
+                {/* FOV Cone */}
+                <mesh position={[0, 1.65, 0]}>
                     <cylinderGeometry args={[0.53, 0.1, 3, 32]} />
                     <meshBasicMaterial color="#00d4ff" transparent opacity={isScanning ? 0.3 : 0.05} />
                 </mesh>
-                <Html distanceFactor={10} position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <Html distanceFactor={10} position={[0, 3.2, 0]}>
                     <div className="text-[6px] font-mono text-cyan-400 bg-black/40 px-1 whitespace-nowrap">ZENITH OPTICS</div>
                 </Html>
             </group>
+
 
             {isVerified && (
                 <Html distanceFactor={10} position={[0, 0.8, 0]}>
@@ -229,6 +228,7 @@ const B2BSimulator = () => {
     const [status, setStatus] = useState<'idle' | 'scanning' | 'verified' | 'failed'>('idle');
     const [logs, setLogs] = useState<string[]>([]);
     const [satPosition, setSatPosition] = useState<[number, number, number]>([10, 0, 0]);
+    const [satRotation, setSatRotation] = useState<[number, number, number]>([0, 0, 0]);
     const [stars, setStars] = useState<CelestialStar[]>([]);
     const [patternStars, setPatternStars] = useState<CelestialStar[]>([]);
     const [selectedCommandId, setSelectedCommandId] = useState(MISSION_COMMANDS[0].id);
@@ -424,6 +424,19 @@ const B2BSimulator = () => {
                     const y = pos.y * scale;
                     const z = pos.z * scale;
                     setSatPosition([x, z, -y]);
+
+                    // Calculate rotation to point toward Earth (Nadir)
+                    const posVector = new THREE.Vector3(x, z, -y);
+                    const targetVector = new THREE.Vector3(0, 0, 0);
+                    const direction = new THREE.Vector3().subVectors(targetVector, posVector).normalize();
+
+                    // Create a quaternion that rotates from default orientation to point at Earth
+                    const quaternion = new THREE.Quaternion();
+                    quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), direction);
+
+                    // Convert quaternion to Euler angles
+                    const euler = new THREE.Euler().setFromQuaternion(quaternion);
+                    setSatRotation([euler.x, euler.y, euler.z]);
                 }
             } catch (e) { }
         }, 100);
@@ -491,7 +504,7 @@ const B2BSimulator = () => {
                             <directionalLight position={[50, 20, 30]} intensity={1.5} />
                             <BackgroundStars />
                             <Earth />
-                            <SatelliteModel position={satPosition} isVerified={status === 'verified'} isScanning={status === 'scanning'} panelsDeployed={panelsDeployed} isTransmitting={isTransmitting} isEmergency={isEmergency} />
+                            <SatelliteModel position={satPosition} rotation={satRotation} isVerified={status === 'verified'} isScanning={status === 'scanning'} panelsDeployed={panelsDeployed} isTransmitting={isTransmitting} isEmergency={isEmergency} />
 
                             <group>
                                 {/* GAIA DATA OVERLAY */}

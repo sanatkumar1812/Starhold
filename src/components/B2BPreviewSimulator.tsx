@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import * as satellite from 'satellite.js';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Satellite, Shield, Lock, Radio, Zap, Terminal } from 'lucide-react';
+import { Satellite, Shield, Lock, Radio, Zap, Terminal, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
 // --- TLE & Constants ---
@@ -24,39 +24,34 @@ const Earth = () => (
     </mesh>
 );
 
-const SatelliteModel = ({ position, status }: any) => {
+const SatelliteModel = ({ position, rotation, status }: any) => {
     const isScanning = status === 'scanning';
     const isVerified = status === 'verified';
-    const groupRef = useRef<THREE.Group>(null);
-
-    useFrame(() => {
-        if (groupRef.current) {
-            groupRef.current.lookAt(0, 0, 0);
-        }
-    });
 
     return (
-        <group ref={groupRef} position={position}>
+        <group position={position} rotation={rotation}>
             {/* Satellite Body */}
             <mesh>
                 <boxGeometry args={[0.5, 0.5, 0.8]} />
                 <meshStandardMaterial color={isVerified ? "#10b981" : "#64748b"} metalness={0.8} />
             </mesh>
 
-            {/* Zenith Star Tracker (Local +Z, Pointing Space) */}
-            <group position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
-                <mesh position={[0, -0.3, 0]}>
+
+            {/* Zenith Star Tracker (On -Z face, pointing away from Earth) */}
+            <group position={[0, 0, -0.4]} rotation={[-Math.PI / 2, 0, 0]}>
+                <mesh position={[0, 0.15, 0]}>
                     <cylinderGeometry args={[0.2, 0.1, 0.3, 16]} />
                     <meshStandardMaterial color="#1e293b" />
                 </mesh>
-                <mesh position={[0, 1.5, 0]}>
+                <mesh position={[0, 1.65, 0]}>
                     <cylinderGeometry args={[0.53, 0.1, 3, 32]} />
                     <meshBasicMaterial color="#06b6d4" transparent opacity={isScanning ? 0.3 : 0.05} />
                 </mesh>
-                <Html distanceFactor={10} position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <Html distanceFactor={10} position={[0, 3.2, 0]}>
                     <div className="text-[6px] font-mono text-cyan-400 bg-black/40 px-1 whitespace-nowrap uppercase">Zenith Ops</div>
                 </Html>
             </group>
+
 
             {isVerified && (
                 <Html distanceFactor={10} position={[0, 0.8, 0]}>
@@ -102,6 +97,7 @@ const BackgroundStars = () => {
 const B2BPreviewSimulator = () => {
     const [status, setStatus] = useState<'idle' | 'scanning' | 'verified'>('idle');
     const [satPosition, setSatPosition] = useState<[number, number, number]>([10, 0, 0]);
+    const [satRotation, setSatRotation] = useState<[number, number, number]>([0, 0, 0]);
     const [logs, setLogs] = useState<string[]>([]);
 
     const addLog = (msg: string) => {
@@ -136,6 +132,17 @@ const B2BPreviewSimulator = () => {
                     const y = pos.y * scale;
                     const z = pos.z * scale;
                     setSatPosition([x, z, -y]);
+
+                    // Calculate rotation to point toward Earth (Nadir)
+                    const posVector = new THREE.Vector3(x, z, -y);
+                    const targetVector = new THREE.Vector3(0, 0, 0);
+                    const direction = new THREE.Vector3().subVectors(targetVector, posVector).normalize();
+
+                    const quaternion = new THREE.Quaternion();
+                    quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), direction);
+
+                    const euler = new THREE.Euler().setFromQuaternion(quaternion);
+                    setSatRotation([euler.x, euler.y, euler.z]);
                 }
             } catch (e) { }
         }, 100);
@@ -152,7 +159,7 @@ const B2BPreviewSimulator = () => {
                     <directionalLight position={[50, 20, 30]} intensity={1.5} />
                     <BackgroundStars />
                     <Earth />
-                    <SatelliteModel position={satPosition} status={status} />
+                    <SatelliteModel position={satPosition} rotation={satRotation} status={status} />
                 </Canvas>
 
                 <div className="absolute bottom-4 left-4 flex flex-col gap-1 pointer-events-none">
@@ -201,6 +208,15 @@ const B2BPreviewSimulator = () => {
                         }`}
                 >
                     {status === 'scanning' ? 'Calibrating Zenith...' : status === 'verified' ? 'Signature Synchronized ✓' : 'Initiate Secure Handshake'}
+                </Button>
+
+                <Button
+                    onClick={() => window.location.href = '/4d'}
+                    variant="outline"
+                    className="w-full h-10 font-mono text-xs uppercase tracking-wide bg-slate-950/50 hover:bg-slate-900 text-cyan-400 border-cyan-500/30 hover:border-cyan-400"
+                >
+                    <ExternalLink className="w-3 h-3 mr-2" />
+                    Open Full Mission Simulator
                 </Button>
 
                 <div className="flex items-center justify-between px-2 opacity-50">

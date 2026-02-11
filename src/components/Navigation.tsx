@@ -23,11 +23,9 @@ export const Navigation = () => {
         <Compass className="w-4 h-4" />
         Observatory
       </Link>
-      {location.pathname !== '/for-missions' && (
-        <Link to="/academy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
-          Academy
-        </Link>
-      )}
+      <Link to="/academy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+        Academy
+      </Link>
       <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
         About
       </Link>
