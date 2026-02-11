@@ -41,7 +41,7 @@ const About = () => {
                                     <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 flex items-center justify-center p-8 group">
                                         <div className="relative">
                                             <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 group-hover:scale-175 transition-transform duration-500" />
-                                            <Star className="w-32 h-32 text-primary relative animate-float" />
+                                            <img src="logo-small.svg" alt="Starhold Logo" className="w-32 h-32 object-contain relative animate-float" />
                                         </div>
                                     </div>
                                 </section>
