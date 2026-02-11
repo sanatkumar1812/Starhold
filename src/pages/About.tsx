@@ -30,8 +30,8 @@ const About = () => {
                             <ScrollReveal delay={200}>
                                 <section className="grid md:grid-cols-2 gap-12 items-center">
                                     <div className="space-y-6">
-                                        <div className="w-12 h-12 rounded-2xl gradient-gold flex items-center justify-center">
-                                            <Star className="w-6 h-6 text-primary-foreground" />
+                                        <div className="w-12 h-12 flex items-center justify-center">
+                                            <img src="logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
                                         </div>
                                         <h2 className="font-serif text-3xl text-foreground">What is Starhold?</h2>
                                         <p className="text-muted-foreground leading-relaxed">
