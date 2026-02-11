@@ -9,8 +9,8 @@ export const Footer = () => {
           {/* Brand */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center">
-                <Star className="w-5 h-5 text-primary-foreground" />
+              <div className="w-10 h-10 flex items-center justify-center">
+                <img src="logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-serif text-xl text-foreground">Starhold</span>
             </div>
