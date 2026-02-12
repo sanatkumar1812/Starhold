@@ -103,7 +103,7 @@ const B2BPreviewSimulator = () => {
     const [logs, setLogs] = useState<string[]>([]);
 
     const addLog = (msg: string) => {
-        setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 5));
+        setLogs(prev => [`[${new Date().toLocaleTimeString('en-US', { hour12: false })}] ${msg}`, ...prev].slice(0, 5));
     };
 
     const handleQuickBind = async () => {

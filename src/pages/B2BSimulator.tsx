@@ -229,6 +229,7 @@ const B2BSimulator = () => {
     const [logs, setLogs] = useState<string[]>([]);
     const [satPosition, setSatPosition] = useState<[number, number, number]>([10, 0, 0]);
     const [satRotation, setSatRotation] = useState<[number, number, number]>([0, 0, 0]);
+    const [satGeodetic, setSatGeodetic] = useState({ lat: 0, lon: 0, alt: 0 });
     const [stars, setStars] = useState<CelestialStar[]>([]);
     const [patternStars, setPatternStars] = useState<CelestialStar[]>([]);
     const [selectedCommandId, setSelectedCommandId] = useState(MISSION_COMMANDS[0].id);
@@ -239,7 +240,7 @@ const B2BSimulator = () => {
     const [countdown, setCountdown] = useState<number | null>(null);
 
     const addLog = (msg: string) => {
-        setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 50));
+        setLogs(prev => [`[${new Date().toLocaleTimeString('en-US', { hour12: false })}] ${msg}`, ...prev].slice(0, 50));
     };
 
     const computeZenithFOVPatch = (tle: string[], timestamp: Date) => {
@@ -271,11 +272,14 @@ const B2BSimulator = () => {
             ORDER BY phot_g_mean_mag ASC
             LIMIT 100
         `;
-        const url = `https://gea.esac.esa.int/tap-server/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=${encodeURIComponent(query)}`;
+        // Use CORS proxy to bypass browser restrictions
+        const proxyUrl = 'https://corsproxy.io/?';
+        const targetUrl = `https://gea.esac.esa.int/tap-server/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=${encodeURIComponent(query)}`;
+        const url = proxyUrl + encodeURIComponent(targetUrl);
 
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 sec timeout
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 sec timeout for proxy latency
 
             const response = await fetch(url, { signal: controller.signal });
             clearTimeout(timeoutId);
@@ -337,6 +341,7 @@ const B2BSimulator = () => {
     };
 
     const handleGenerateKey = async () => {
+        await Tone.start(); // Initialize AudioContext on user gesture
         setIsSimulating(true);
         setStatus('scanning');
         setLogs([]);
@@ -376,7 +381,7 @@ const B2BSimulator = () => {
         if (delay > 0) {
             setIsWaiting(true);
             setCountdown(Math.floor(delay / 1000));
-            addLog(`[SCHEDULED] Execution queued for ${new Date(targetTime).toLocaleTimeString()}`);
+            addLog(`[SCHEDULED] Execution queued for ${new Date(targetTime).toLocaleTimeString('en-US', { hour12: false })}`);
             const timer = setInterval(() => {
                 setCountdown(prev => {
                     if (prev === null || prev <= 1) {
@@ -425,6 +430,15 @@ const B2BSimulator = () => {
                     const z = pos.z * scale;
                     setSatPosition([x, z, -y]);
 
+                    // Calculate Geodetic (Lat/Lon/Alt) for UI
+                    const gmst = satellite.gstime(now);
+                    const geodetic = satellite.eciToGeodetic(posVel.position as satellite.EciVec3<number>, gmst);
+                    setSatGeodetic({
+                        lat: satellite.degreesLat(geodetic.latitude),
+                        lon: satellite.degreesLong(geodetic.longitude),
+                        alt: geodetic.height
+                    });
+
                     // Calculate rotation to point toward Earth (Nadir)
                     const posVector = new THREE.Vector3(x, z, -y);
                     const targetVector = new THREE.Vector3(0, 0, 0);
@@ -470,8 +484,13 @@ const B2BSimulator = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Zap className="w-3 h-3" /> MISSION TIMESTAMP</Label>
-                                    <Input type="datetime-local" value={unlockWindow} onChange={(e) => setUnlockWindow(e.target.value)} className="bg-black/50 border-cyan-900 h-8 text-[10px] font-mono" />
+                                    <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Zap className="w-3 h-3" /> MISSION TIMESTAMP (UTC)</Label>
+                                    <Input
+                                        type="datetime-local"
+                                        value={unlockWindow}
+                                        onChange={(e) => setUnlockWindow(e.target.value)}
+                                        className="bg-black/50 border-cyan-900 h-8 text-xs font-mono"
+                                    />
                                 </div>
                                 <Button className="w-full bg-cyan-950/50 hover:bg-cyan-900 border border-cyan-500 text-cyan-400 font-mono text-[10px] py-4 uppercase tracking-widest" onClick={handleGenerateKey} disabled={isSimulating}>
                                     {isSimulating ? 'PROPAGATING TLE...' : 'INITIATE ASTROMETRIC LOCK'}
@@ -482,6 +501,14 @@ const B2BSimulator = () => {
                                         <SelectTrigger className="bg-black/50 border-cyan-900 h-8 text-[10px] font-mono"><SelectValue placeholder="Select command" /></SelectTrigger>
                                         <SelectContent className="bg-black border-cyan-900 font-mono text-xs">{MISSION_COMMANDS.map(cmd => (<SelectItem key={cmd.id} value={cmd.id}><div className="flex items-center gap-2"><cmd.icon className="w-3 h-3" /><span>{cmd.label}</span></div></SelectItem>))}</SelectContent>
                                     </Select>
+                                </div>
+                                <div className="space-y-2 pt-4 border-t border-cyan-900">
+                                    <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Globe className="w-3 h-3" /> LIVE TELEMETRY</Label>
+                                    <div className="grid grid-cols-2 gap-2 font-mono text-[9px] text-cyan-500/80 bg-black/50 border border-cyan-900 p-2 rounded">
+                                        <div>LAT: {satGeodetic.lat.toFixed(4)}°</div>
+                                        <div>LON: {satGeodetic.lon.toFixed(4)}°</div>
+                                        <div className="col-span-2 text-emerald-500">ALT: {satGeodetic.alt.toFixed(2)} km</div>
+                                    </div>
                                 </div>
                             </div>
                         </ScrollArea>
