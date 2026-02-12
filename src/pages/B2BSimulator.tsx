@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
     Satellite, Shield, Lock, Radio, Cpu,
-    Terminal, Globe, Zap, Settings, ArrowLeft
+    Terminal, Globe, Zap, Settings, ArrowLeft, Calendar
 } from 'lucide-react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Html, Line } from '@react-three/drei';
@@ -214,6 +214,24 @@ const BackgroundStars = () => {
     );
 };
 
+// --- Helpers ---
+const formatTo24h = (iso: string) => {
+    if (!iso) return '';
+    const [date, time] = iso.split('T');
+    const [y, m, d] = date.split('-');
+    return `${d}/${m}/${y} ${time}`;
+};
+
+const parseFrom24h = (val: string) => {
+    const regex = /^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/;
+    const match = val.match(regex);
+    if (match) {
+        const [_, d, m, y, hh, mm] = match;
+        return `${y}-${m}-${d}T${hh}:${mm}`;
+    }
+    return null;
+};
+
 // --- Main Component ---
 const B2BSimulator = () => {
     const navigate = useNavigate();
@@ -224,6 +242,31 @@ const B2BSimulator = () => {
         return d.toISOString().substring(0, 16);
     });
 
+    const [timeInputValue, setTimeInputValue] = useState(() => {
+        const d = new Date();
+        d.setMinutes(d.getMinutes() + 30);
+        const iso = d.toISOString().substring(0, 16);
+        const [date, time] = iso.split('T');
+        const [y, m, d_] = date.split('-');
+        return `${d_}/${m}/${y} ${time}`;
+    });
+
+    // Synchronize states
+    useEffect(() => {
+        const parsed = parseFrom24h(timeInputValue);
+        if (parsed && parsed !== unlockWindow) {
+            setUnlockWindow(parsed);
+        }
+    }, [timeInputValue]);
+
+    useEffect(() => {
+        const formatted = formatTo24h(unlockWindow);
+        if (formatted !== timeInputValue && parseFrom24h(timeInputValue) !== unlockWindow) {
+            setTimeInputValue(formatted);
+        }
+    }, [unlockWindow]);
+
+    const pickerRef = useRef<HTMLInputElement>(null);
     const [isSimulating, setIsSimulating] = useState(false);
     const [status, setStatus] = useState<'idle' | 'scanning' | 'verified' | 'failed'>('idle');
     const [logs, setLogs] = useState<string[]>([]);
@@ -238,6 +281,8 @@ const B2BSimulator = () => {
     const [isEmergency, setIsEmergency] = useState(false);
     const [isWaiting, setIsWaiting] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
+
+
 
     const addLog = (msg: string) => {
         setLogs(prev => [`[${new Date().toLocaleTimeString('en-US', { hour12: false })}] ${msg}`, ...prev].slice(0, 50));
@@ -485,20 +530,27 @@ const B2BSimulator = () => {
 
                                 <div className="space-y-2">
                                     <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Zap className="w-3 h-3" /> MISSION TIMESTAMP</Label>
-                                    <div className="relative bg-black/50 border border-cyan-900 h-8 flex items-center px-3 rounded-md overflow-hidden">
-                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono text-cyan-50 pointer-events-none transition-opacity duration-200 group-focus-within:opacity-0">
-                                            {(() => {
-                                                if (!unlockWindow) return '';
-                                                const [date, time] = unlockWindow.split('T');
-                                                const [y, m, d] = date.split('-');
-                                                return `${d}/${m}/${y} ${time}`;
-                                            })()}
-                                        </span>
+                                    <div className="relative bg-black/50 border border-cyan-900 h-8 flex items-center px-3 rounded-md focus-within:border-cyan-500 transition-colors">
                                         <Input
+                                            type="text"
+                                            value={timeInputValue}
+                                            onChange={(e) => setTimeInputValue(e.target.value)}
+                                            className="bg-transparent border-none text-xs font-mono text-cyan-50 p-0 h-full w-full focus-visible:ring-0"
+                                            placeholder="DD/MM/YYYY HH:mm"
+                                        />
+                                        <button
+                                            onClick={() => pickerRef.current?.showPicker?.()}
+                                            className="ml-2 opacity-50 hover:opacity-100 transition-opacity"
+                                            title="Open Calendar"
+                                        >
+                                            <Calendar className="w-3 h-3 text-cyan-500" />
+                                        </button>
+                                        <input
+                                            ref={pickerRef}
                                             type="datetime-local"
                                             value={unlockWindow}
                                             onChange={(e) => setUnlockWindow(e.target.value)}
-                                            className="absolute inset-0 bg-transparent border-none text-xs font-mono text-transparent focus:text-cyan-50 selection:bg-cyan-900/50 caret-cyan-400 opacity-0 focus:opacity-100 w-full h-full cursor-pointer z-10 transition-all duration-200"
+                                            className="absolute invisible w-0 h-0"
                                         />
                                     </div>
                                 </div>
