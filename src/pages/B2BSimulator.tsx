@@ -484,13 +484,23 @@ const B2BSimulator = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Zap className="w-3 h-3" /> MISSION TIMESTAMP (UTC)</Label>
-                                    <Input
-                                        type="datetime-local"
-                                        value={unlockWindow}
-                                        onChange={(e) => setUnlockWindow(e.target.value)}
-                                        className="bg-black/50 border-cyan-900 h-8 text-xs font-mono"
-                                    />
+                                    <Label className="text-[10px] text-cyan-700 flex items-center gap-2"><Zap className="w-3 h-3" /> MISSION TIMESTAMP</Label>
+                                    <div className="relative bg-black/50 border border-cyan-900 h-8 flex items-center px-3 rounded-md overflow-hidden">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono text-cyan-50 pointer-events-none transition-opacity duration-200 group-focus-within:opacity-0">
+                                            {(() => {
+                                                if (!unlockWindow) return '';
+                                                const [date, time] = unlockWindow.split('T');
+                                                const [y, m, d] = date.split('-');
+                                                return `${d}/${m}/${y} ${time}`;
+                                            })()}
+                                        </span>
+                                        <Input
+                                            type="datetime-local"
+                                            value={unlockWindow}
+                                            onChange={(e) => setUnlockWindow(e.target.value)}
+                                            className="absolute inset-0 bg-transparent border-none text-xs font-mono text-transparent focus:text-cyan-50 selection:bg-cyan-900/50 caret-cyan-400 opacity-0 focus:opacity-100 w-full h-full cursor-pointer z-10 transition-all duration-200"
+                                        />
+                                    </div>
                                 </div>
                                 <Button className="w-full bg-cyan-950/50 hover:bg-cyan-900 border border-cyan-500 text-cyan-400 font-mono text-[10px] py-4 uppercase tracking-widest" onClick={handleGenerateKey} disabled={isSimulating}>
                                     {isSimulating ? 'PROPAGATING TLE...' : 'INITIATE ASTROMETRIC LOCK'}
