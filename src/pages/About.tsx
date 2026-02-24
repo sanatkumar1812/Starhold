@@ -2,7 +2,7 @@ import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { Star, Rocket, Shield, Globe } from 'lucide-react';
+import { Star, Rocket, Shield, Globe, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ScrollToTop } from '@/components/ScrollToTop';
 
@@ -68,8 +68,84 @@ const About = () => {
                             </ScrollReveal>
                         </div>
 
+                        {/* Team Section */}
+                        <ScrollReveal delay={600}>
+                            <section className="space-y-12">
+                                <div className="text-center space-y-4">
+                                    <h2 className="font-serif text-4xl text-foreground">Meet the Visionaries</h2>
+                                    <p className="text-muted-foreground max-w-xl mx-auto">
+                                        The team of young innovators dedicated to making space accessible and memories eternal.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {[
+                                        {
+                                            name: "Sanat Kumar",
+                                            role: "Space Science & Aerospace",
+                                            image: "sanat.png",
+                                            bio: ["Class 10 Student from India", "Passionate about Space Science and Aerospace", "ISRO YuViKa-25 Participant", "Musician(Vocalist+Instrumentalist)", "Likes to cook and read"]
+                                        },
+                                        {
+                                            name: "Osheen Maleri",
+                                            role: "AI & Space",
+                                            image: "osheen.jfif",
+                                            bio: ["Class 10 Student from India", "Passionate about AI and Space", "ISRO YuViKa-25 Participant", "Is an Athlete", "National AI Impact Winner"]
+                                        },
+                                        {
+                                            name: "Cheerag Majumdar",
+                                            role: "Space & Aeronautics",
+                                            image: "cheerag.jpeg",
+                                            bio: ["Class 10th student from India", "Has a deep passion for space and aeronautics", "Is a Vocalist", "Enjoys writing songs", "Likes to play football"]
+                                        },
+                                        {
+                                            name: "Samaira Gupta",
+                                            role: "Math & Astronomy",
+                                            image: "samaira.jpeg",
+                                            bio: ["Class 10th Student from India", "National Squash Player", "Likes listening to music, cycling, reading books", "Is a National AI Impact Winner", "Loves Math, space and astronomy"]
+                                        },
+                                        {
+                                            name: "Avyukt Kamotra",
+                                            role: "Art & Technology",
+                                            image: "",
+                                            bio: ["Class 10th student from India", "Interested in Space and Technology", "Curious Learner with a Problem-solving Mindset", "Balances academics with creative interests", "Skilled in Art and Visual Creativity"]
+                                        }
+                                    ].map((member, index) => (
+                                        <div key={index} className="glass p-8 rounded-3xl border-white/5 space-y-6 group hover:translate-y-[-4px] transition-all duration-300">
+                                            <div className="relative w-44 h-44 mx-auto">
+                                                <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full group-hover:bg-primary/30 transition-colors" />
+                                                <div className="relative w-full h-full rounded-full border-2 border-primary/30 overflow-hidden ring-4 ring-primary/10">
+                                                    {member.image ? (
+                                                        <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center bg-primary/5">
+                                                            <User className="w-20 h-20 text-primary/40" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="text-center space-y-2">
+                                                <h3 className="font-serif text-2xl text-foreground font-bold">{member.name}</h3>
+                                                <p className="text-primary font-medium text-sm tracking-widest uppercase">{member.role}</p>
+                                            </div>
+
+                                            <ul className="space-y-2">
+                                                {member.bio.map((item, i) => (
+                                                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground leading-snug">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary/40 mt-1.5 shrink-0" />
+                                                        <span>{item}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        </ScrollReveal>
+
                         {/* Vision Quote */}
-                        <ScrollReveal delay={500}>
+                        <ScrollReveal delay={700}>
                             <div className="flex flex-col md:flex-row gap-8 items-center glass p-10 rounded-[3rem] border-white/5">
                                 <div className="space-y-4 flex-1">
                                     <h3 className="font-serif text-3xl">Deepen Your Knowledge</h3>
