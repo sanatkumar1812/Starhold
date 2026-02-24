@@ -68,17 +68,24 @@ const About = () => {
                             </ScrollReveal>
                         </div>
 
-                        {/* Team Section */}
-                        <ScrollReveal delay={600}>
-                            <section className="space-y-12">
-                                <div className="text-center space-y-4">
-                                    <h2 className="font-serif text-4xl text-foreground">Meet the Visionaries</h2>
-                                    <p className="text-muted-foreground max-w-xl mx-auto">
-                                        The team of young innovators dedicated to making space accessible and memories eternal.
-                                    </p>
-                                </div>
+                    </div>
+                </main>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <section className="pb-20 px-4">
+                    <div className="max-w-7xl mx-auto space-y-12">
+                        <ScrollReveal delay={600}>
+                            <div className="text-center space-y-4">
+                                <h2 className="font-serif text-4xl text-foreground">Meet the Visionaries</h2>
+                                <p className="text-muted-foreground max-w-xl mx-auto">
+                                    The team of young innovators dedicated to making space accessible and memories eternal.
+                                </p>
+                            </div>
+                        </ScrollReveal>
+
+                        <div className="space-y-20">
+                            {/* Core Visionaries */}
+                            <ScrollReveal delay={650}>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                     {[
                                         {
                                             name: "Sanat Kumar",
@@ -111,39 +118,68 @@ const About = () => {
                                             bio: ["Class 10th student from India", "Interested in Space and Technology", "Curious Learner with a Problem-solving Mindset", "Balances academics with creative interests", "Skilled in Art and Visual Creativity"]
                                         }
                                     ].map((member, index) => (
-                                        <div key={index} className="glass p-8 rounded-3xl border-white/5 space-y-6 group hover:translate-y-[-4px] transition-all duration-300">
-                                            <div className="relative w-44 h-44 mx-auto">
-                                                <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full group-hover:bg-primary/30 transition-colors" />
-                                                <div className="relative w-full h-full rounded-full border-2 border-primary/30 overflow-hidden ring-4 ring-primary/10">
-                                                    {member.image ? (
-                                                        <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center bg-primary/5">
-                                                            <User className="w-20 h-20 text-primary/40" />
-                                                        </div>
-                                                    )}
+                                        <div key={index} className="glass p-6 md:p-10 rounded-[3rem] border-white/5 group hover:translate-y-[-4px] hover:border-primary/20 transition-all duration-300 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12 overflow-hidden">
+                                            <div className="flex flex-col items-center text-center gap-4 shrink-0 w-full md:w-52">
+                                                <div className="relative w-44 h-44 md:w-48 md:h-48">
+                                                    <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full group-hover:bg-primary/30 transition-colors" />
+                                                    <div className="relative w-full h-full rounded-full border-2 border-primary/30 overflow-hidden ring-4 ring-primary/5 shadow-2xl">
+                                                        {member.image ? (
+                                                            <img src={member.image} alt={member.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center bg-primary/5">
+                                                                <User className="w-20 h-20 text-primary/40" />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <h3 className="font-serif text-2xl text-foreground font-bold group-hover:text-primary transition-colors leading-tight">{member.name}</h3>
+                                                    {member.role && <p className="text-primary font-medium text-[10px] tracking-[0.2em] uppercase">{member.role}</p>}
                                                 </div>
                                             </div>
 
-                                            <div className="text-center space-y-2">
-                                                <h3 className="font-serif text-2xl text-foreground font-bold">{member.name}</h3>
-                                                <p className="text-primary font-medium text-sm tracking-widest uppercase">{member.role}</p>
+                                            <div className="flex-grow space-y-4 md:pt-4 min-w-0">
+                                                <div className="w-12 h-0.5 bg-primary/20 hidden md:block" />
+                                                <ul className="space-y-3">
+                                                    {member.bio.map((item, i) => (
+                                                        <li key={i} className="flex items-start gap-3 text-sm md:text-[0.9375rem] text-muted-foreground/80 leading-relaxed break-words">
+                                                            <div className="w-1 h-1 rounded-full bg-primary/40 mt-2 shrink-0" />
+                                                            <span className="flex-1">{item}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
                                             </div>
-
-                                            <ul className="space-y-2">
-                                                {member.bio.map((item, i) => (
-                                                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground leading-snug">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary/40 mt-1.5 shrink-0" />
-                                                        <span>{item}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
                                         </div>
                                     ))}
                                 </div>
-                            </section>
-                        </ScrollReveal>
+                            </ScrollReveal>
 
+                            {/* Supporting Team */}
+                            <ScrollReveal delay={700}>
+                                <div className="pt-16 border-t border-white/5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                                        {[
+                                            { name: "Rakshit Rana" },
+                                            { name: "Paarth Aggarwal" },
+                                            { name: "Ishita Choudhary" }
+                                        ].map((member, index) => (
+                                            <div key={index} className="glass py-12 px-8 rounded-[2.5rem] border-white/5 flex flex-col items-center gap-6 group hover:bg-white/5 transition-colors">
+                                                <div className="w-20 h-20 rounded-full bg-primary/5 border border-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                    <User className="w-10 h-10 text-primary/30" />
+                                                </div>
+                                                <span className="font-serif text-2xl text-foreground font-semibold">{member.name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </ScrollReveal>
+                        </div>
+                    </div>
+                </section>
+
+                <main className="pb-20 px-4">
+                    <div className="max-w-4xl mx-auto">
                         {/* Vision Quote */}
                         <ScrollReveal delay={700}>
                             <div className="flex flex-col md:flex-row gap-8 items-center glass p-10 rounded-[3rem] border-white/5">
