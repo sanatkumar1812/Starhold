@@ -33,18 +33,29 @@ const TechDocsPage = () => {
                         {/* Market & Technical Research Section */}
                         <ScrollReveal delay={100}>
                             <div className="grid lg:grid-cols-2 gap-8 items-stretch">
-                                <div className="glass p-8 md:p-12 rounded-[3rem] border-white/5 flex flex-col justify-center space-y-6">
+                                <div className="glass p-8 md:p-12 rounded-[3rem] border-white/5 flex flex-col space-y-6">
                                     <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                         <FileText className="w-7 h-7" />
                                     </div>
                                     <h2 className="text-3xl font-serif">Market & Technical Research</h2>
                                     <p className="text-muted-foreground leading-relaxed">
-                                        Our comprehensive research paper detailing the convergence of orbital mechanics,
+                                        Our comprehensive research paper detailing the convergence of orbital mechanics, 
                                         astrometric verification, and the future of cosmic information infrastructure.
                                     </p>
-                                    <div className="pt-4 flex flex-wrap gap-4">
+                                    
+                                    {/* PDF Preview */}
+                                    <div className="relative group rounded-2xl overflow-hidden border border-white/5 bg-black/40 aspect-[4/3] flex items-center justify-center mb-4">
+                                        <iframe 
+                                            src="Starhold Market and Technical Research.pdf#toolbar=0&navpanes=0&scrollbar=0" 
+                                            className="w-full h-full border-none pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity"
+                                            title="PDF Preview"
+                                        />
+                                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-4 mt-auto">
                                         <Button asChild variant="gold" className="rounded-xl px-6">
-                                            <a href="Starhold Market and Technical Research.pdf" target="_blank" rel="noopener noreferrer">
+                                            <a href="Starhold Market and Technical Research.pdf" download="Starhold Market and Technical Research.pdf">
                                                 <Download className="w-4 h-4 mr-2" /> Download PDF
                                             </a>
                                         </Button>
