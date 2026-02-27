@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
     Satellite, Shield, Lock, Radio, Cpu,
-    Terminal, Globe, Zap, Settings, ArrowLeft, Calendar
+    Terminal, Globe, Zap, Settings, ArrowLeft, Calendar, FileText
 } from 'lucide-react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Html, Line } from '@react-three/drei';
@@ -576,6 +576,13 @@ const B2BSimulator = () => {
                         </ScrollArea>
                         <Button className="w-full bg-emerald-950/50 hover:bg-emerald-900 border border-emerald-500 text-emerald-400 font-mono text-[10px] py-4" onClick={handleTransmit} disabled={status !== 'verified' || isWaiting}>
                             <Terminal className="w-4 h-4 mr-2" />{isWaiting ? `LINKING (${countdown}s)` : 'TRANSMIT ENCRYPTED PAYLOAD'}
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            className="w-full text-cyan-700 hover:text-cyan-400 font-mono text-[9px] uppercase tracking-tighter"
+                            onClick={() => navigate('/techdocs')}
+                        >
+                            <FileText className="w-3 h-3 mr-2" /> View Technical Docs
                         </Button>
                     </Card>
 

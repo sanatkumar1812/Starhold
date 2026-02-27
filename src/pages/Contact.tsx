@@ -82,7 +82,7 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h4 className="font-medium text-foreground">Global Relay</h4>
-                                        <p className="text-sm text-muted-foreground">Support Hours: 09:00 - 18:00 UTC</p>
+                                        <p className="text-sm text-muted-foreground">Support Hours: 0330 to 1530 UTC</p>
                                     </div>
                                 </div>
                             </div>

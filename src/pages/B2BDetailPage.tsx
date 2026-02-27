@@ -4,11 +4,12 @@ import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { Button } from '@/components/ui/button';
 import { Satellite, Shield, Lock, Radio, Eye, CheckCircle2, XCircle, Cpu } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { B2BPreviewSimulator } from '@/components/B2BPreviewSimulator';
 
 const B2BDetailPage = () => {
+    const navigate = useNavigate();
     return (
         <div className="min-h-screen relative overflow-hidden bg-background">
             <CosmicBackground />
@@ -35,6 +36,7 @@ const B2BDetailPage = () => {
                                     <Button
                                         variant="outline"
                                         size="lg"
+                                        onClick={() => navigate('/techdocs')}
                                         className="px-8 py-6 text-lg rounded-xl border-cosmic-blue/30 text-cosmic-blue hover:bg-cosmic-blue/10"
                                     >
                                         <Cpu className="w-5 h-5 mr-2" />
