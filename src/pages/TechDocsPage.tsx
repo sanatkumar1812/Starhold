@@ -44,12 +44,12 @@ const TechDocsPage = () => {
                                     </p>
                                     <div className="pt-4 flex flex-wrap gap-4">
                                         <Button asChild variant="gold" className="rounded-xl px-6">
-                                            <a href="/Starhold Market and Technical Research.pdf" target="_blank" rel="noopener noreferrer">
+                                            <a href="Starhold Market and Technical Research.pdf" target="_blank" rel="noopener noreferrer">
                                                 <Download className="w-4 h-4 mr-2" /> Download PDF
                                             </a>
                                         </Button>
                                         <Button asChild variant="outline" className="rounded-xl px-6 border-white/10 hover:bg-white/5">
-                                            <a href="/Starhold Market and Technical Research.pdf" target="_blank" rel="noopener noreferrer">
+                                            <a href="Starhold Market and Technical Research.pdf" target="_blank" rel="noopener noreferrer">
                                                 <ExternalLink className="w-4 h-4 mr-2" /> View Fullscreen
                                             </a>
                                         </Button>
@@ -66,13 +66,13 @@ const TechDocsPage = () => {
                                     </p>
                                     <div className="relative group rounded-2xl overflow-hidden border border-white/5 bg-black/40 aspect-[4/3] flex items-center justify-center">
                                         <img
-                                            src="/Starhold onepager.png"
+                                            src="Starhold onepager.png"
                                             alt="Starhold Onepager"
                                             className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700"
                                         />
                                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                             <Button asChild variant="gold" size="sm">
-                                                <a href="/Starhold onepager.png" target="_blank">Enlarge Image</a>
+                                                <a href="Starhold onepager.png" target="_blank">Enlarge Image</a>
                                             </Button>
                                         </div>
                                     </div>
