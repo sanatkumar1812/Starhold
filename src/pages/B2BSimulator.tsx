@@ -317,10 +317,7 @@ const B2BSimulator = () => {
             ORDER BY phot_g_mean_mag ASC
             LIMIT 100
         `;
-        // Use CORS proxy to bypass browser restrictions
-        const proxyUrl = 'https://corsproxy.io/?';
-        const targetUrl = `https://gea.esac.esa.int/tap-server/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=${encodeURIComponent(query)}`;
-        const url = proxyUrl + encodeURIComponent(targetUrl);
+        const url = `https://gea.esac.esa.int/tap-server/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=${encodeURIComponent(query)}`;
 
         try {
             const controller = new AbortController();

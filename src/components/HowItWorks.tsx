@@ -1,11 +1,11 @@
-import { Pen, Star, Lock, Telescope, Globe, MapPin } from 'lucide-react';
+﻿import { Pen, Star, Lock, Telescope, Globe, MapPin } from 'lucide-react';
 
 export const HowItWorks = () => {
   const steps = [
     {
       icon: Pen,
       title: 'Digitize Your Essence',
-      description: 'Encode your memories—letters, photos, or voice notes—into a secure digital artifact that transcends physical storage.',
+      description: 'Encode your memories-letters, photos, or voice notes-into a secure digital artifact that transcends physical storage.',
     },
     {
       icon: Star,

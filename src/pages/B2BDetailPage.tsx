@@ -1,4 +1,4 @@
-import { CosmicBackground } from '@/components/CosmicBackground';
+﻿import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
@@ -30,7 +30,7 @@ const B2BDetailPage = () => {
                                 </h1>
                                 <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
                                     A physics-based verification layer for satellite commands. Uses star tracker observations
-                                    as non-spoofable authorization keys—no GPS, no ground contact required.
+                                    as non-spoofable authorization keys-no GPS, no ground contact required.
                                 </p>
                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
                                     <Button
@@ -325,7 +325,7 @@ const B2BDetailPage = () => {
                                                 Important: Verification Witness, Not Control
                                             </h3>
                                             <p className="text-muted-foreground leading-relaxed">
-                                                Starhold does <strong>not</strong> control satellites with stars. Stars act as <strong>verification witnesses</strong>—
+                                                Starhold does <strong>not</strong> control satellites with stars. Stars act as <strong>verification witnesses</strong>-
                                                 a physics-based condition that must be met for command authorization. The satellite's star tracker
                                                 observes the sky autonomously, and if the observed star matches the expected parameters,
                                                 the command is authorized for execution.

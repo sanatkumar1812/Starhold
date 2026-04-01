@@ -1,4 +1,4 @@
-
+﻿
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,7 +40,7 @@ const steps: WalkthroughStep[] = [
         targetId: "obs-compass-btn",
         description: (
             <div className="space-y-3 font-light leading-relaxed">
-                <p>Everything starts here. Click the **Compass** to open your observation controls—your headquarters for location, time, and navigation modes.</p>
+                <p>Everything starts here. Click the **Compass** to open your observation controls-your headquarters for location, time, and navigation modes.</p>
             </div>
         )
     },

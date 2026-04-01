@@ -1,4 +1,4 @@
-import { CosmicBackground } from '@/components/CosmicBackground';
+﻿import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
@@ -38,7 +38,7 @@ const B2CDetailPage = () => {
                                     Cosmic Memory Registry
                                 </h1>
                                 <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                                    Preserve your most precious moments in the stars. Each memory receives a unique celestial address—
+                                    Preserve your most precious moments in the stars. Each memory receives a unique celestial address-
                                     encrypted, time-locked, and waiting among the cosmos.
                                 </p>
                                 <div className="pt-6">
@@ -255,7 +255,7 @@ const B2CDetailPage = () => {
                                         </h2>
                                         <p className="text-muted-foreground text-lg leading-relaxed">
                                             Each memory comes with a beautifully designed physical star map plaque.
-                                            It features your constellation, precise coordinates, and unlock date—
+                                            It features your constellation, precise coordinates, and unlock date-
                                             a tangible connection to your digital legacy among the stars.
                                         </p>
                                         <ul className="grid sm:grid-cols-2 gap-4">
@@ -292,7 +292,7 @@ const B2CDetailPage = () => {
                                     <span className="text-gradient-gold">to the Infinite</span>
                                 </h2>
                                 <p className="text-muted-foreground text-lg leading-relaxed max-w-xl mx-auto">
-                                    Create a gift that will be remembered for generations—a moment frozen in time,
+                                    Create a gift that will be remembered for generations-a moment frozen in time,
                                     waiting among the cosmos.
                                 </p>
                                 <div className="pt-8">

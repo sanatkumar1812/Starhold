@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sparkles, ArrowDown } from 'lucide-react';
@@ -52,7 +52,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
 
         {/* Subtitle */}
         <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 px-4">
-          A star-addressed system that binds data to celestial coordinates and time—
+          A star-addressed system that binds data to celestial coordinates and time-
           from personal memories to mission-critical satellite commands.
         </p>
 

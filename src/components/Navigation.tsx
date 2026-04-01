@@ -26,6 +26,9 @@ export const Navigation = () => {
       <Link to="/academy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
         Academy
       </Link>
+      <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+        Pricing
+      </Link>
       <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
         About
       </Link>

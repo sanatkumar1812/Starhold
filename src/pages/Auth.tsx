@@ -52,30 +52,7 @@ const Auth = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (signupData.password !== signupData.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
-    if (signupData.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
-
-    setIsLoading(true);
-
-    const success = await signup(signupData.name, signupData.email, signupData.password);
-    if (success) {
-      toast.success('Account created successfully!');
-      const redirect = searchParams.get('redirect');
-      if (redirect === 'create') {
-        navigate('/?create=true');
-      } else {
-        navigate('/dashboard');
-      }
-    }
-    setIsLoading(false);
+    toast.error('Sorry! Admin has disabled signing up');
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {

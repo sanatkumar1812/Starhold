@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, Eye, Sparkles as SparklesIcon } from 'lucide-react';
 import { getSkyViewUrl } from '@/lib/skyview';
@@ -399,7 +399,7 @@ export const StarMap = ({
     if (recipientName) {
       ctx.font = '10px Georgia, serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-      ctx.fillText('— FOR —', centerX, currentY);
+      ctx.fillText('- FOR -', centerX, currentY);
       currentY += 22;
 
       ctx.font = '500 22px Cinzel, Georgia, serif';
@@ -412,7 +412,7 @@ export const StarMap = ({
     if (unlockDate) {
       ctx.font = '10px Georgia, serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-      ctx.fillText('— UNLOCKS —', centerX, currentY);
+      ctx.fillText('- UNLOCKS -', centerX, currentY);
       currentY += 20;
 
       ctx.font = '15px Georgia, serif';

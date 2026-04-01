@@ -1,4 +1,4 @@
-import { CosmicBackground } from '@/components/CosmicBackground';
+﻿import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
@@ -130,7 +130,7 @@ const TechDocsPage = () => {
                                         <p className="text-muted-foreground leading-relaxed">
                                             The protocol begins by resolving the satellite's exact position index in the Earth-Centered Inertial (ECI) frame.
                                             Using the <strong>Simplified General Perturbations (SGP4)</strong> model, we ingest NASA/NORAD Two-Line Element (TLE) sets
-                                            to calculate the Zenith Boresight—a vector pointing directly away from Earth's center through the optical sensor.
+                                            to calculate the Zenith Boresight-a vector pointing directly away from Earth's center through the optical sensor.
                                         </p>
                                         <div className="bg-slate-950/50 p-6 rounded-2xl border border-white/5 font-mono text-xs space-y-2 overflow-hidden">
                                             <div className="text-primary/40 border-b border-white/5 pb-2 mb-4">ORBITAL PROPAGATION VECTOR</div>
