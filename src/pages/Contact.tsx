@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Mail, MessageSquare, Send, Loader2 } from 'lucide-react';
+import { Mail, MessageSquare, Send, Loader2, Instagram } from 'lucide-react';
 import {
     Select,
     SelectContent,
@@ -26,7 +26,7 @@ const Contact = () => {
         const formData = new FormData(e.currentTarget);
 
         try {
-            const response = await fetch("https://formsubmit.co/ajax/sanatkumar1812@gmail.com", {
+            const response = await fetch("https://formsubmit.co/ajax/starhold.co@gmail.com", {
                 method: "POST",
                 body: formData,
             });
@@ -72,7 +72,17 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h4 className="font-medium text-foreground">Direct Frequency</h4>
-                                        <p className="text-sm text-muted-foreground">sanatkumar1812@gmail.com</p>
+                                        <p className="text-sm text-muted-foreground">starhold.co@gmail.com</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4 group cursor-pointer" onClick={() => window.open("https://www.instagram.com/starhold.in/?hl=en", "_blank")}>
+                                    <div className="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center group-hover:bg-pink-500/20 transition-colors">
+                                        <Instagram className="w-6 h-6 text-pink-500" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-medium text-foreground">Instagram Feed</h4>
+                                        <p className="text-sm text-muted-foreground">@starhold.in</p>
                                     </div>
                                 </div>
 
