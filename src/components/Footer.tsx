@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { Star, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Footer = () => {
@@ -69,12 +69,24 @@ export const Footer = () => {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground order-2 sm:order-1">
             © {new Date().getFullYear()} Starhold. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
-            Imagery courtesy of NASA/ESA/CSA
-          </p>
+          
+          <div className="flex items-center gap-6 order-1 sm:order-2">
+            <a 
+              href="https://www.instagram.com/starhold.in/?hl=en" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-pink-500 transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+            <p className="text-xs text-muted-foreground">
+              Imagery courtesy of NASA/ESA/CSA
+            </p>
+          </div>
         </div>
       </div>
     </footer>
