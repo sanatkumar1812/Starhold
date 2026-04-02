@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import {
-  ChevronRight, Type, Mic, Video, Image as ImageIcon, Satellite, Shield, Eye, Lock, Sparkles, Rocket, Plus
+  ChevronRight, Type, Mic, Video, Image as ImageIcon, Satellite, Shield, Eye, Lock, Sparkles, Rocket, Plus, Calculator
 } from 'lucide-react';
 
 const payloadRates = [
@@ -77,6 +77,28 @@ const b2bFeatures = [
 const Pricing = () => {
   const navigate = useNavigate();
   const [currency, setCurrency] = useState<'INR' | 'USD'>('USD');
+  const [words, setWords] = useState<number>(100);
+  const [voice, setVoice] = useState<number>(0);
+  const [video, setVideo] = useState<number>(0);
+  const [images, setImages] = useState<number>(0);
+
+  const calculateTotal = () => {
+    let total = 0;
+    if (currency === 'INR') {
+      if (words > 0) total += 200 + Math.max(0, Math.ceil((words - 100) / 100)) * 50;
+      if (voice > 0) total += 200 + Math.max(0, voice - 1) * 100;
+      if (video > 0) total += 300 + Math.max(0, video - 1) * 150;
+      if (images > 0) total += 500 + Math.max(0, images - 5) * 50;
+    } else {
+      if (words > 0) total += 5 + Math.max(0, Math.ceil((words - 100) / 100)) * 1;
+      if (voice > 0) total += 5 + Math.max(0, voice - 1) * 1.5;
+      if (video > 0) total += 7 + Math.max(0, video - 1) * 2;
+      if (images > 0) total += 5 + Math.max(0, images - 5) * 2;
+    }
+    return total;
+  };
+
+  const totalCost = calculateTotal();
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-background">
@@ -215,6 +237,65 @@ const Pricing = () => {
                     >
                       Start Designing <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* Interactive Estimator */}
+              <ScrollReveal delay={200}>
+                <div className="glass-strong rounded-3xl border border-primary/20 overflow-hidden shadow-2xl mt-8">
+                  <div className="p-6 md:p-8 border-b border-border/20 bg-primary/[0.02]">
+                    <h3 className="font-serif text-2xl text-foreground flex items-center gap-2">
+                       <Calculator className="w-5 h-5 text-primary" /> Payload Cost Estimator
+                    </h3>
+                    <p className="text-muted-foreground mt-1 text-sm">Experiment with your expected payload size to estimate the final cost.</p>
+                  </div>
+                  
+                  <div className="p-6 md:p-8 grid md:grid-cols-5 gap-8 items-stretch relative bg-black/20">
+                    
+                    {/* Inputs */}
+                    <div className="md:col-span-3 space-y-6">
+                       <div className="space-y-3">
+                          <label className="text-sm font-medium text-foreground flex justify-between">
+                            <span>Text (Words)</span>
+                            <span className="text-primary">{words} words</span>
+                          </label>
+                          <input type="range" min="0" max="2000" step="50" value={words} onChange={(e) => setWords(parseInt(e.target.value))} className="w-full accent-primary" />
+                       </div>
+                       
+                       <div className="space-y-3">
+                          <label className="text-sm font-medium text-foreground flex justify-between">
+                            <span className="text-cosmic-purple">Voice Notes (Minutes)</span>
+                            <span className="text-cosmic-purple">{voice} mins</span>
+                          </label>
+                          <input type="range" min="0" max="30" step="1" value={voice} onChange={(e) => setVoice(parseInt(e.target.value))} className="w-full accent-cosmic-purple" />
+                       </div>
+                       
+                       <div className="space-y-3">
+                          <label className="text-sm font-medium text-foreground flex justify-between">
+                            <span className="text-cyan-400">Video Messages (Minutes)</span>
+                            <span className="text-cyan-400">{video} mins</span>
+                          </label>
+                          <input type="range" min="0" max="30" step="1" value={video} onChange={(e) => setVideo(parseInt(e.target.value))} className="w-full accent-cyan-400" />
+                       </div>
+
+                       <div className="space-y-3">
+                          <label className="text-sm font-medium text-foreground flex justify-between">
+                            <span className="text-cosmic-blue">Images (Quantity)</span>
+                            <span className="text-cosmic-blue">{images} photos</span>
+                          </label>
+                          <input type="range" min="0" max="50" step="1" value={images} onChange={(e) => setImages(parseInt(e.target.value))} className="w-full accent-cosmic-blue" />
+                       </div>
+                    </div>
+                    
+                    {/* Result */}
+                    <div className="md:col-span-2 flex flex-col items-center justify-center space-y-2 p-8 glass rounded-2xl border border-primary/20 relative overflow-hidden min-h-[200px]">
+                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
+                       <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground z-10 mb-2">Estimated Total</p>
+                       <span className="font-serif text-5xl md:text-6xl text-primary font-medium text-glow z-10 break-all text-center">
+                          {currency === 'INR' ? '₹' : '$'}{totalCost.toLocaleString(undefined, { minimumFractionDigits: currency==='USD'?2:0, maximumFractionDigits: currency==='USD'?2:0 })}
+                       </span>
+                    </div>
                   </div>
                 </div>
               </ScrollReveal>
