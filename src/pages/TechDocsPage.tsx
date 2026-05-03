@@ -1,4 +1,4 @@
-﻿import { CosmicBackground } from '@/components/CosmicBackground';
+import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
@@ -124,30 +124,31 @@ const TechDocsPage = () => {
                                 <div className="grid lg:grid-cols-2 gap-16 items-start">
                                     <div className="space-y-6">
                                         <div className="flex items-center gap-3 text-primary">
-                                            <div className="p-2 rounded-lg bg-primary/10"><Satellite className="w-6 h-6" /></div>
-                                            <h3 className="text-2xl font-serif">Phase 1: SGP4 Orbital Propagation</h3>
+                                            <div className="p-2 rounded-lg bg-primary/10"><Binary className="w-6 h-6" /></div>
+                                            <h3 className="text-2xl font-serif">1. Tri-Bind HKDF (Key Derivation)</h3>
                                         </div>
                                         <p className="text-muted-foreground leading-relaxed">
-                                            The protocol begins by resolving the satellite's exact position index in the Earth-Centered Inertial (ECI) frame.
-                                            Using the <strong>Simplified General Perturbations (SGP4)</strong> model, we ingest NASA/NORAD Two-Line Element (TLE) sets
-                                            to calculate the Zenith Boresight-a vector pointing directly away from Earth's center through the optical sensor.
+                                            The heart of the V2.7 upgrade is the "Tri-Bind" key synthesis using HKDF (HMAC-based Key Derivation Function). Raw stellar inputs are extracted and expanded into a cryptographically strong key bound to three distinct pillars:
                                         </p>
-                                        <div className="bg-slate-950/50 p-6 rounded-2xl border border-white/5 font-mono text-xs space-y-2 overflow-hidden">
-                                            <div className="text-primary/40 border-b border-white/5 pb-2 mb-4">ORBITAL PROPAGATION VECTOR</div>
-                                            <div className="text-cyan-500">t_epoch = [2460368.5] // Julian Date</div>
-                                            <div className="text-cyan-500">r_eci = [6781.2, -452.1, 1205.4] // km</div>
-                                            <div className="text-cyan-500">v_eci = [0.45, 7.52, -1.23] // km/s</div>
-                                            <div className="pt-4 text-xs text-muted-foreground/60 italic">
-                                                // Precession, nutation, and polar motion corrections applied
-                                            </div>
-                                        </div>
+                                        <ul className="space-y-3 pt-2">
+                                            <li className="flex gap-3 text-sm text-muted-foreground">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                                                <span><strong>Entropy Source:</strong> The concatenation of the Stellar Geometry Seed and the MASTER_SECRET.</span>
+                                            </li>
+                                            <li className="flex gap-3 text-sm text-muted-foreground">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                                                <span><strong>Temporal Context (Salt):</strong> Target Time UTC guarantees keys rotate per minute even if the star field is stationary.</span>
+                                            </li>
+                                            <li className="flex gap-3 text-sm text-muted-foreground">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                                                <span><strong>Hardware Identity (Info):</strong> Binds the key to the specific satellite hardware preventing cross-device spoofing.</span>
+                                            </li>
+                                        </ul>
                                     </div>
                                     <div className="glass p-8 rounded-[2rem] border-white/5 space-y-4">
-                                        <h4 className="font-mono text-xs text-primary uppercase tracking-tighter tracking-widest">Zenith Boresight Logic</h4>
+                                        <h4 className="font-mono text-xs text-primary uppercase tracking-widest">Spacetime Enforcement</h4>
                                         <p className="text-sm text-muted-foreground leading-relaxed">
-                                            Encryption keys are tied to the <strong>Zenith Vector (Ẑ)</strong>. At any given millisecond, only the specific satellite
-                                            at its designated orbital node has the "Line of Sight" required to authenticate the star pattern.
-                                            This creates a unique "Time-Space Dual Lock" that cannot be replicated from any other point in Earth orbit.
+                                            A strict ±60-second window is enforced. A packet captured by an adversary cannot be replayed hours later. The satellite enforces that "Now" must match the "Target Time" in the packet, ensuring Earth and Orbit are looking at the exact same slice of the universe simultaneously.
                                         </p>
                                         <div className="h-40 flex items-center justify-center opacity-40">
                                             <Globe className="w-32 h-32 animate-pulse text-primary/20" />
@@ -159,19 +160,18 @@ const TechDocsPage = () => {
                                 <div className="space-y-12">
                                     <div className="max-w-3xl space-y-6">
                                         <div className="flex items-center gap-3 text-primary">
-                                            <div className="p-2 rounded-lg bg-primary/10"><Binary className="w-6 h-6" /></div>
-                                            <h3 className="text-2xl font-serif">Phase 2: Gaia DR3 Astrometric Locking</h3>
+                                            <div className="p-2 rounded-lg bg-primary/10"><Satellite className="w-6 h-6" /></div>
+                                            <h3 className="text-2xl font-serif">2. Stellar Geometry & Fuzzy Binning</h3>
                                         </div>
                                         <p className="text-muted-foreground leading-relaxed text-lg">
-                                            Once the Zenith coordinate (RA/Dec) is established, the satellite syncs with the <strong>Gaia DR3 Star Catalog</strong>.
-                                            The protocol identifies the unique geometric constellation of the 10 brightest bodies in the current Field of View.
+                                            Physical reality acts as a cryptographic key. The RA/Dec coordinates and relative distances of the 5 brightest stars form a unique 10-point geometric vector.
                                         </p>
                                     </div>
                                     <div className="grid md:grid-cols-3 gap-8">
                                         {[
-                                            { icon: Binary, title: "Deterministic Hashing", desc: "The relative distances and magnitudes of the stars are hashed to create a 256-bit entropy pool." },
-                                            { icon: Activity, title: "Astrometric Noise", desc: "Sub-arcsecond variations in star position (parallax) act as a natural random number generator." },
-                                            { icon: Lock, title: "Temporal Vaulting", desc: "The keys expire the moment the satellite moves 500 meters beyond its calculated orbital point." }
+                                            { icon: Binary, title: "Unforgeable Seed", desc: "Dependent on exact satellite position and orientation, impossible to spoof terrestrially." },
+                                            { icon: Activity, title: "Fuzzy Binning", desc: "Distances are binned into 0.5° increments, making the system resilient to minor atmospheric jitter or sensor noise." },
+                                            { icon: Lock, title: "Deterministic Convergence", desc: "Ground Station prediction and Satellite observation converge perfectly on the same mathematical seed." }
                                         ].map(item => (
                                             <div key={item.title} className="p-8 rounded-2xl bg-white/5 border border-white/5 space-y-4">
                                                 <item.icon className="w-5 h-5 text-primary" />
@@ -183,12 +183,10 @@ const TechDocsPage = () => {
                                     <div className="max-w-3xl mx-auto bg-slate-900/50 p-8 rounded-3xl border border-white/5 font-mono text-sm leading-relaxed">
                                         <div className="text-xs text-primary/40 mb-4 uppercase tracking-widest font-bold">Key Derivation Function (KDF)</div>
                                         <div className="text-slate-300">
-                                            stars = Gaia.fetch(RA, Dec, FOV=15°) <br />
-                                            p_seeds = stars.map(s {'=>'} hash(s.id + s.mag)) <br />
-                                            master_key = HMAC_SHA256(p_seeds, t_epoch)
-                                        </div>
-                                        <div className="mt-6 p-4 bg-black/60 rounded-lg text-xs text-emerald-400/80 border border-emerald-500/20 break-all">
-                                            0x7f4e2c88d8b9a1...1e2f3d4c5b6a789 // Final Derived Mission Key
+                                            ikm = StellarGeometrySeed + MASTER_SECRET <br />
+                                            salt = target_time_utc <br />
+                                            info = HARDWARE_ID <br />
+                                            sky_key = HKDF(algorithm=SHA256, length=32, salt, info, ikm)
                                         </div>
                                     </div>
                                 </div>
@@ -197,18 +195,16 @@ const TechDocsPage = () => {
                                 <div className="p-12 md:p-16 rounded-[4rem] bg-gradient-to-br from-primary/10 via-transparent to-transparent border border-primary/20">
                                     <div className="grid lg:grid-cols-2 gap-16 items-center">
                                         <div className="space-y-8">
-                                            <h3 className="text-3xl font-serif">Phase 3: AES-256-GCM Cryptographic Stack</h3>
+                                            <h3 className="text-3xl font-serif">3. AES-GCM & Zero-Trust Architecture</h3>
                                             <p className="text-muted-foreground leading-relaxed">
-                                                The generated astrometric hash is used as an additional authentication factor in our
-                                                <strong>AES-256-GCM</strong> cipher stack. This ensures that even if a message is intercepted,
-                                                it cannot be decrypted without the real-time telemetry from the Starhold satellite network.
+                                                Moving from basic AES to AES-GCM provides Authenticated Encryption with Associated Data (AEAD). In a zero-trust environment, confidentiality is paired with tamper-evidence.
                                             </p>
                                             <ul className="grid sm:grid-cols-2 gap-4 pt-4">
                                                 {[
-                                                    "Galois/Counter Mode security",
-                                                    "Nadir-uplinked IV salts",
-                                                    "Zenith-derived entropy",
-                                                    "Hardware-Locked decrypt"
+                                                    "Fail-Fast Security (InvalidTag)",
+                                                    "Prevents bit-flipping attacks",
+                                                    "AAD: Ground Station ID",
+                                                    "Secure RAM Purge (Cold boot safe)"
                                                 ].map(i => (
                                                     <li key={i} className="flex gap-3 text-sm text-muted-foreground">
                                                         <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5" />
@@ -221,9 +217,9 @@ const TechDocsPage = () => {
                                             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                                             <div className="text-primary mb-6 animate-pulse"><Terminal className="w-10 h-10 mx-auto" /></div>
                                             <div className="text-[11px] text-primary/60 border-t border-white/10 pt-6 space-y-2">
-                                                <div>CIPHER_SUITE: AES_256_GCM_CELESTIAL</div>
-                                                <div>AUTH_MODE: HARDWARE_ZENITH_LOCKED</div>
-                                                <div>ENTROPY_SOURCE: ASTROMETRIC_GAIA_DR3</div>
+                                                <div>CIPHER_SUITE: AES_256_GCM</div>
+                                                <div>AUTH_MODE: ZERO_TRUST_TAG_VALIDATION</div>
+                                                <div>MEMORY_STATUS: SECURE_RAM_PURGE_ENABLED</div>
                                                 <div className="text-emerald-500 font-bold mt-4">// SECURITY STATUS: VALID</div>
                                             </div>
                                         </div>

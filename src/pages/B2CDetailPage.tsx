@@ -1,4 +1,4 @@
-﻿import { CosmicBackground } from '@/components/CosmicBackground';
+import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
@@ -7,6 +7,7 @@ import { Star, Lock, Calendar, Image, Gift, Sparkles, Shield, Radio, Box, Map, G
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { ScrollToTop } from '@/components/ScrollToTop';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 const B2CDetailPage = () => {
     const navigate = useNavigate();
@@ -240,6 +241,56 @@ const B2CDetailPage = () => {
                                         <div className="text-[10px] font-mono text-primary animate-pulse">LOCKING SOURCE...</div>
                                         <div className="text-xs font-mono text-white/40 uppercase">Ep. J2000.0</div>
                                     </div>
+                                </div>
+                            </section>
+                        </ScrollReveal>
+
+                        {/* Memory Creation Walkthrough (Carousel) */}
+                        <ScrollReveal delay={450}>
+                            <section className="space-y-12 border-t border-white/5 pt-32">
+                                <div className="text-center space-y-4">
+                                    <h2 className="font-serif text-4xl md:text-5xl text-foreground">
+                                        Crafting Your <span className="text-gradient-gold">Celestial Legacy</span>
+                                    </h2>
+                                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                                        See how simple it is to bind your memories to the cosmos.
+                                    </p>
+                                </div>
+
+                                <div className="max-w-4xl mx-auto relative px-12">
+                                    <Carousel className="w-full">
+                                        <CarouselContent>
+                                            <CarouselItem>
+                                                <div className="glass rounded-[2rem] p-4 border-white/5 overflow-hidden">
+                                                    <img src="/screenshot_message.png" alt="Step 1: Write your message" className="w-full h-auto rounded-xl shadow-2xl object-cover object-top max-h-[60vh]" />
+                                                    <div className="mt-6 text-center">
+                                                        <h3 className="font-serif text-2xl text-foreground">1. Compose Your Message</h3>
+                                                        <p className="text-muted-foreground mt-2">Write the words that will echo through time.</p>
+                                                    </div>
+                                                </div>
+                                            </CarouselItem>
+                                            <CarouselItem>
+                                                <div className="glass rounded-[2rem] p-4 border-white/5 overflow-hidden">
+                                                    <img src="/screenshot_media.png" alt="Step 2: Attach Media" className="w-full h-auto rounded-xl shadow-2xl object-cover object-top max-h-[60vh]" />
+                                                    <div className="mt-6 text-center">
+                                                        <h3 className="font-serif text-2xl text-foreground">2. Attach Vivid Memories</h3>
+                                                        <p className="text-muted-foreground mt-2">Add photos and videos to accompany your cosmic transmission.</p>
+                                                    </div>
+                                                </div>
+                                            </CarouselItem>
+                                            <CarouselItem>
+                                                <div className="glass rounded-[2rem] p-4 border-white/5 overflow-hidden">
+                                                    <img src="/screenshot_date.png" alt="Step 3: Select Unlock Date" className="w-full h-auto rounded-xl shadow-2xl object-cover object-top max-h-[60vh]" />
+                                                    <div className="mt-6 text-center">
+                                                        <h3 className="font-serif text-2xl text-foreground">3. Set the Time Lock</h3>
+                                                        <p className="text-muted-foreground mt-2">Choose the exact future date when the stars will reveal your message.</p>
+                                                    </div>
+                                                </div>
+                                            </CarouselItem>
+                                        </CarouselContent>
+                                        <CarouselPrevious className="hidden md:flex -left-12 bg-background/50 border-white/10 hover:bg-primary/20 hover:text-primary transition-colors" />
+                                        <CarouselNext className="hidden md:flex -right-12 bg-background/50 border-white/10 hover:bg-primary/20 hover:text-primary transition-colors" />
+                                    </Carousel>
                                 </div>
                             </section>
                         </ScrollReveal>

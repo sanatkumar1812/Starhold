@@ -1,4 +1,4 @@
-﻿import { CosmicBackground } from '@/components/CosmicBackground';
+import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
@@ -308,6 +308,29 @@ const B2BDetailPage = () => {
                                             <p className="text-muted-foreground leading-relaxed">{useCase.description}</p>
                                         </div>
                                     ))}
+                                </div>
+                            </section>
+                        </ScrollReveal>
+
+                        {/* Documentation Section (Placeholder for User Content) */}
+                        <ScrollReveal delay={550}>
+                            <section className="space-y-12 border-t border-white/5 pt-32">
+                                <div className="text-center space-y-4">
+                                    <h2 className="font-serif text-4xl md:text-5xl text-foreground">
+                                        Technical Documentation
+                                    </h2>
+                                    <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
+                                        Detailed technical specifications and integration guidelines for mission systems.
+                                    </p>
+                                </div>
+                                <div className="glass p-12 rounded-[3rem] border-cosmic-blue/20">
+                                    <div className="prose prose-invert max-w-none">
+                                        {/* TODO: Add user provided documentation here */}
+                                        <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 border-2 border-dashed border-white/10 rounded-2xl">
+                                            <p className="text-muted-foreground">Documentation content will be placed here.</p>
+                                            <p className="text-sm text-cosmic-blue">Waiting for documentation payload...</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </section>
                         </ScrollReveal>

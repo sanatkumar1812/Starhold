@@ -19,15 +19,11 @@ export const Navigation = () => {
       <Link to="/for-missions" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-cosmic-blue hover:text-cosmic-blue/80 transition-colors">
         For Missions
       </Link>
-      <Link to="/observatory" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
-        <Compass className="w-4 h-4" />
-        Observatory
-      </Link>
-      <Link to="/academy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
-        Academy
-      </Link>
       <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
         Pricing
+      </Link>
+      <Link to="/techdocs" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+        Tech Docs
       </Link>
       <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
         About
@@ -35,14 +31,20 @@ export const Navigation = () => {
       <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
         Contact
       </Link>
+      <Link to="/privacy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+        Privacy
+      </Link>
+      <Link to="/terms" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+        Terms
+      </Link>
     </>
   );
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div className="w-full px-6 py-4 flex items-center justify-between">
 
-        {/* Left Section: Mobile Menu + Logo */}
+        {/* Left Section: Mobile Menu + Logo + Nav */}
         <div className="flex items-center gap-4">
           {/* Mobile Menu Toggle */}
           <button
@@ -53,7 +55,7 @@ export const Navigation = () => {
           </button>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity md:mr-6">
             <div className="w-10 h-10 flex items-center justify-center">
               <img src="logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
             </div>
@@ -66,14 +68,15 @@ export const Navigation = () => {
               </p>
             </div>
           </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
+            <NavLinks />
+          </nav>
         </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <NavLinks />
-        </nav>
-
-        {/* CTA */}
+        {/* Right Section / CTA */}
+        {/* Commented out as requested
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
             <UserNav />
@@ -87,6 +90,7 @@ export const Navigation = () => {
             </Link>
           )}
         </div>
+        */}
       </div>
 
       {/* Mobile Menu Overlay */}

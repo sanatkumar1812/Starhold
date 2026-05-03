@@ -36,21 +36,21 @@ const App = () => (
           <ScrollToTopOnMount />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/starmap" element={<StarMapPage />} />
-            <Route path="/memory/:token" element={<SharedMemory />} />
+            {/* <Route path="/auth" element={<Auth />} /> */}
+            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+            {/* <Route path="/starmap" element={<StarMapPage />} /> */}
+            {/* <Route path="/memory/:token" element={<SharedMemory />} /> */}
             <Route path="/for-you" element={<B2CDetailPage />} />
             <Route path="/for-missions" element={<B2BDetailPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/academy" element={<StellarAcademy />} />
-            <Route path="/observatory" element={<StellarObservatory />} />
-            <Route path="/4d" element={<B2BSimulator />} />
+            {/* <Route path="/academy" element={<StellarAcademy />} /> */}
+            {/* <Route path="/observatory" element={<StellarObservatory />} /> */}
+            {/* <Route path="/4d" element={<B2BSimulator />} /> */}
             <Route path="/techdocs" element={<TechDocsPage />} />
-            <Route path="/draftlp" element={<DraftLandingPage />} />
+            {/* <Route path="/draftlp" element={<DraftLandingPage />} /> */}
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/not-found" element={<NotFound />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
