@@ -48,7 +48,7 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             {/* <Route path="/academy" element={<StellarAcademy />} /> */}
             {/* <Route path="/observatory" element={<StellarObservatory />} /> */}
-            {/* <Route path="/4d" element={<B2BSimulator />} /> */}
+            <Route path="/4d" element={<B2BSimulator />} />
             <Route path="/techdocs" element={<TechDocsPage />} />
             {/* <Route path="/draftlp" element={<DraftLandingPage />} /> */}
             <Route path="/pricing" element={<Pricing />} />

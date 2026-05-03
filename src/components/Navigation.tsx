@@ -25,6 +25,9 @@ export const Navigation = () => {
       <Link to="/techdocs" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
         Tech Docs
       </Link>
+      <Link to="/4d" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1">
+        Simulator <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-sm">SIM</span>
+      </Link>
       <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
         About
       </Link>
