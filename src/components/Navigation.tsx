@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { LogIn, Compass, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -10,6 +10,26 @@ export const Navigation = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Hide if scrolling down and scrolled past 50px, otherwise show
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   const NavLinks = () => (
     <>
@@ -25,8 +45,8 @@ export const Navigation = () => {
       <Link to="/techdocs" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
         Tech Docs
       </Link>
-      <Link to="/4d" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1">
-        Simulator <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-sm">SIM</span>
+      <Link to="/mission" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+        Our Mission
       </Link>
       <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
         About
@@ -44,7 +64,7 @@ export const Navigation = () => {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass">
+    <header className={`fixed top-0 left-0 right-0 z-50 glass transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="w-full px-6 py-4 flex items-center justify-between">
 
         {/* Left Section: Mobile Menu + Logo + Nav */}
@@ -58,17 +78,13 @@ export const Navigation = () => {
           </button>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity md:mr-6">
-            <div className="w-10 h-10 flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-1 hover:opacity-80 transition-opacity md:mr-6">
+            <div className="w-11 h-11 flex items-center justify-center">
               <img src="logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
             </div>
-            <div>
-              <h1 className="font-serif text-xl font-semibold text-foreground">
-                Starhold
-              </h1>
-              <p className="text-xs text-muted-foreground hidden sm:block">
-                Secured by Space and Time
-              </p>
+            <div className="flex flex-col justify-center">
+              <img src="/logo2.png" alt="STARHOLD" className="h-5 sm:h-6 object-contain object-left" />
+
             </div>
           </Link>
 

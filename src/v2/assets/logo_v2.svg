@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+    <defs>
+        <linearGradient id="shield_gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#007bff;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#00e0ff;stop-opacity:1"/>
+        </linearGradient>
+    </defs>
+    <g transform="translate(512, 512)">
+        <circle cx="0" cy="0" r="450" style="fill:none;stroke:#d0d0d0;stroke-width:1" />
+        <line x1="-450" y1="0" x2="450" y2="0" style="stroke:#d0d0d0;stroke-width:1" />
+        <line x1="0" y1="-450" x2="0" y2="450" style="stroke:#d0d0d0;stroke-width:1" />
+        <line x1="-318" y1="-318" x2="318" y2="318" style="stroke:#d0d0d0;stroke-width:1" />
+        <line x1="-318" y1="318" x2="318" y2="-318" style="stroke:#d0d0d0;stroke-width:1" />
+        <g transform="rotate(22.5)">
+            <line x1="-450" y1="0" x2="450" y2="0" style="stroke:#d0d0d0;stroke-width:1;stroke-dasharray:5,5" />
+        </g>
+        <g transform="rotate(67.5)">
+            <line x1="-450" y1="0" x2="450" y2="0" style="stroke:#d0d0d0;stroke-width:1;stroke-dasharray:5,5" />
+        </g>
+        <g transform="rotate(112.5)">
+            <line x1="-450" y1="0" x2="450" y2="0" style="stroke:#d0d0d0;stroke-width:1;stroke-dasharray:5,5" />
+        </g>
+        <g transform="rotate(157.5)">
+            <line x1="-450" y1="0" x2="450" y2="0" style="stroke:#d0d0d0;stroke-width:1;stroke-dasharray:5,5" />
+        </g>
+        <text x="-480" y="5" style="fill:#d0d0d0;font-size:16px;">-10</text>
+        <text x="-40" y="-480" style="fill:#d0d0d0;font-size:16px;">+0</text>
+        <text x="35" y="-480" style="fill:#d0d0d0;font-size:16px;">-0</text>
+        <text x="-15" y="-480" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="-15" y="480" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="-480" y="325" style="fill:#d0d0d0;font-size:16px;">-2</text>
+        <text x="-480" y="300" style="fill:#d0d0d0;font-size:16px;">+</text>
+        <text x="-40" y="-480" style="fill:#d0d0d0;font-size:16px;">+0</text>
+        <text x="350" y="-480" style="fill:#d0d0d0;font-size:16px;">+0</text>
+        <text x="400" y="-480" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="400" y="480" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="480" y="325" style="fill:#d0d0d0;font-size:16px;">-2</text>
+        <text x="480" y="300" style="fill:#d0d0d0;font-size:16px;">+</text>
+        <text x="-40" y="40" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="-40" y="440" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="40" y="40" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="40" y="440" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="440" y="100" style="fill:#d0d0d0;font-size:16px;">-6</text>
+        <text x="440" y="125" style="fill:#d0d0d0;font-size:16px;">+</text>
+        <text x="440" y="300" style="fill:#d0d0d0;font-size:16px;">-2</text>
+        <text x="440" y="325" style="fill:#d0d0d0;font-size:16px;">+</text>
+        <text x="440" y="-120" style="fill:#d0d0d0;font-size:16px;">-6</text>
+        <text x="440" y="-145" style="fill:#d0d0d0;font-size:16px;">+</text>
+        <text x="440" y="-300" style="fill:#d0d0d0;font-size:16px;">-2</text>
+        <text x="440" y="-325" style="fill:#d0d0d0;font-size:16px;">+</text>
+        <text x="-480" y="-120" style="fill:#d0d0d0;font-size:16px;">-6</text>
+        <text x="-480" y="-145" style="fill:#d0d0d0;font-size:16px;">+</text>
+        <text x="-480" y="-300" style="fill:#d0d0d0;font-size:16px;">-2</text>
+        <text x="-480" y="-325" style="fill:#d0d0d0;font-size:16px;">+</text>
+        <text x="440" y="-30" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="440" y="30" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="440" y="-440" style="fill:#d0d0d0;font-size:16px;">0</text>
+        <text x="440" y="440" style="fill:#d0d0d0;font-size:16px;">0</text>
+    </g>
+    <image xlink:href="data:image/png;base64,..." x="212" y="312" width="600" height="600" opacity="0.1" />
+    <image xlink:href="data:image/png;base64,..." x="612" y="112" width="400" height="400" opacity="0.1" />
+    <g transform="translate(512, 512)">
+        <polygon points="0,-400 346,-200 346,200 0,400 -346,200 -346,-200" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+        <path d="M 0,-350 L 303,-175 L 303,175 L 0,350 L -303,175 L -303,-175 Z M 0,-250 L 216,-125 L 216,125 L 0,250 L -216,125 L -216,-125 Z" style="fill:#004a7c;stroke:#004a7c;stroke-width:1" />
+        <path d="M 0,-250 L 216,-125 L 216,125 L 0,250 L -216,125 L -216,-125 Z M 0,-200 L 173,-100 L 173,100 L 0,200 L -173,100 L -173,-100 Z" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+        <path d="M 0,-200 L 173,-100 L 173,100 L 0,200 L -173,100 L -173,-100 Z M 0,-150 L 130,-75 L 130,75 L 0,150 L -130,75 L -130,-75 Z" style="fill:#004a7c;stroke:#004a7c;stroke-width:1" />
+        <path d="M 0,-150 L 130,-75 L 130,75 L 0,150 L -130,75 L -130,-75 Z M 0,-100 L 87,-50 L 87,50 L 0,100 L -87,50 L -87,-50 Z" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+        <path d="M 0,-100 L 87,-50 L 87,50 L 0,100 L -87,50 L -87,-50 Z M 0,-50 L 43,-25 L 43,25 L 0,50 L -43,25 L -43,-25 Z" style="fill:#004a7c;stroke:#004a7c;stroke-width:1" />
+        <g transform="translate(10, -100) rotate(-45)">
+            <path d="M 0,-15 A 15,15 0 1,1 0,15 A 15,15 0 1,1 0,-15 Z M -5,-10 A 5,5 0 1,0 -5,10 A 5,5 0 1,0 -5,-10 Z" style="fill:#d0d0d0;stroke:#d0d0d0;stroke-width:1" />
+            <path d="M 0,-5 L 80,-5 L 80,-15 L 100,-15 L 100,-5 L 110,-5 L 110,-15 L 130,-15 L 130,-5 L 140,-5 L 140,5 L 0,5 Z" style="fill:#d0d0d0;stroke:#d0d0d0;stroke-width:1" />
+        </g>
+        <g transform="translate(-100, 100)">
+            <path d="M 0,0 C 0,33 11,61 31,79 L 50,96 L 69,79 C 89,61 100,33 100,0 V -28 L 50,-50 L 0,-28 Z" style="fill:url(#shield_gradient);stroke:#d0d0d0;stroke-width:1" />
+            <text x="15" y="10" style="fill:#ffffff;font-size:12px;font-family:Courier">01001</text>
+            <text x="15" y="25" style="fill:#ffffff;font-size:12px;font-family:Courier">01</text>
+            <text x="15" y="40" style="fill:#ffffff;font-size:12px;font-family:Courier">11</text>
+            <text x="15" y="55" style="fill:#ffffff;font-size:12px;font-family:Courier">01</text>
+            <text x="75" y="10" style="fill:#ffffff;font-size:12px;font-family:Courier">100</text>
+            <text x="85" y="25" style="fill:#ffffff;font-size:12px;font-family:Courier">0</text>
+            <text x="85" y="40" style="fill:#ffffff;font-size:12px;font-family:Courier">0</text>
+            <text x="85" y="55" style="fill:#ffffff;font-size:12px;font-family:Courier">0</text>
+            <text x="50" y="25" style="fill:#ffffff;font-size:12px;font-family:Courier">S</text>
+        </g>
+        <g transform="rotate(-15)">
+            <path d="M 0,0 C -388,4 -315,315 0,311 C 315,315 388,4 0,0 C -388,-4 -315,-315 0,-311 C 315,-315 388,-4 0,0 Z" style="fill:none;stroke:#ffffff;stroke-width:2" />
+        </g>
+        <g transform="rotate(30)">
+            <path d="M 0,0 C -388,4 -315,315 0,311 C 315,315 388,4 0,0 C -388,-4 -315,-315 0,-311 C 315,-315 388,-4 0,0 Z" style="fill:none;stroke:#ffffff;stroke-width:2" />
+        </g>
+        <g transform="rotate(-60)">
+            <path d="M 0,0 C -388,4 -315,315 0,311 C 315,315 388,4 0,0 C -388,-4 -315,-315 0,-311 C 315,-315 388,-4 0,0 Z" style="fill:none;stroke:#ffffff;stroke-width:2" />
+        </g>
+        <g transform="rotate(-15)">
+            <path d="M 129,286 L 165,302 L 201,286 L 165,270 Z" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+            <path d="M -129,-286 L -165,-302 L -201,-286 L -165,-270 Z" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+        </g>
+        <g transform="rotate(30)">
+            <path d="M 165,-286 L 201,-302 L 237,-286 L 201,-270 Z" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+            <path d="M -165,286 L -201,302 L -237,286 L -201,270 Z" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+        </g>
+        <g transform="rotate(-60)">
+            <path d="M 129,-286 L 165,-302 L 201,-286 L 165,-270 Z" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+            <path d="M -129,286 L -165,302 L -201,286 L -165,270 Z" style="fill:#ffffff;stroke:#ffffff;stroke-width:1" />
+        </g>
+        <circle cx="216" cy="125" r="5" style="fill:#ffffff" />
+        <circle cx="216" cy="-125" r="5" style="fill:#ffffff" />
+        <circle cx="-216" cy="125" r="5" style="fill:#ffffff" />
+        <circle cx="-216" cy="-125" r="5" style="fill:#ffffff" />
+        <circle cx="0" cy="250" r="5" style="fill:#ffffff" />
+        <circle cx="0" cy="-250" r="5" style="fill:#ffffff" />
+        <circle cx="173" cy="100" r="5" style="fill:#ffffff" />
+        <circle cx="173" cy="-100" r="5" style="fill:#ffffff" />
+        <circle cx="-173" cy="100" r="5" style="fill:#ffffff" />
+        <circle cx="-173" cy="-100" r="5" style="fill:#ffffff" />
+        <circle cx="0" cy="200" r="5" style="fill:#ffffff" />
+        <circle cx="0" cy="-200" r="5" style="fill:#ffffff" />
+        <circle cx="130" cy="75" r="5" style="fill:#ffffff" />
+        <circle cx="130" cy="-75" r="5" style="fill:#ffffff" />
+        <circle cx="-130" cy="75" r="5" style="fill:#ffffff" />
+        <circle cx="-130" cy="-75" r="5" style="fill:#ffffff" />
+        <circle cx="0" cy="150" r="5" style="fill:#ffffff" />
+        <circle cx="0" cy="-150" r="5" style="fill:#ffffff" />
+        <circle cx="87" cy="50" r="5" style="fill:#ffffff" />
+        <circle cx="87" cy="-50" r="5" style="fill:#ffffff" />
+        <circle cx="-87" cy="50" r="5" style="fill:#ffffff" />
+        <circle cx="-87" cy="-50" r="5" style="fill:#ffffff" />
+        <circle cx="0" cy="100" r="5" style="fill:#ffffff" />
+        <circle cx="0" cy="-100" r="5" style="fill:#ffffff" />
+    </g>
+</svg>

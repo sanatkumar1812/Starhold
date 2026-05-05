@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --v2-bg: #0A0A12;
+  --v2-cyan: #00E0F0;
+  --v2-cyan-dim: rgba(0, 224, 240, 0.2);
+  --v2-purple: #8A2BE2;
+  --v2-border: rgba(255, 255, 255, 0.05);
+  --v2-glass: rgba(10, 10, 18, 0.8);
+}
+
+.font-aerospace {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.font-technical {
+  font-family: 'Inter', sans-serif;
+}
+
+.aerospace-border {
+  border: 1px solid var(--v2-border);
+  position: relative;
+}
+
+.aerospace-border::before,
+.aerospace-border::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--v2-cyan);
+  border-style: solid;
+  opacity: 0.5;
+}
+
+.aerospace-border-tl::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+
+.aerospace-border-br::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+.v2-gradient-bg {
+  background: radial-gradient(circle at center, #121226 0%, #0A0A12 100%);
+}
+
+.scanline-effect {
+  position: relative;
+}
+
+/* scanline-effect::after removed — no background lines */
+
+@keyframes spin-slow {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes animate-scroll-line {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  50% {
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+.animate-scroll-line {
+  animation: animate-scroll-line 2.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes spin-reverse-slow {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 120s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: spin-reverse-slow 80s linear infinite;
+}
+
+.hero-star-grid {
+  background-image:
+    radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 40px 40px;
+  width: 200%;
+  height: 200%;
+  transform: rotate(15deg);
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 10px rgba(0, 224, 240, 0.5);
+}

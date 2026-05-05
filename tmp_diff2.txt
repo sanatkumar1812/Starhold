@@ -1,0 +1,445 @@
+﻿diff --git a/.gitignore b/.gitignore
+index 49ef0bd..f514b74 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,25 +1,2 @@
+-# Logs
+-logs
+-*.log
+-npm-debug.log*
+-yarn-debug.log*
+-yarn-error.log*
+-pnpm-debug.log*
+-lerna-debug.log*
+-
+-node_modules
+-dist
+-dist-ssr
+-*.local
+-
+-# Editor directories and files
+-.vscode/*
+-!.vscode/extensions.json
+-!.vscode/settings.json
+-.idea
+-.DS_Store
+-*.suo
+-*.ntvs*
+-*.njsproj
+-*.sln
+-*.sw?
++# Created by venv; see https://docs.python.org/3/library/venv.html
++*
+diff --git a/index.html b/index.html
+index 26a42f1..3c9ae1e 100644
+--- a/index.html
++++ b/index.html
+@@ -7,7 +7,9 @@
+   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
++  <link
++    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
++    rel="stylesheet">
+   <!-- Primary Meta Tags -->
+   <title>Starhold | Cosmic Memory Observatory</title>
+   <meta name="title" content="Starhold | Cosmic Memory Observatory" />
+diff --git a/src/components/Footer.tsx b/src/components/Footer.tsx
+index c7a3ad5..1751d8d 100644
+--- a/src/components/Footer.tsx
++++ b/src/components/Footer.tsx
+@@ -49,6 +49,7 @@ export const Footer = () => {
+               <li><Link to="/for-you" className="hover:text-foreground transition-colors font-medium text-cosmic-purple/80">For You</Link></li>
+               <li><Link to="/for-missions" className="hover:text-foreground transition-colors font-medium text-cosmic-blue/80">For Missions</Link></li>
+               <li><Link to="/observatory" className="hover:text-foreground transition-colors">Observatory</Link></li>
++              <li><Link to="/pricing" className="hover:text-foreground transition-colors">Pricing</Link></li>
+               <li><Link to="/techdocs" className="hover:text-foreground transition-colors">Tech Docs</Link></li>
+               <li><Link to="/academy" className="hover:text-foreground transition-colors">Academy</Link></li>
+               <li><Link to="/for-you#how-it-works" className="hover:text-foreground transition-colors">How it Works</Link></li>
+diff --git a/src/components/HeroSection.tsx b/src/components/HeroSection.tsx
+index b79e61f..38b4965 100644
+--- a/src/components/HeroSection.tsx
++++ b/src/components/HeroSection.tsx
+@@ -1,4 +1,4 @@
+-import { useState, useEffect } from 'react';
++∩╗┐import { useState, useEffect } from 'react';
+ import { useNavigate } from 'react-router-dom';
+ import { Button } from '@/components/ui/button';
+ import { Sparkles, ArrowDown } from 'lucide-react';
+@@ -52,7 +52,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps)
+ 
+         {/* Subtitle */}
+         <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 px-4">
+-          A star-addressed system that binds data to celestial coordinates and timeΓÇö
++          A star-addressed system that binds data to celestial coordinates and time-
+           from personal memories to mission-critical satellite commands.
+         </p>
+ 
+diff --git a/src/components/HowItWorks.tsx b/src/components/HowItWorks.tsx
+index bccd3cb..0ba7ac2 100644
+--- a/src/components/HowItWorks.tsx
++++ b/src/components/HowItWorks.tsx
+@@ -1,11 +1,11 @@
+-import { Pen, Star, Lock, Telescope, Globe, MapPin } from 'lucide-react';
++∩╗┐import { Pen, Star, Lock, Telescope, Globe, MapPin } from 'lucide-react';
+ 
+ export const HowItWorks = () => {
+   const steps = [
+     {
+       icon: Pen,
+       title: 'Digitize Your Essence',
+-      description: 'Encode your memoriesΓÇöletters, photos, or voice notesΓÇöinto a secure digital artifact that transcends physical storage.',
++      description: 'Encode your memories-letters, photos, or voice notes-into a secure digital artifact that transcends physical storage.',
+     },
+     {
+       icon: Star,
+diff --git a/src/components/Navigation.tsx b/src/components/Navigation.tsx
+index ca23811..f1e7afc 100644
+--- a/src/components/Navigation.tsx
++++ b/src/components/Navigation.tsx
+@@ -26,6 +26,9 @@ export const Navigation = () => {
+       <Link to="/academy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+         Academy
+       </Link>
++      <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
++        Pricing
++      </Link>
+       <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+         About
+       </Link>
+diff --git a/src/components/ObservatoryWalkthrough.tsx b/src/components/ObservatoryWalkthrough.tsx
+index d143276..264b651 100644
+--- a/src/components/ObservatoryWalkthrough.tsx
++++ b/src/components/ObservatoryWalkthrough.tsx
+@@ -1,4 +1,4 @@
+-
++∩╗┐
+ import React, { useState, useEffect, useCallback } from 'react';
+ import { Button } from '@/components/ui/button';
+ import {
+@@ -40,7 +40,7 @@ const steps: WalkthroughStep[] = [
+         targetId: "obs-compass-btn",
+         description: (
+             <div className="space-y-3 font-light leading-relaxed">
+-                <p>Everything starts here. Click the **Compass** to open your observation controlsΓÇöyour headquarters for location, time, and navigation modes.</p>
++                <p>Everything starts here. Click the **Compass** to open your observation controls-your headquarters for location, time, and navigation modes.</p>
+             </div>
+         )
+     },
+diff --git a/src/components/StarMap.tsx b/src/components/StarMap.tsx
+index e3dfb94..0d6612e 100644
+--- a/src/components/StarMap.tsx
++++ b/src/components/StarMap.tsx
+@@ -1,4 +1,4 @@
+-import { useEffect, useRef, useState } from 'react';
++∩╗┐import { useEffect, useRef, useState } from 'react';
+ import { Button } from '@/components/ui/button';
+ import { Download, Eye, Sparkles as SparklesIcon } from 'lucide-react';
+ import { getSkyViewUrl } from '@/lib/skyview';
+@@ -399,7 +399,7 @@ export const StarMap = ({
+     if (recipientName) {
+       ctx.font = '10px Georgia, serif';
+       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+-      ctx.fillText('ΓÇö FOR ΓÇö', centerX, currentY);
++      ctx.fillText('- FOR -', centerX, currentY);
+       currentY += 22;
+ 
+       ctx.font = '500 22px Cinzel, Georgia, serif';
+@@ -412,7 +412,7 @@ export const StarMap = ({
+     if (unlockDate) {
+       ctx.font = '10px Georgia, serif';
+       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+-      ctx.fillText('ΓÇö UNLOCKS ΓÇö', centerX, currentY);
++      ctx.fillText('- UNLOCKS -', centerX, currentY);
+       currentY += 20;
+ 
+       ctx.font = '15px Georgia, serif';
+diff --git a/src/pages/Auth.tsx b/src/pages/Auth.tsx
+index 733bf54..6f94df6 100644
+--- a/src/pages/Auth.tsx
++++ b/src/pages/Auth.tsx
+@@ -52,30 +52,7 @@ const Auth = () => {
+ 
+   const handleSignup = async (e: React.FormEvent) => {
+     e.preventDefault();
+-
+-    if (signupData.password !== signupData.confirmPassword) {
+-      toast.error('Passwords do not match');
+-      return;
+-    }
+-
+-    if (signupData.password.length < 6) {
+-      toast.error('Password must be at least 6 characters');
+-      return;
+-    }
+-
+-    setIsLoading(true);
+-
+-    const success = await signup(signupData.name, signupData.email, signupData.password);
+-    if (success) {
+-      toast.success('Account created successfully!');
+-      const redirect = searchParams.get('redirect');
+-      if (redirect === 'create') {
+-        navigate('/?create=true');
+-      } else {
+-        navigate('/dashboard');
+-      }
+-    }
+-    setIsLoading(false);
++    toast.error('Sorry! Admin has disabled signing up');
+   };
+ 
+   const handleResetPassword = async (e: React.FormEvent) => {
+diff --git a/src/pages/B2BDetailPage.tsx b/src/pages/B2BDetailPage.tsx
+index e622fb2..565edee 100644
+--- a/src/pages/B2BDetailPage.tsx
++++ b/src/pages/B2BDetailPage.tsx
+@@ -1,4 +1,4 @@
+-import { CosmicBackground } from '@/components/CosmicBackground';
++∩╗┐import { CosmicBackground } from '@/components/CosmicBackground';
+ import { Navigation } from '@/components/Navigation';
+ import { Footer } from '@/components/Footer';
+ import { ScrollReveal } from '@/components/ScrollReveal';
+@@ -30,7 +30,7 @@ const B2BDetailPage = () => {
+                                 </h1>
+                                 <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                                     A physics-based verification layer for satellite commands. Uses star tracker observations
+-                                    as non-spoofable authorization keysΓÇöno GPS, no ground contact required.
++                                    as non-spoofable authorization keys-no GPS, no ground contact required.
+                                 </p>
+                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+                                     <Button
+@@ -325,7 +325,7 @@ const B2BDetailPage = () => {
+                                                 Important: Verification Witness, Not Control
+                                             </h3>
+                                             <p className="text-muted-foreground leading-relaxed">
+-                                                Starhold does <strong>not</strong> control satellites with stars. Stars act as <strong>verification witnesses</strong>ΓÇö
++                                                Starhold does <strong>not</strong> control satellites with stars. Stars act as <strong>verification witnesses</strong>-
+                                                 a physics-based condition that must be met for command authorization. The satellite's star tracker
+                                                 observes the sky autonomously, and if the observed star matches the expected parameters,
+                                                 the command is authorized for execution.
+diff --git a/src/pages/B2BSimulator.tsx b/src/pages/B2BSimulator.tsx
+index fd66295..63eb10d 100644
+--- a/src/pages/B2BSimulator.tsx
++++ b/src/pages/B2BSimulator.tsx
+@@ -317,10 +317,7 @@ const B2BSimulator = () => {
+             ORDER BY phot_g_mean_mag ASC
+             LIMIT 100
+         `;
+-        // Use CORS proxy to bypass browser restrictions
+-        const proxyUrl = 'https://corsproxy.io/?';
+-        const targetUrl = `https://gea.esac.esa.int/tap-server/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=${encodeURIComponent(query)}`;
+-        const url = proxyUrl + encodeURIComponent(targetUrl);
++        const url = `https://gea.esac.esa.int/tap-server/tap/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=json&QUERY=${encodeURIComponent(query)}`;
+ 
+         try {
+             const controller = new AbortController();
+diff --git a/src/pages/B2CDetailPage.tsx b/src/pages/B2CDetailPage.tsx
+index 805d069..eb4a193 100644
+--- a/src/pages/B2CDetailPage.tsx
++++ b/src/pages/B2CDetailPage.tsx
+@@ -1,4 +1,4 @@
+-import { CosmicBackground } from '@/components/CosmicBackground';
++∩╗┐import { CosmicBackground } from '@/components/CosmicBackground';
+ import { Navigation } from '@/components/Navigation';
+ import { Footer } from '@/components/Footer';
+ import { ScrollReveal } from '@/components/ScrollReveal';
+@@ -38,7 +38,7 @@ const B2CDetailPage = () => {
+                                     Cosmic Memory Registry
+                                 </h1>
+                                 <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+-                                    Preserve your most precious moments in the stars. Each memory receives a unique celestial addressΓÇö
++                                    Preserve your most precious moments in the stars. Each memory receives a unique celestial address-
+                                     encrypted, time-locked, and waiting among the cosmos.
+                                 </p>
+                                 <div className="pt-6">
+@@ -255,7 +255,7 @@ const B2CDetailPage = () => {
+                                         </h2>
+                                         <p className="text-muted-foreground text-lg leading-relaxed">
+                                             Each memory comes with a beautifully designed physical star map plaque.
+-                                            It features your constellation, precise coordinates, and unlock dateΓÇö
++                                            It features your constellation, precise coordinates, and unlock date-
+                                             a tangible connection to your digital legacy among the stars.
+                                         </p>
+                                         <ul className="grid sm:grid-cols-2 gap-4">
+@@ -292,7 +292,7 @@ const B2CDetailPage = () => {
+                                     <span className="text-gradient-gold">to the Infinite</span>
+                                 </h2>
+                                 <p className="text-muted-foreground text-lg leading-relaxed max-w-xl mx-auto">
+-                                    Create a gift that will be remembered for generationsΓÇöa moment frozen in time,
++                                    Create a gift that will be remembered for generations-a moment frozen in time,
+                                     waiting among the cosmos.
+                                 </p>
+                                 <div className="pt-8">
+diff --git a/src/pages/Index.tsx b/src/pages/Index.tsx
+index 14c43fa..ebfb23a 100644
+--- a/src/pages/Index.tsx
++++ b/src/pages/Index.tsx
+@@ -11,7 +11,7 @@ import { ScrollReveal } from '@/components/ScrollReveal';
+ import { ScrollToTop } from '@/components/ScrollToTop';
+ import { Footer } from '@/components/Footer';
+ import { Button } from '@/components/ui/button';
+-import { ArrowLeft, Quote } from 'lucide-react';
++import { ArrowLeft, Quote, Star, Zap, Shield, Satellite, ChevronRight } from 'lucide-react';
+ 
+ const Index = () => {
+   const [isCreating, setIsCreating] = useState(false);
+@@ -79,6 +79,53 @@ const Index = () => {
+               </ScrollReveal>
+             </div>
+ 
++            {/* Pricing Preview */}
++            <ScrollReveal>
++              <section className="py-24 px-4 relative overflow-hidden">
++                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
++                <div className="relative max-w-5xl mx-auto">
++                  <div className="text-center mb-14 space-y-3">
++                    <p className="text-xs font-mono uppercase tracking-[0.4em] text-muted-foreground">Access Tiers</p>
++                    <h2 className="font-serif text-4xl md:text-5xl text-foreground">
++                      Choose Your <span className="text-gradient-gold italic">Orbit</span>
++                    </h2>
++                    <p className="text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed">
++                      From personal cosmic memories to mission-critical aerospace security ΓÇö every tier is built on physics-based trust.
++                    </p>
++                  </div>
++
++                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
++                    {[
++                      { name: 'Observer', price: 'Free', tag: 'Personal', icon: Star, color: 'text-muted-foreground', border: 'border-border/30 hover:border-border/60' },
++                      { name: 'Navigator', price: '$29/mo', tag: 'Enthusiast', icon: Zap, color: 'text-cosmic-purple', border: 'border-cosmic-purple/20 hover:border-cosmic-purple/50 hover:shadow-[0_0_30px_hsl(270_60%_45%_/_0.1)]' },
++                      { name: 'Sentinel', price: '$99/mo', tag: 'Most Popular', icon: Shield, color: 'text-primary', border: 'border-primary/30 hover:border-primary/60 hover:shadow-[0_0_30px_rgba(234,179,8,0.12)] ring-1 ring-primary/20' },
++                      { name: 'Orbital', price: 'Custom', tag: 'Enterprise', icon: Satellite, color: 'text-cosmic-blue', border: 'border-cosmic-blue/20 hover:border-cosmic-blue/50 hover:shadow-[0_0_30px_hsl(220_70%_35%_/_0.1)]' },
++                    ].map((tier) => {
++                      const Icon = tier.icon;
++                      return (
++                        <div key={tier.name} className={`glass-strong rounded-2xl border p-6 flex flex-col gap-4 transition-all duration-300 hover:-translate-y-1 cursor-pointer ${tier.border}`} onClick={() => navigate('/pricing')}>
++                          <div className="flex items-center justify-between">
++                            <Icon className={`w-5 h-5 ${tier.color}`} />
++                            <span className={`text-[10px] font-mono uppercase tracking-widest ${tier.color}`}>{tier.tag}</span>
++                          </div>
++                          <div>
++                            <h3 className="font-serif text-xl text-foreground">{tier.name}</h3>
++                            <p className={`font-serif text-2xl mt-1 ${tier.color}`}>{tier.price}</p>
++                          </div>
++                        </div>
++                      );
++                    })}
++                  </div>
++
++                  <div className="mt-10 text-center">
++                    <Button variant="outline" className="rounded-xl border-border/40" onClick={() => navigate('/pricing')}>
++                      View full plans & features <ChevronRight className="w-4 h-4 ml-1" />
++                    </Button>
++                  </div>
++                </div>
++              </section>
++            </ScrollReveal>
++
+             {/* Testimonials / Legacy Section */}
+             <ScrollReveal>
+               <section className="py-32 px-4 relative overflow-hidden bg-slate-950/30">
+@@ -88,7 +135,7 @@ const Index = () => {
+                     "For my part I know nothing with any certainty, but the sight of the stars makes me dream."
+                   </h2>
+                   <div className="space-y-2">
+-                    <p className="font-serif text-xl text-primary">ΓÇö Vincent van Gogh</p>
++                    <p className="font-serif text-xl text-primary">- Vincent van Gogh</p>
+                     <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Post-Impressionist Visionary</p>
+                   </div>
+                 </div>
+diff --git a/src/pages/NotFound.tsx b/src/pages/NotFound.tsx
+index 7bc2234..5faaaf5 100644
+--- a/src/pages/NotFound.tsx
++++ b/src/pages/NotFound.tsx
+@@ -1,21 +1,57 @@
+-import { useLocation } from "react-router-dom";
+-import { useEffect } from "react";
++import { useNavigate } from 'react-router-dom';
++import { CosmicBackground } from '@/components/CosmicBackground';
++import { Button } from '@/components/ui/button';
++import { Telescope, Home } from 'lucide-react';
+ 
+ const NotFound = () => {
+-  const location = useLocation();
+-
+-  useEffect(() => {
+-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+-  }, [location.pathname]);
++  const navigate = useNavigate();
+ 
+   return (
+-    <div className="flex min-h-screen items-center justify-center bg-muted">
+-      <div className="text-center">
+-        <h1 className="mb-4 text-4xl font-bold">404</h1>
+-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
+-        <a href="/" className="text-primary underline hover:text-primary/90">
+-          Return to Home
+-        </a>
++    <div className="min-h-screen relative overflow-hidden bg-background flex flex-col items-center justify-center text-center px-4">
++      <CosmicBackground />
++
++      <div className="relative z-10 space-y-10 max-w-2xl mx-auto">
++
++        {/* Icon */}
++        <div className="flex justify-center">
++          <div className="w-24 h-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shadow-[0_0_40px_hsl(38_70%_55%_/_0.15)] animate-pulse">
++            <Telescope className="w-10 h-10 text-primary" />
++          </div>
++        </div>
++
++        {/* Heading */}
++        <div className="space-y-4">
++          <p className="text-xs font-mono uppercase tracking-[0.4em] text-muted-foreground">
++            Error ┬╖ 404
++          </p>
++          <h1 className="font-serif text-6xl md:text-8xl font-light text-gradient-gold text-glow">
++            Universe
++          </h1>
++          <h2 className="font-serif text-3xl md:text-4xl font-light text-foreground/80">
++            Not Found
++          </h2>
++          <p className="text-muted-foreground leading-relaxed max-w-md mx-auto text-base">
++            The coordinates you've entered don't correspond to any known sector of the cosmos. This region of space remains uncharted.
++          </p>
++        </div>
++
++        {/* CTA */}
++        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
++          <Button
++            variant="gold"
++            size="lg"
++            className="px-8 py-6 text-base rounded-xl shadow-[0_0_30px_rgba(234,179,8,0.2)] hover:shadow-[0_0_50px_rgba(234,179,8,0.35)] transition-all"
++            onClick={() => navigate('/')}
++          >
++            <Home className="w-4 h-4 mr-2" />
++            Return to Home
++          </Button>
++        </div>
++
++        {/* Footer tag */}
++        <p className="font-mono text-xs text-muted-foreground/30 uppercase tracking-widest pt-8">
++          ~ STARHOLD ~
++        </p>
+       </div>
+     </div>
+   );
+diff --git a/src/pages/TechDocsPage.tsx b/src/pages/TechDocsPage.tsx
+index fc066f2..bcc0d72 100644
+--- a/src/pages/TechDocsPage.tsx
++++ b/src/pages/TechDocsPage.tsx
+@@ -1,4 +1,4 @@
+-import { CosmicBackground } from '@/components/CosmicBackground';
++∩╗┐import { CosmicBackground } from '@/components/CosmicBackground';
+ import { Navigation } from '@/components/Navigation';
+ import { Footer } from '@/components/Footer';
+ import { ScrollReveal } from '@/components/ScrollReveal';
+@@ -130,7 +130,7 @@ const TechDocsPage = () => {
+                                         <p className="text-muted-foreground leading-relaxed">
+                                             The protocol begins by resolving the satellite's exact position index in the Earth-Centered Inertial (ECI) frame.
+                                             Using the <strong>Simplified General Perturbations (SGP4)</strong> model, we ingest NASA/NORAD Two-Line Element (TLE) sets
+-                                            to calculate the Zenith BoresightΓÇöa vector pointing directly away from Earth's center through the optical sensor.
++                                            to calculate the Zenith Boresight-a vector pointing directly away from Earth's center through the optical sensor.
+                                         </p>
+                                         <div className="bg-slate-950/50 p-6 rounded-2xl border border-white/5 font-mono text-xs space-y-2 overflow-hidden">
+                                             <div className="text-primary/40 border-b border-white/5 pb-2 mb-4">ORBITAL PROPAGATION VECTOR</div>

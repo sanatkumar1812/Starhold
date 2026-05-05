@@ -7,7 +7,6 @@ import { Star, Lock, Calendar, Image, Gift, Sparkles, Shield, Radio, Box, Map, G
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { ScrollToTop } from '@/components/ScrollToTop';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 const B2CDetailPage = () => {
     const navigate = useNavigate();
@@ -257,40 +256,25 @@ const B2CDetailPage = () => {
                                     </p>
                                 </div>
 
-                                <div className="max-w-4xl mx-auto relative px-12">
-                                    <Carousel className="w-full">
-                                        <CarouselContent>
-                                            <CarouselItem>
-                                                <div className="glass rounded-[2rem] p-4 border-white/5 overflow-hidden">
-                                                    <img src="/screenshot_message.png" alt="Step 1: Write your message" className="w-full h-auto rounded-xl shadow-2xl object-cover object-top max-h-[60vh]" />
-                                                    <div className="mt-6 text-center">
-                                                        <h3 className="font-serif text-2xl text-foreground">1. Compose Your Message</h3>
-                                                        <p className="text-muted-foreground mt-2">Write the words that will echo through time.</p>
-                                                    </div>
-                                                </div>
-                                            </CarouselItem>
-                                            <CarouselItem>
-                                                <div className="glass rounded-[2rem] p-4 border-white/5 overflow-hidden">
-                                                    <img src="/screenshot_media.png" alt="Step 2: Attach Media" className="w-full h-auto rounded-xl shadow-2xl object-cover object-top max-h-[60vh]" />
-                                                    <div className="mt-6 text-center">
-                                                        <h3 className="font-serif text-2xl text-foreground">2. Attach Vivid Memories</h3>
-                                                        <p className="text-muted-foreground mt-2">Add photos and videos to accompany your cosmic transmission.</p>
-                                                    </div>
-                                                </div>
-                                            </CarouselItem>
-                                            <CarouselItem>
-                                                <div className="glass rounded-[2rem] p-4 border-white/5 overflow-hidden">
-                                                    <img src="/screenshot_date.png" alt="Step 3: Select Unlock Date" className="w-full h-auto rounded-xl shadow-2xl object-cover object-top max-h-[60vh]" />
-                                                    <div className="mt-6 text-center">
-                                                        <h3 className="font-serif text-2xl text-foreground">3. Set the Time Lock</h3>
-                                                        <p className="text-muted-foreground mt-2">Choose the exact future date when the stars will reveal your message.</p>
-                                                    </div>
-                                                </div>
-                                            </CarouselItem>
-                                        </CarouselContent>
-                                        <CarouselPrevious className="hidden md:flex -left-12 bg-background/50 border-white/10 hover:bg-primary/20 hover:text-primary transition-colors" />
-                                        <CarouselNext className="hidden md:flex -right-12 bg-background/50 border-white/10 hover:bg-primary/20 hover:text-primary transition-colors" />
-                                    </Carousel>
+                                <div className="max-w-4xl mx-auto relative px-4">
+                                    <div className="glass rounded-[2rem] p-4 border-white/5 overflow-hidden shadow-2xl relative group">
+                                        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                        <video 
+                                            className="w-full h-auto rounded-xl relative z-10 shadow-2xl"
+                                            controls
+                                            autoPlay
+                                            muted
+                                            loop
+                                            playsInline
+                                        >
+                                            <source src="/demo-video.mp4" type="video/mp4" />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        <div className="mt-6 text-center relative z-10">
+                                            <h3 className="font-serif text-2xl text-foreground">A Journey Through the Stars</h3>
+                                            <p className="text-muted-foreground mt-2">Watch how simple it is to bind your memories to the cosmos.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </section>
                         </ScrollReveal>

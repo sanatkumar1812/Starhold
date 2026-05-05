@@ -17,6 +17,7 @@ import StellarAcademy from "./pages/StellarAcademy";
 import StellarObservatory from "./pages/StellarObservatory";
 import B2CDetailPage from "./pages/B2CDetailPage";
 import B2BDetailPage from "./pages/B2BDetailPage";
+import Mission from "./pages/Mission";
 import B2BSimulator from "./pages/B2BSimulator";
 import TechDocsPage from "./pages/TechDocsPage";
 import DraftLandingPage from "./pages/DraftLandingPage";
@@ -42,13 +43,11 @@ const App = () => (
             {/* <Route path="/memory/:token" element={<SharedMemory />} /> */}
             <Route path="/for-you" element={<B2CDetailPage />} />
             <Route path="/for-missions" element={<B2BDetailPage />} />
+            <Route path="/mission" element={<Mission />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
-            {/* <Route path="/academy" element={<StellarAcademy />} /> */}
-            {/* <Route path="/observatory" element={<StellarObservatory />} /> */}
-            <Route path="/4d" element={<B2BSimulator />} />
             <Route path="/techdocs" element={<TechDocsPage />} />
             {/* <Route path="/draftlp" element={<DraftLandingPage />} /> */}
             <Route path="/pricing" element={<Pricing />} />

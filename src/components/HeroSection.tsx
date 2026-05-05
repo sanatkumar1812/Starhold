@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sparkles, ArrowDown } from 'lucide-react';
@@ -51,8 +51,8 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 px-4">
-          A star-addressed system that binds data to celestial coordinates and time-
+        <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-foreground/80 font-medium max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 px-4">
+          A star-addressed system that binds data to celestial coordinates and time—
           from personal memories to mission-critical satellite commands.
         </p>
 
@@ -70,7 +70,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
             variant="outline"
             size="lg"
             onClick={() => navigate('/for-missions')}
-            className="px-8 py-6 text-lg rounded-xl border-cosmic-blue/30 text-cosmic-blue hover:bg-cosmic-blue/10 transition-all duration-500"
+            className="px-8 py-6 text-lg rounded-xl border-white/20 hover:bg-white/10 transition-all duration-500"
           >
             For Mission Systems
           </Button>
@@ -80,7 +80,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         <div className="flex flex-col items-center justify-center gap-3 pt-6 animate-fade-in-up stagger-4">
           <div className="flex items-center gap-2 sm:gap-3 text-muted-foreground/60 group cursor-pointer" onClick={onLearnMore}>
             <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
-            <span className="text-xs sm:text-sm font-mono uppercase tracking-[0.3em] group-hover:text-primary/80 transition-colors">
+            <span className="text-xs sm:text-sm font-mono uppercase tracking-[0.5em] group-hover:text-primary/80 transition-colors">
               Learn More
             </span>
             <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />

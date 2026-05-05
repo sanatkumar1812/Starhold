@@ -1,0 +1,54 @@
+﻿diff --git a/src/App.tsx b/src/App.tsx
+index 4a4048e..7ed2209 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -19,7 +19,23 @@ import B2CDetailPage from "./pages/B2CDetailPage";
+ import B2BDetailPage from "./pages/B2BDetailPage";
+ import B2BSimulator from "./pages/B2BSimulator";
+ import TechDocsPage from "./pages/TechDocsPage";
++import DraftLandingPage from "./pages/DraftLandingPage";
++import Pricing from "./pages/Pricing";
+ import NotFound from "./pages/NotFound";
++import V2LandingPage from "./v2/pages/V2LandingPage";
++import V2Observatory from "./v2/pages/V2Observatory";
++import V2B2BMarketing from "./v2/pages/V2B2BMarketing";
++import V2B2BSimulator from "./v2/pages/V2B2BSimulator";
++import V2B2C from "./v2/pages/V2B2C";
++import V2Dashboard from "./v2/pages/V2Dashboard";
++import V2SharedMemory from "./v2/pages/V2SharedMemory";
++import V2Academy from "./v2/pages/V2Academy";
++import V2TechDocs from "./v2/pages/V2TechDocs";
++import V2Privacy from "./v2/pages/V2Privacy";
++import V2Terms from "./v2/pages/V2Terms";
++import V2Contact from "./v2/pages/V2Contact";
++import V2About from "./v2/pages/V2About";
++import V2NotFound from "./v2/pages/V2NotFound";
+ import ScrollToTopOnMount from "@/components/ScrollToTopOnMount";
+ 
+ const queryClient = new QueryClient();
+@@ -48,8 +64,24 @@ const App = () => (
+             <Route path="/observatory" element={<StellarObservatory />} />
+             <Route path="/4d" element={<B2BSimulator />} />
+             <Route path="/techdocs" element={<TechDocsPage />} />
++            <Route path="/draftlp" element={<DraftLandingPage />} />
++            <Route path="/pricing" element={<Pricing />} />
++            <Route path="/v2" element={<V2LandingPage />} />
++            <Route path="/v2/observatory" element={<V2Observatory />} />
++            <Route path="/v2/for-missions" element={<V2B2BMarketing />} />
++            <Route path="/v2/for-missions/console" element={<V2B2BSimulator />} />
++            <Route path="/v2/for-you" element={<V2B2C />} />
++            <Route path="/v2/dashboard" element={<V2Dashboard />} />
++            <Route path="/v2/memory/:token" element={<V2SharedMemory />} />
++            <Route path="/v2/academy" element={<V2Academy />} />
++            <Route path="/v2/techdocs" element={<V2TechDocs />} />
++            <Route path="/v2/privacy" element={<V2Privacy />} />
++            <Route path="/v2/terms" element={<V2Terms />} />
++            <Route path="/v2/contact" element={<V2Contact />} />
++            <Route path="/v2/about" element={<V2About />} />
++            <Route path="/not-found" element={<NotFound />} />
+             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+-            <Route path="*" element={<NotFound />} />
++            <Route path="*" element={<V2NotFound />} />
+           </Routes>
+         </HashRouter>
+       </AuthProvider>
