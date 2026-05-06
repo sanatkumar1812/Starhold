@@ -30,64 +30,63 @@ const TechDocsPage = () => {
                             </div>
                         </ScrollReveal>
 
-                        {/* Primary Technical Resources */}
+                        {/* Market & Technical Research Section */}
                         <ScrollReveal delay={100}>
-                            <div className="grid lg:grid-cols-3 gap-8 items-stretch">
-                                {/* V3.1 Whitepaper (NEW) */}
-                                <div className="glass p-8 rounded-[2rem] border-blue-500/20 bg-blue-500/5 flex flex-col space-y-6">
-                                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
-                                        <FileText className="w-6 h-6" />
+                            <div className="grid lg:grid-cols-2 gap-8 items-stretch">
+                                <div className="glass p-8 md:p-12 rounded-[3rem] border-white/5 flex flex-col space-y-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                                        <FileText className="w-7 h-7" />
                                     </div>
-                                    <h2 className="text-2xl font-serif">V3.1 Whitepaper</h2>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">
-                                        The official specification for the 6-factor zero-trust framework, detailing pulsar-anchored cryptography.
+                                    <h2 className="text-3xl font-serif">Market & Technical Research</h2>
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        Our comprehensive research paper detailing the convergence of orbital mechanics, 
+                                        astrometric verification, and the future of cosmic information infrastructure.
                                     </p>
-                                    <div className="flex gap-3 mt-auto">
-                                        <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-500 rounded-lg">
-                                            <a href="/starhold_v3.1_whitepaper.md" download>
-                                                <Download className="w-4 h-4 mr-2" /> MD
+                                    
+                                    {/* PDF Preview */}
+                                    <div className="relative group rounded-2xl overflow-hidden border border-white/5 bg-black/40 aspect-[4/3] flex items-center justify-center mb-4">
+                                        <iframe 
+                                            src="Starhold Market and Technical Research.pdf#toolbar=0&navpanes=0&scrollbar=0" 
+                                            className="w-full h-full border-none pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity"
+                                            title="PDF Preview"
+                                        />
+                                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-4 mt-auto">
+                                        <Button asChild variant="gold" className="rounded-xl px-6">
+                                            <a href="Starhold Market and Technical Research.pdf" download="Starhold Market and Technical Research.pdf">
+                                                <Download className="w-4 h-4 mr-2" /> Download PDF
                                             </a>
                                         </Button>
-                                        <Button asChild size="sm" variant="outline" className="rounded-lg border-white/10">
-                                            <a href="/starhold_v3.1_whitepaper.md" target="_blank">
-                                                <ExternalLink className="w-4 h-4" />
+                                        <Button asChild variant="outline" className="rounded-xl px-6 border-white/10 hover:bg-white/5">
+                                            <a href="Starhold Market and Technical Research.pdf" target="_blank" rel="noopener noreferrer">
+                                                <ExternalLink className="w-4 h-4 mr-2" /> View Fullscreen
                                             </a>
                                         </Button>
                                     </div>
                                 </div>
 
-                                {/* Market & Technical Research Section */}
-                                <div className="glass p-8 rounded-[2rem] border-white/5 flex flex-col space-y-6">
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                        <FileText className="w-6 h-6" />
+                                <div className="glass p-8 md:p-12 rounded-[3rem] border-white/5 space-y-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                                        <Globe className="w-7 h-7" />
                                     </div>
-                                    <h2 className="text-2xl font-serif">Market Research</h2>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">
-                                        Research paper detailing the convergence of orbital mechanics and cosmic infrastructure.
+                                    <h2 className="text-3xl font-serif">Starhold Onepager</h2>
+                                    <p className="text-muted-foreground text-sm">
+                                        A high-level overview of the Starhold mission architecture and ecosystem.
                                     </p>
-                                    <div className="flex gap-3 mt-auto">
-                                        <Button asChild size="sm" variant="gold" className="rounded-lg">
-                                            <a href="Starhold Market and Technical Research.pdf" download>
-                                                <Download className="w-4 h-4 mr-2" /> PDF
-                                            </a>
-                                        </Button>
+                                    <div className="relative group rounded-2xl overflow-hidden border border-white/5 bg-black/40 aspect-[4/3] flex items-center justify-center">
+                                        <img
+                                            src="Starhold onepager.png"
+                                            alt="Starhold Onepager"
+                                            className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700"
+                                        />
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <Button asChild variant="gold" size="sm">
+                                                <a href="Starhold onepager.png" target="_blank">Enlarge Image</a>
+                                            </Button>
+                                        </div>
                                     </div>
-                                </div>
-
-                                {/* Starhold Onepager */}
-                                <div className="glass p-8 rounded-[2rem] border-white/5 space-y-6">
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                        <Globe className="w-6 h-6" />
-                                    </div>
-                                    <h2 className="text-2xl font-serif">Onepager</h2>
-                                    <p className="text-sm text-muted-foreground text-sm">
-                                        High-level overview of the Starhold mission architecture and ecosystem.
-                                    </p>
-                                    <Button asChild size="sm" variant="outline" className="w-fit rounded-lg border-white/10 mt-auto">
-                                        <a href="Starhold onepager.png" target="_blank">
-                                            <ExternalLink className="w-4 h-4 mr-2" /> View PNG
-                                        </a>
-                                    </Button>
                                 </div>
                             </div>
                         </ScrollReveal>
@@ -126,7 +125,7 @@ const TechDocsPage = () => {
                                     <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/10">
                                         <div className="space-y-2">
                                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono uppercase tracking-widest border border-blue-500/20">
-                                                Active Protocol
+                                                Latest Protocol
                                             </div>
                                             <h3 className="text-4xl font-serif text-foreground">V3.1: Context-Aware Cryptography</h3>
                                         </div>
@@ -203,19 +202,22 @@ const TechDocsPage = () => {
                                 </div>
                                 {/* --- END V3.1 SECTION --- */}
 
-                                {/* --- START V2.7 SECTION (LEGACY) --- */}
-                                <div className="space-y-24 pt-20 border-t border-white/5 opacity-80 hover:opacity-100 transition-opacity">
+                                {/* --- START V2.7 SECTION --- */}
+                                <div className="space-y-24 pt-20 border-t border-white/5 transition-opacity">
                                     <div className="text-center space-y-4">
-                                        <h2 className="text-4xl md:text-5xl font-serif text-foreground/50">Legacy: V2.7 SEP Protocol</h2>
+                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-mono uppercase tracking-widest border border-primary/20">
+                                            Latest Protocol
+                                        </div>
+                                        <h2 className="text-4xl md:text-5xl font-serif text-foreground">V2.7: SEP Protocol</h2>
                                         <p className="text-muted-foreground max-w-2xl mx-auto">
-                                            Foundational hardware-anchored encryption for orbital memory archives.
+                                            Detailed hardware-anchored encryption for orbital memory archives.
                                         </p>
                                     </div>
 
                                     {/* Phase 1: HKDF */}
                                     <div className="grid lg:grid-cols-2 gap-16 items-start">
                                         <div className="space-y-6">
-                                            <div className="flex items-center gap-3 text-primary/70">
+                                            <div className="flex items-center gap-3 text-primary">
                                                 <div className="p-2 rounded-lg bg-primary/5"><Binary className="w-6 h-6" /></div>
                                                 <h3 className="text-2xl font-serif">1. Tri-Bind HKDF</h3>
                                             </div>
@@ -231,17 +233,17 @@ const TechDocsPage = () => {
                                             </div>
                                         </div>
                                         <div className="glass p-8 rounded-2xl border-white/5 space-y-4">
-                                            <h4 className="font-mono text-[10px] text-primary/60 uppercase tracking-widest">Spacetime Bound</h4>
+                                            <h4 className="font-mono text-[10px] text-primary uppercase tracking-widest">Spacetime Bound</h4>
                                             <p className="text-xs text-muted-foreground leading-relaxed">
                                                 Enforced the strict ±60-second verification window. If the Earth-bound clock and orbital clock differed by more than 1 minute, the packet remained a "digital brick."
                                             </p>
                                         </div>
                                     </div>
 
-                                    {/* Phase 2: Stellar Geometry (RESTORED) */}
+                                    {/* Phase 2: Stellar Geometry */}
                                     <div className="space-y-12">
                                         <div className="max-w-3xl space-y-6">
-                                            <div className="flex items-center gap-3 text-primary/70">
+                                            <div className="flex items-center gap-3 text-primary">
                                                 <div className="p-2 rounded-lg bg-primary/5"><Satellite className="w-6 h-6" /></div>
                                                 <h3 className="text-2xl font-serif">2. Stellar Geometry & Fuzzy Binning</h3>
                                             </div>
@@ -256,9 +258,9 @@ const TechDocsPage = () => {
                                                 { icon: Lock, title: "Deterministic Convergence", desc: "Ground Station and Satellite converge perfectly on the same mathematical seed." }
                                             ].map(item => (
                                                 <div key={item.title} className="p-8 rounded-2xl bg-white/5 border border-white/5 space-y-4">
-                                                    <item.icon className="w-5 h-5 text-primary/60" />
-                                                    <h4 className="font-serif text-lg text-foreground/80">{item.title}</h4>
-                                                    <p className="text-xs text-muted-foreground/70 leading-relaxed">{item.desc}</p>
+                                                    <item.icon className="w-5 h-5 text-primary" />
+                                                    <h4 className="font-serif text-lg text-foreground">{item.title}</h4>
+                                                    <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -276,7 +278,7 @@ const TechDocsPage = () => {
                                             <div className="bg-black/40 p-8 rounded-2xl font-mono text-[10px] space-y-1 text-primary/40">
                                                 <div>CIPHER_SUITE: AES_256_GCM</div>
                                                 <div>AUTH_MODE: ZERO_TRUST_TAG_VALIDATION</div>
-                                                <div className="text-emerald-500/30 mt-2">// V2.7 COMPLIANT</div>
+                                                <div className="text-emerald-500 mt-2">// V2.7 COMPLIANT</div>
                                             </div>
                                         </div>
                                     </div>
