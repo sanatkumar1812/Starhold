@@ -122,14 +122,11 @@ const TechDocsPage = () => {
 
                                 {/* --- START V3.1 SECTION --- */}
                                 <div className="space-y-20">
-                                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/10">
+                                    <div className="flex flex-col md:flex-row items-start justify-between gap-6 pb-8 border-b border-white/10">
                                         <div className="space-y-2">
-                                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono uppercase tracking-widest border border-blue-500/20">
-                                                Latest Protocol
-                                            </div>
                                             <h3 className="text-4xl font-serif text-foreground">V3.1: Context-Aware Cryptography</h3>
                                         </div>
-                                        <div className="text-right hidden md:block text-xs font-mono text-muted-foreground uppercase tracking-widest">
+                                        <div className="text-right hidden md:block text-xs font-mono text-muted-foreground uppercase tracking-widest pt-4">
                                             Deep Space & Terrestrial Support
                                         </div>
                                     </div>
@@ -204,12 +201,9 @@ const TechDocsPage = () => {
 
                                 {/* --- START V2.7 SECTION --- */}
                                 <div className="space-y-24 pt-20 border-t border-white/5 transition-opacity">
-                                    <div className="text-center space-y-4">
-                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-mono uppercase tracking-widest border border-primary/20">
-                                            Latest Protocol
-                                        </div>
+                                    <div className="space-y-4">
                                         <h2 className="text-4xl md:text-5xl font-serif text-foreground">V2.7: SEP Protocol</h2>
-                                        <p className="text-muted-foreground max-w-2xl mx-auto">
+                                        <p className="text-muted-foreground max-w-2xl">
                                             Detailed hardware-anchored encryption for orbital memory archives.
                                         </p>
                                     </div>
