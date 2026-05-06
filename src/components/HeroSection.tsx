@@ -44,40 +44,69 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
 
 
         {/* Main headline */}
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light leading-tight animate-fade-in-up stagger-1">
-          <span className="text-foreground">Information Secured by</span>
-          <br />
-          <span className="text-gradient-gold text-glow italic">Space and Time</span>
+        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light leading-tight tracking-tight">
+          <span className="block text-foreground animate-fade-in-up stagger-1">Information Secured by</span>
+          <span className="block text-gradient-gold text-glow italic animate-fade-in-up stagger-2">Space and Time</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-foreground/80 font-medium max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 px-4">
+        <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-foreground/80 font-medium max-w-2xl mx-auto leading-relaxed animate-pop-in stagger-4 px-4">
           A star-addressed system that binds data to celestial coordinates and time—
           from personal memories to mission-critical satellite commands.
         </p>
 
         {/* Dual CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-6 animate-fade-in-up stagger-3">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-6 animate-fade-in-up stagger-5">
           <Button
-            variant="gold"
             size="lg"
             onClick={() => navigate('/for-you')}
-            className="px-8 py-6 text-lg rounded-xl shadow-[0_0_30px_rgba(234,179,8,0.2)] hover:shadow-[0_0_50px_rgba(234,179,8,0.4)] transition-all duration-500"
+            className="px-8 py-6 text-lg rounded-xl font-semibold transition-all duration-500 border"
+            style={{ 
+              backgroundColor: 'transparent', 
+              color: '#732eb8', 
+              borderColor: '#732eb8',
+              boxShadow: 'none' 
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#732eb8';
+              (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 40px rgba(115, 46, 184, 0.4)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+              (e.currentTarget as HTMLButtonElement).style.color = '#732eb8';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
+            }}
           >
             For Personal Memories
           </Button>
           <Button
-            variant="outline"
             size="lg"
             onClick={() => navigate('/for-missions')}
-            className="px-8 py-6 text-lg rounded-xl border-white/20 hover:bg-white/10 transition-all duration-500"
+            className="px-8 py-6 text-lg rounded-xl font-semibold transition-all duration-500 border"
+            style={{ 
+              backgroundColor: 'transparent', 
+              color: '#1b4498', 
+              borderColor: '#1b4498',
+              boxShadow: 'none' 
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1b4498';
+              (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 40px rgba(27, 68, 152, 0.4)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+              (e.currentTarget as HTMLButtonElement).style.color = '#1b4498';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
+            }}
           >
             For Mission Systems
           </Button>
         </div>
 
         {/* Scroll Prompt */}
-        <div className="flex flex-col items-center justify-center gap-3 pt-6 animate-fade-in-up stagger-4">
+        <div className="flex flex-col items-center justify-center gap-3 pt-6 animate-fade-in-up stagger-6">
           <div className="flex items-center gap-2 sm:gap-3 text-muted-foreground/60 group cursor-pointer" onClick={onLearnMore}>
             <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
             <span className="text-xs sm:text-sm font-mono uppercase tracking-[0.5em] group-hover:text-primary/80 transition-colors">
@@ -89,7 +118,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-12 animate-fade-in-up stagger-5 max-w-2xl mx-auto px-4">
+        <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-12 animate-fade-in-up stagger-7 max-w-2xl mx-auto px-4">
           {[
             { value: '∞', label: 'Celestial Addresses' },
             { value: 'RA/Dec', label: 'Coordinate System' },

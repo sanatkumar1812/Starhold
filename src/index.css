@@ -272,13 +272,38 @@
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-pop-in {
+  animation: popIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
 }
 
 .animate-twinkle {
@@ -450,42 +475,27 @@
 }
 
 /* Stagger animations */
-.stagger-1 {
-  animation-delay: 0.1s;
-}
+.stagger-1 { animation-delay: 0.2s; }
+.stagger-2 { animation-delay: 0.5s; }
+.stagger-3 { animation-delay: 0.8s; }
+.stagger-4 { animation-delay: 1.2s; }
+.stagger-5 { animation-delay: 2.0s; }
+.stagger-6 { animation-delay: 3.0s; }
+.stagger-7 { animation-delay: 4.0s; }
+.stagger-8 { animation-delay: 4.5s; }
 
-.stagger-2 {
-  animation-delay: 0.2s;
-}
-
-.stagger-3 {
-  animation-delay: 0.3s;
-}
-
-.stagger-4 {
-  animation-delay: 0.4s;
-}
-
-.stagger-5 {
-  animation-delay: 0.5s;
-}
-
-/* Scrollbar */
+/* Hide scrollbar for all browsers */
 ::-webkit-scrollbar {
-  width: 8px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: hsl(var(--background));
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
+body {
+  overflow-x: hidden;
 }
 
 ::selection {

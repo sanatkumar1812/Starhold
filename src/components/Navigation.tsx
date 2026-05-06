@@ -10,11 +10,23 @@ export const Navigation = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(isHomePage ? false : true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [hasEntered, setHasEntered] = useState(isHomePage ? false : true);
+
+  useEffect(() => {
+    if (isHomePage) {
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        setHasEntered(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isHomePage]);
 
   useEffect(() => {
     const handleScroll = () => {
+      if (!hasEntered) return;
       const currentScrollY = window.scrollY;
 
       // Hide if scrolling down and scrolled past 50px, otherwise show
@@ -29,7 +41,7 @@ export const Navigation = () => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, hasEntered]);
 
   const NavLinks = () => (
     <>
@@ -53,12 +65,6 @@ export const Navigation = () => {
       </Link>
       <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
         Contact
-      </Link>
-      <Link to="/privacy" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-        Privacy
-      </Link>
-      <Link to="/terms" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-        Terms
       </Link>
     </>
   );
