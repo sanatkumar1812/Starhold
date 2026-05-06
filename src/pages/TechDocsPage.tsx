@@ -3,7 +3,7 @@ import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { Button } from '@/components/ui/button';
-import { Shield, Lock, Binary, Satellite, Activity, Terminal, FileText, Download, ExternalLink, Globe, Cpu, Zap } from 'lucide-react';
+import { Shield, Lock, Binary, Satellite, Activity, Terminal, FileText, Download, ExternalLink, Globe, Cpu, Zap, Clock } from 'lucide-react';
 import { ScrollToTop } from '@/components/ScrollToTop';
 
 const TechDocsPage = () => {
