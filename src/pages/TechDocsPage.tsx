@@ -3,7 +3,7 @@ import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { Button } from '@/components/ui/button';
-import { Shield, Lock, Binary, Satellite, Activity, Terminal, FileText, Download, ExternalLink, Globe, Cpu, Zap, Clock } from 'lucide-react';
+import { Shield, Lock, Binary, Satellite, Activity, Terminal, FileText, Download, ExternalLink, Globe, Cpu, Zap, Clock, Map as MapIcon } from 'lucide-react';
 import { ScrollToTop } from '@/components/ScrollToTop';
 
 const TechDocsPage = () => {
@@ -149,7 +149,7 @@ const TechDocsPage = () => {
                                                 {[
                                                     { icon: Clock, title: "Pulsar Chronometry", desc: "Real-time temporal sync using precise rotation of designated pulsars." },
                                                     { icon: Cpu, title: "RF DNA Fingerprinting", desc: "Analysis of physical transmitter harmonics and oscillator drift." },
-                                                    { icon: Map, title: "Celestial Anchoring", desc: "RA/Dec coordinate sector validation against NASA/ESA catalogs." },
+                                                    { icon: MapIcon, title: "Celestial Anchoring", desc: "RA/Dec coordinate sector validation against NASA/ESA catalogs." },
                                                     { icon: Shield, title: "Independent Gating", desc: "Cross-validation with onboard star trackers for orientation matching." },
                                                 ].map(i => (
                                                     <div key={i.title} className="space-y-2">
