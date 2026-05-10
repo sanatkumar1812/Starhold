@@ -333,7 +333,7 @@ const Pricing = () => {
                       <p className="text-xs font-mono uppercase tracking-[0.4em] text-cosmic-purple">Enterprise & Aerospace</p>
                       <h2 className="font-serif text-4xl md:text-5xl text-foreground">For Orbital Missions</h2>
                       <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                          A physics-based verification layer for satellite commands. Designed to provide additive security for <strong className="text-foreground font-medium">CubeSats</strong> and <strong className="text-foreground font-medium">Commercial Satellites</strong>.
+                          A physics-based verification layer for satellite commands. Designed to provide additive security for <strong className="text-foreground font-medium">CubeSats</strong> and <strong className="text-foreground font-medium">Space Assets</strong>.
                       </p>
                   </div>
                 </ScrollReveal>

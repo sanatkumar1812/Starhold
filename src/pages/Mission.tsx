@@ -2,7 +2,7 @@ import { CosmicBackground } from '@/components/CosmicBackground';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { ScrollReveal } from '@/components/ScrollReveal';
-import { Shield, Globe } from 'lucide-react';
+import { Shield, Globe, Trophy, ExternalLink } from 'lucide-react';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Link } from 'react-router-dom';
 
@@ -89,7 +89,46 @@ const Mission = () => {
                 </main>
 
                 <main className="pb-20 px-4">
-                    <div className="max-w-4xl mx-auto">
+                    <div className="max-w-4xl mx-auto space-y-12">
+
+                        {/* Competition Context */}
+                        <ScrollReveal delay={650}>
+                            <div className="glass p-10 rounded-[3rem] border border-amber-500/10 space-y-6">
+                                <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+                                    <div className="space-y-2">
+                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs font-mono uppercase tracking-widest">
+                                            <Trophy className="w-3 h-3" />
+                                            HolySpace Challenge — 1st Place
+                                        </div>
+                                        <h3 className="font-serif text-3xl text-foreground">Science Accelerator 2026</h3>
+                                        <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
+                                            Starhold's B2C product won first place in the HolySpace Challenge — part of the
+                                            <strong className="text-foreground"> Science Accelerator Class of 2026</strong> by
+                                            Out of the Box Aerospace, a global programme for young space entrepreneurs aged 14–18.
+                                            We are now preparing for the <strong className="text-foreground">Finals</strong> with our full dual-use platform.
+                                        </p>
+                                    </div>
+                                    <div className="shrink-0 text-center glass px-6 py-5 rounded-2xl border border-amber-500/10">
+                                        <p className="text-4xl font-serif text-amber-400">1st</p>
+                                        <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mt-1">Place · HolySpace</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-3 pt-2">
+                                    {["B2C Product", "Deep-Space Cryptography", "Star-Addressed Memory", "Advancing to Finals"].map(tag => (
+                                        <span key={tag} className="px-3 py-1 rounded-full border border-white/5 bg-white/[0.03] text-xs font-mono text-muted-foreground/60 uppercase tracking-wider">{tag}</span>
+                                    ))}
+                                </div>
+                                <a
+                                    href="https://outoftheboxedu.space"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1.5 text-sm text-amber-400/70 hover:text-amber-400 transition-colors"
+                                >
+                                    Out of the Box Aerospace <ExternalLink className="w-3.5 h-3.5" />
+                                </a>
+                            </div>
+                        </ScrollReveal>
+
                         {/* Vision Quote */}
                         <ScrollReveal delay={700}>
                             <div className="flex flex-col md:flex-row gap-8 items-center glass p-10 rounded-[3rem] border-white/5">

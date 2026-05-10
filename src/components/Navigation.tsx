@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { LogIn, Compass, Menu, X } from 'lucide-react';
+import { LogIn, Compass, Menu, X, Trophy, ExternalLink } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { UserNav } from './UserNav';
@@ -84,14 +84,8 @@ export const Navigation = () => {
           </button>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-1 hover:opacity-80 transition-opacity md:mr-6">
-            <div className="w-11 h-11 flex items-center justify-center">
-              <img src="logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
-            </div>
-            <div className="flex flex-col justify-center">
-              <img src="/logo2.png" alt="STARHOLD" className="h-5 sm:h-6 object-contain object-left" />
-
-            </div>
+          <Link to="/" className="flex items-center h-10 hover:opacity-80 transition-opacity md:mr-6">
+            <img src="/logo2.png" alt="STARHOLD" className="h-5 sm:h-7 object-contain object-left" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -101,21 +95,18 @@ export const Navigation = () => {
         </div>
 
         {/* Right Section / CTA */}
-        {/* Commented out as requested
         <div className="flex items-center gap-4">
-          {isAuthenticated ? (
-            <UserNav />
-          ) : (
-            <Link to="/auth">
-              <Button variant="gold" size="sm">
-                <LogIn className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Login / Sign Up</span>
-                <span className="sm:hidden">Login</span>
-              </Button>
-            </Link>
-          )}
+          <a
+            href="https://outoftheboxedu.space"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/15 transition-all duration-300 group"
+          >
+            <Trophy className="w-3 h-3 text-amber-400" />
+            <span className="text-[10px] font-mono text-amber-300 uppercase tracking-widest">1st Place · HolySpace Challenge</span>
+            <ExternalLink className="w-3 h-3 text-amber-400/50 group-hover:text-amber-400 transition-colors" />
+          </a>
         </div>
-        */}
       </div>
 
       {/* Mobile Menu Overlay */}

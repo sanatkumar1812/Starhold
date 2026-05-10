@@ -44,7 +44,7 @@ export const Footer = () => {
 
           {/* Links */}
           <div className="space-y-4 md:pl-20">
-            <h4 className="font-serif text-foreground">Product</h4>
+            <h4 className="font-serif text-foreground">Products</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/for-you" className="hover:text-foreground transition-colors font-medium text-cosmic-purple/80">For You</Link></li>
               <li><Link to="/for-missions" className="hover:text-foreground transition-colors font-medium text-cosmic-blue/80">For Missions</Link></li>
@@ -89,7 +89,15 @@ export const Footer = () => {
             © {new Date().getFullYear()} Starhold. All rights reserved.
           </p>
           
-          <div className="flex items-center gap-6 order-1 sm:order-2">
+          <div className="flex flex-col sm:flex-row items-center gap-6 order-1 sm:order-2">
+            <a
+              href="https://outoftheboxedu.space"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-amber-500/50 hover:text-amber-400 transition-colors font-mono uppercase tracking-widest"
+            >
+              🏆 Finalists · Science Accelerator 2026
+            </a>
             <a 
               href="https://www.instagram.com/starhold.in/?hl=en" 
               target="_blank" 

@@ -244,7 +244,7 @@ const B2CDetailPage = () => {
                             </section>
                         </ScrollReveal>
 
-                        {/* Memory Creation Walkthrough (Carousel) */}
+                        {/* Memory Creation Walkthrough (Video) */}
                         <ScrollReveal delay={450}>
                             <section className="space-y-12 border-t border-white/5 pt-32">
                                 <div className="text-center space-y-4">
@@ -256,20 +256,15 @@ const B2CDetailPage = () => {
                                     </p>
                                 </div>
 
-                                <div className="max-w-4xl mx-auto relative px-4">
+                                <div className="max-w-5xl mx-auto relative px-4">
                                     <div className="glass rounded-[2rem] p-4 border-white/5 overflow-hidden shadow-2xl relative group">
                                         <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                                        <video 
-                                            className="w-full h-auto rounded-xl relative z-10 shadow-2xl"
-                                            controls
-                                            autoPlay
-                                            muted
-                                            loop
-                                            playsInline
-                                        >
-                                            <source src="https://drive.google.com/uc?export=download&id=1xFVH4Fne9pN_7ighUmzaBeqkViqLy16V" type="video/mp4" />
-                                            Your browser does not support the video tag.
-                                        </video>
+                                        <iframe 
+                                            src="https://drive.google.com/file/d/1xFVH4Fne9pN_7ighUmzaBeqkViqLy16V/preview"
+                                            className="w-full aspect-video rounded-xl relative z-10 shadow-2xl border-0"
+                                            allow="autoplay; fullscreen"
+                                            allowFullScreen
+                                        ></iframe>
                                         <div className="mt-6 text-center relative z-10">
                                             <h3 className="font-serif text-2xl text-foreground">A Journey Through the Stars</h3>
                                             <p className="text-muted-foreground mt-2">Watch how simple it is to bind your memories to the cosmos.</p>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sparkles, ArrowDown } from 'lucide-react';
+import { Sparkles, ArrowDown, Trophy, ExternalLink } from 'lucide-react';
 
 interface HeroSectionProps {
   onStartCreating: () => void;
@@ -40,7 +40,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto pt-32 space-y-10">
+      <div className="relative z-10 max-w-4xl mx-auto pt-32 space-y-16">
 
 
         {/* Main headline */}
@@ -50,13 +50,15 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-foreground/80 font-medium max-w-2xl mx-auto leading-relaxed animate-pop-in stagger-4 px-4">
+        <p className="text-lg md:text-xl lg:text-2xl text-foreground/80 font-medium max-w-4xl mx-auto leading-relaxed animate-pop-in stagger-4 px-4">
           A star-addressed system that binds data to celestial coordinates and time—
           from personal memories to mission-critical satellite commands.
         </p>
 
+
+
         {/* Dual CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-6 animate-fade-in-up stagger-5">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-4 pb-2 animate-fade-in-up stagger-5">
           <Button
             size="lg"
             onClick={() => navigate('/for-you')}
@@ -106,11 +108,11 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         </div>
 
         {/* Scroll Prompt */}
-        <div className="flex flex-col items-center justify-center gap-3 pt-6 animate-fade-in-up stagger-6">
+        <div className="flex flex-col items-center justify-center gap-3 pt-4 animate-fade-in-up stagger-6">
           <div className="flex items-center gap-2 sm:gap-3 text-muted-foreground/60 group cursor-pointer" onClick={onLearnMore}>
             <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
             <span className="text-xs sm:text-sm font-mono uppercase tracking-[0.5em] group-hover:text-primary/80 transition-colors">
-              Learn More
+              Scroll to Learn More
             </span>
             <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent via-primary/30 to-transparent group-hover:via-primary/60 transition-all" />
           </div>
@@ -118,7 +120,7 @@ export const HeroSection = ({ onStartCreating, onLearnMore }: HeroSectionProps) 
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-12 animate-fade-in-up stagger-7 max-w-2xl mx-auto px-4">
+        <div className="grid grid-cols-3 gap-4 sm:gap-8 pt-16 animate-fade-in-up stagger-7 max-w-2xl mx-auto px-4">
           {[
             { value: '∞', label: 'Celestial Addresses' },
             { value: 'RA/Dec', label: 'Coordinate System' },

@@ -6,6 +6,8 @@ import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/components/HeroSection';
 import { UnifiedInfrastructure } from '@/components/UnifiedInfrastructure';
 import { UniversalFeatures } from '@/components/UniversalFeatures';
+import { WhatWeDoSection } from '@/components/WhatWeDoSection';
+import { RecognitionSection } from '@/components/RecognitionSection';
 import { MemoryCreator } from '@/components/MemoryCreator';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { ScrollToTop } from '@/components/ScrollToTop';
@@ -26,7 +28,7 @@ const Index = () => {
   }, [searchParams]);
 
   const scrollToHowItWorks = () => {
-    const element = document.getElementById('how-it-works');
+    const element = document.getElementById('two-frontiers');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -63,15 +65,18 @@ const Index = () => {
                   setIsCreating(true);
                 }
               }}
-              onLearnMore={() => {
-                const element = document.getElementById('unified-infra');
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
+              onLearnMore={scrollToHowItWorks}
             />
 
             <UniversalFeatures />
+
+            <ScrollReveal>
+              <WhatWeDoSection />
+            </ScrollReveal>
+
+            <ScrollReveal>
+              <RecognitionSection />
+            </ScrollReveal>
 
             <div id="unified-infra">
               <ScrollReveal>
