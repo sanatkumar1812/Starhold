@@ -105,7 +105,8 @@ const Mission = () => {
                                             Starhold's B2C product won first place in the HolySpace Challenge — part of the
                                             <strong className="text-foreground"> Science Accelerator Class of 2026</strong> by
                                             Out of the Box Aerospace, a global programme for young space entrepreneurs aged 14–18.
-                                            We are now preparing for the <strong className="text-foreground">Finals</strong> with our full dual-use platform.
+                                            We are now <strong className="text-foreground">finalizing our dual-use platform</strong> with a clear goal: 
+                                            to win the upcoming finals and transition this project into a full-scale orbital infrastructure venture.
                                         </p>
                                     </div>
                                     <div className="shrink-0 text-center glass px-6 py-5 rounded-2xl border border-amber-500/10">
@@ -132,16 +133,16 @@ const Mission = () => {
                         {/* Vision Quote */}
                         <ScrollReveal delay={700}>
                             <div className="flex flex-col md:flex-row gap-8 items-center glass p-10 rounded-[3rem] border-white/5">
-                                <div className="space-y-4 flex-1">
+                                <div className="space-y-4 flex-1 text-center md:text-left">
                                     <h3 className="font-serif text-3xl">Technical Brief</h3>
-                                    <p className="text-muted-foreground">Deep-dive into the STARHOLD V3.1 cryptographic architecture and Pulsar-based verification systems.</p>
-                                    <Link to="/techdocs" className="inline-block px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors">View Specs</Link>
+                                    <p className="text-muted-foreground text-sm">Deep-dive into the STARHOLD V3.1 cryptographic architecture and Pulsar-based verification systems.</p>
+                                    <Link to="/techdocs" className="inline-block px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors mt-2">View Specs</Link>
                                 </div>
                                 <div className="w-px h-20 bg-white/10 hidden md:block" />
-                                <div className="space-y-4 flex-1">
-                                    <h3 className="font-serif text-3xl">Legacy Academy</h3>
-                                    <p className="text-muted-foreground">Learn about the science of the stars and the technology behind our centennial preservation protocol.</p>
-                                    <Link to="/academy" className="inline-block px-8 py-3 rounded-full glass border-white/10 text-foreground font-semibold hover:bg-white/5 transition-colors">Visit Academy</Link>
+                                <div className="space-y-4 flex-1 text-center md:text-left">
+                                    <h3 className="font-serif text-3xl">International Growth</h3>
+                                    <p className="text-muted-foreground text-sm">Our vision extends far beyond the competition. We are building the foundations to become a legitimate international aerospace startup, providing high-assurance security for the next generation of space assets.</p>
+                                    <Link to="/about" className="inline-block px-8 py-3 rounded-full glass border-white/10 text-foreground font-semibold hover:bg-white/5 transition-colors mt-2">Meet the Team</Link>
                                 </div>
                             </div>
                         </ScrollReveal>

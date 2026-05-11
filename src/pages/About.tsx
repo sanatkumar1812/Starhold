@@ -33,7 +33,6 @@ const About = () => {
                                 className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 px-6 py-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-colors group"
                             >
                                 <div className="flex items-center gap-2">
-                                    <Trophy className="w-4 h-4 text-amber-400" />
                                     <span className="text-sm font-semibold text-amber-300">🏆 HolySpace Challenge — 1st Place</span>
                                 </div>
                                 <div className="w-px h-4 bg-amber-500/20 hidden sm:block" />
