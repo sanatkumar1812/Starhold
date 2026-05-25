@@ -1,336 +1,241 @@
 import { useNavigate } from 'react-router-dom';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { Button } from '@/components/ui/button';
-import { Satellite, Shield, Lock, Radio, Eye, CheckCircle2, Cpu } from 'lucide-react';
+import { Satellite, Shield, Lock, Radio, Eye, CheckCircle2, Cpu, ArrowRight, Zap, Globe, Box } from 'lucide-react';
 import { B2BPreviewSimulator } from '@/components/B2BPreviewSimulator';
 
 export const ForMissionsSection = () => {
     const navigate = useNavigate();
 
+    const flowSteps = [
+        { step: '01', label: 'Operator Command', icon: Cpu, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
+        { step: '02', label: 'Stellar Binding', icon: Lock, color: 'text-cosmic-blue', bg: 'bg-cosmic-blue/10', border: 'border-cosmic-blue/30', highlight: true },
+        { step: '03', label: 'RF/Optical Uplink', icon: Radio, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
+        { step: '04', label: 'Onboard Queue', icon: Satellite, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
+        { step: '05', label: 'Star Observation', icon: Eye, color: 'text-cosmic-blue', bg: 'bg-cosmic-blue/10', border: 'border-cosmic-blue/30', highlight: true },
+        { step: '06', label: 'Auth Check', icon: Shield, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', success: true },
+        { step: '07', label: 'Execution', icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', success: true },
+    ];
+
+    const techPillars = [
+        {
+            icon: '🔭',
+            stat: 'Sub-arcsecond',
+            label: 'Star Tracker Precision',
+            sub: 'Already on most satellites — zero new hardware',
+        },
+        {
+            icon: '🔐',
+            stat: 'AES-256',
+            label: 'Encryption Standard',
+            sub: 'Commands bound to RA/Dec + catalog ID + TLE',
+        },
+        {
+            icon: '🌌',
+            stat: '1.8 Billion',
+            label: 'Gaia DR3 Stars',
+            sub: 'Immutable physical truth database — unspoofable',
+        },
+        {
+            icon: '📡',
+            stat: '0 Latency',
+            label: 'Ground Contact Required',
+            sub: 'Auth happens onboard — deep-space ready',
+        },
+    ];
+
+    const applications = [
+        { icon: Box, label: 'CubeSats', tag: 'Low-orbit', desc: 'Autonomous auth without ground infrastructure' },
+        { icon: Satellite, label: 'Autonomous Craft', tag: 'Long-duration', desc: 'Real-time contact impractical or impossible' },
+        { icon: Globe, label: 'Deep-Space', tag: 'Beyond Earth orbit', desc: 'Light delays make real-time auth infeasible' },
+    ];
+
     return (
         <section id="for-missions" className="py-20 px-4 relative overflow-hidden">
-            <div className="max-w-7xl mx-auto space-y-32">
-                {/* Hero / Intro Section */}
+            <div className="max-w-7xl mx-auto space-y-28">
+
+                {/* CTA Buttons — title already introduced above */}
                 <ScrollReveal>
-                    <div className="text-center space-y-8">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cosmic-blue/30 bg-cosmic-blue/10 text-sm text-cosmic-blue font-mono uppercase tracking-widest">
-                            For Mission Systems
-                        </div>
-                        <h2 className="font-serif text-5xl md:text-7xl text-foreground leading-tight">
-                            Stellar-Referenced <br />
-                            Command Authorization
-                        </h2>
-                        <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-                            A physics-based verification layer for satellite commands. Uses star tracker observations
-                            as non-spoofable authorization keys—no GPS, no ground contact required.
-                        </p>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                onClick={() => navigate('/techdocs')}
-                                className="px-8 py-6 text-lg rounded-xl border-cosmic-blue/30 text-cosmic-blue hover:bg-cosmic-blue/10"
-                            >
-                                <Cpu className="w-5 h-5 mr-2" />
-                                View Technical Docs
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="lg"
-                                onClick={() => document.getElementById('simulation')?.scrollIntoView({ behavior: 'smooth' })}
-                                className="px-8 py-6 text-lg rounded-xl text-muted-foreground hover:text-foreground"
-                            >
-                                See Live Simulation →
-                            </Button>
-                        </div>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            onClick={() => navigate('/techdocs')}
+                            className="px-8 py-6 text-lg rounded-xl border-cosmic-blue/30 text-cosmic-blue hover:bg-cosmic-blue/10"
+                        >
+                            <Cpu className="w-5 h-5 mr-2" />
+                            View Technical Docs
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="lg"
+                            onClick={() => document.getElementById('simulation')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="px-8 py-6 text-lg rounded-xl text-muted-foreground hover:text-foreground"
+                        >
+                            See Live Simulation →
+                        </Button>
                     </div>
                 </ScrollReveal>
 
                 {/* Key Value Propositions */}
                 <ScrollReveal delay={100}>
-                    <section className="grid md:grid-cols-3 gap-8">
+                    <section className="grid md:grid-cols-3 gap-6">
                         {[
-                            {
-                                icon: Shield,
-                                title: 'Non-Spoofable Verification',
-                                description: 'Star observations cannot be faked. Physical sky state acts as cryptographic witness.',
-                            },
-                            {
-                                icon: Satellite,
-                                title: 'Earth-Independent',
-                                description: 'No reliance on GPS, ground stations, or real-time comms. Autonomous deep-space ready.',
-                            },
-                            {
-                                icon: Lock,
-                                title: 'Additive Security Layer',
-                                description: 'Does not replace RF/optical comms. Adds physics-based authorization condition.',
-                            },
+                            { icon: Shield, title: 'Non-Spoofable', desc: 'Physical sky state acts as cryptographic witness. Cannot be faked.' },
+                            { icon: Satellite, title: 'Earth-Independent', desc: 'No GPS. No ground stations. No real-time comms needed.' },
+                            { icon: Lock, title: 'Additive Layer', desc: 'Plugs into existing RF/optical comms — zero infrastructure changes.' },
                         ].map((item) => (
                             <div
                                 key={item.title}
-                                className="glass p-8 rounded-3xl space-y-4 hover:border-cosmic-blue/50 transition-all duration-500"
+                                className="glass p-7 rounded-3xl space-y-3 hover:border-cosmic-blue/50 transition-all duration-500 group"
                             >
-                                <div className="w-12 h-12 rounded-2xl bg-cosmic-blue/10 flex items-center justify-center">
-                                    <item.icon className="w-6 h-6 text-cosmic-blue" />
+                                <div className="w-11 h-11 rounded-2xl bg-cosmic-blue/10 flex items-center justify-center group-hover:bg-cosmic-blue/20 transition-colors duration-300">
+                                    <item.icon className="w-5 h-5 text-cosmic-blue" />
                                 </div>
-                                <h3 className="font-serif text-xl text-foreground">{item.title}</h3>
-                                <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                                <h3 className="font-serif text-lg text-foreground">{item.title}</h3>
+                                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
                             </div>
                         ))}
                     </section>
                 </ScrollReveal>
 
-                {/* Operational Flow */}
+                {/* Operational Flow — compact visual timeline */}
                 <ScrollReveal delay={200}>
-                    <section className="space-y-12">
-                        <div className="text-center space-y-4">
-                            <h3 className="font-serif text-4xl md:text-5xl text-foreground">
-                                Operational Flow
-                            </h3>
-                            <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-                                How stellar-referenced authorization integrates with existing satellite command infrastructure
+                    <section className="space-y-10">
+                        <div className="text-center space-y-2">
+                            <h3 className="font-serif text-3xl md:text-4xl text-foreground">Operational Flow</h3>
+                            <p className="text-muted-foreground text-sm max-w-xl mx-auto">
+                                Seven steps from command input to authorized execution — all physics-verified
                             </p>
                         </div>
 
-                        <div className="glass p-12 rounded-[3rem] border-white/5">
-                            <div className="space-y-8">
-                                {[
-                                    {
-                                        step: '01',
-                                        title: 'Operator Inputs Command',
-                                        description: 'Ground operator enters command into Starhold interface with mission parameters.',
-                                        icon: Cpu,
-                                    },
-                                    {
-                                        step: '02',
-                                        title: 'Stellar Binding',
-                                        description: 'Command encrypted and bound to: target star (RA/Dec), magnitude, catalog ID, satellite TLE, predicted attitude, execution window.',
-                                        icon: Lock,
-                                        technical: true,
-                                    },
-                                    {
-                                        step: '03',
-                                        title: 'Standard Uplink',
-                                        description: 'Encrypted command uplinked via normal RF/optical comms. No changes to existing infrastructure.',
-                                        icon: Radio,
-                                    },
-                                    {
-                                        step: '04',
-                                        title: 'Onboard Storage',
-                                        description: 'Satellite stores encrypted command in queue. Command remains locked until authorization condition met.',
-                                        icon: Satellite,
-                                    },
-                                    {
-                                        step: '05',
-                                        title: 'Star Tracker Observation',
-                                        description: 'Satellite star tracker autonomously observes sky. Pattern matching against star catalog.',
-                                        icon: Eye,
-                                        technical: true,
-                                    },
-                                    {
-                                        step: '06',
-                                        title: 'Authorization Check',
-                                        description: 'If observed star matches expected parameters (RA/Dec ±tolerance, magnitude, time window) → decryption key released.',
-                                        icon: CheckCircle2,
-                                        success: true,
-                                    },
-                                    {
-                                        step: '07',
-                                        title: 'Command Execution',
-                                        description: 'Authorized command executed by satellite systems. If no match → command remains locked.',
-                                        icon: CheckCircle2,
-                                        success: true,
-                                    },
-                                ].map((item, index) => (
-                                    <div
-                                        key={item.step}
-                                        className={`flex gap-6 p-6 rounded-2xl border transition-all duration-500 ${item.technical
-                                            ? 'border-cosmic-blue/30 bg-cosmic-blue/5'
-                                            : item.success
-                                                ? 'border-green-500/30 bg-green-500/5'
-                                                : 'border-white/5 bg-slate-900/20'
-                                            }`}
-                                    >
-                                        <div className="flex-shrink-0">
-                                            <div className={`w-14 h-14 rounded-xl flex items-center justify-center font-mono text-sm ${item.technical
-                                                ? 'bg-cosmic-blue/10 text-cosmic-blue'
-                                                : item.success
-                                                    ? 'bg-green-500/10 text-green-500'
-                                                    : 'bg-primary/10 text-primary'
-                                                }`}>
-                                                {item.step}
+                        {/* Desktop: horizontal pipeline */}
+                        <div className="hidden lg:flex items-center justify-between gap-1 glass p-8 rounded-[2.5rem] border-white/5 overflow-x-auto">
+                            {flowSteps.map((item, index) => {
+                                const Icon = item.icon;
+                                return (
+                                    <div key={item.step} className="flex items-center gap-1 flex-shrink-0">
+                                        <div className={`flex flex-col items-center gap-2 px-4 py-5 rounded-2xl border transition-all duration-300 ${item.border} ${item.highlight ? 'bg-cosmic-blue/5' : item.success ? 'bg-emerald-500/5' : 'bg-white/[0.02]'}`}>
+                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.bg}`}>
+                                                <Icon className={`w-5 h-5 ${item.color}`} />
                                             </div>
+                                            <span className={`font-mono text-[10px] font-bold ${item.color}`}>{item.step}</span>
+                                            <span className="text-xs text-center text-foreground/80 font-medium max-w-[72px] leading-tight">{item.label}</span>
                                         </div>
-                                        <div className="flex-1 space-y-2">
-                                            <div className="flex items-start justify-between gap-4">
-                                                <h4 className="font-serif text-xl text-foreground">{item.title}</h4>
-                                                <item.icon className={`w-5 h-5 flex-shrink-0 ${item.technical
-                                                    ? 'text-cosmic-blue'
-                                                    : item.success
-                                                        ? 'text-green-500'
-                                                        : 'text-primary'
-                                                    }`} />
-                                            </div>
-                                            <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
-                                        </div>
+                                        {index < flowSteps.length - 1 && (
+                                            <ArrowRight className="w-4 h-4 text-white/15 flex-shrink-0" />
+                                        )}
                                     </div>
-                                ))}
-                            </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Mobile: compact 2-col grid */}
+                        <div className="lg:hidden grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {flowSteps.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                    <div key={item.step} className={`flex flex-col items-center gap-2 p-4 rounded-2xl border text-center ${item.border} ${item.highlight ? 'bg-cosmic-blue/5' : item.success ? 'bg-emerald-500/5' : 'bg-white/[0.02]'}`}>
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${item.bg}`}>
+                                            <Icon className={`w-4 h-4 ${item.color}`} />
+                                        </div>
+                                        <span className={`font-mono text-[10px] font-bold ${item.color}`}>{item.step}</span>
+                                        <span className="text-xs text-foreground/80 font-medium leading-tight">{item.label}</span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </section>
                 </ScrollReveal>
 
-                {/* Interactive Simulation Placeholder */}
+                {/* Live Simulation */}
                 <ScrollReveal delay={300}>
-                    <section id="simulation" className="space-y-12">
-                        <div className="text-center space-y-4">
-                            <h3 className="font-serif text-4xl md:text-5xl text-foreground">
-                                Live Demonstration
-                            </h3>
-                            <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-                                Interactive simulation showing stellar-referenced command authorization in action
+                    <section id="simulation" className="space-y-10">
+                        <div className="text-center space-y-2">
+                            <h3 className="font-serif text-3xl md:text-4xl text-foreground">Live Demonstration</h3>
+                            <p className="text-muted-foreground text-sm max-w-xl mx-auto">
+                                Stellar-referenced command authorization in action
                             </p>
                         </div>
-
                         <div className="glass p-8 md:p-12 rounded-[3rem] border-cosmic-blue/20">
                             <B2BPreviewSimulator />
                         </div>
                     </section>
                 </ScrollReveal>
 
-                {/* Technical Plausibility */}
+                {/* Technical Plausibility — infographic stat cards */}
                 <ScrollReveal delay={400}>
-                    <section className="space-y-12">
-                        <div className="text-center space-y-4">
-                            <h3 className="font-serif text-4xl md:text-5xl text-foreground">
-                                Technical Plausibility
-                            </h3>
-                            <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-                                Why this works with existing spacecraft technology
+                    <section className="space-y-10">
+                        <div className="text-center space-y-2">
+                            <h3 className="font-serif text-3xl md:text-4xl text-foreground">Why It Works</h3>
+                            <p className="text-muted-foreground text-sm max-w-xl mx-auto">
+                                Built on existing spacecraft hardware — no new components required
                             </p>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-8">
-                            {[
-                                {
-                                    title: 'Star Trackers Already Exist',
-                                    points: [
-                                        'Standard attitude determination sensors on most satellites',
-                                        'Identify stars by magnitude and angular position',
-                                        'Sub-arcsecond precision capability',
-                                        'Autonomous operation without ground contact',
-                                    ],
-                                },
-                                {
-                                    title: 'No Real-Time Ground Contact',
-                                    points: [
-                                        'Command uploaded during normal comm window',
-                                        'Authorization happens onboard autonomously',
-                                        'Ideal for deep-space missions with long light delays',
-                                        'Reduces dependency on ground infrastructure',
-                                    ],
-                                },
-                                {
-                                    title: 'Non-Spoofable Physical Key',
-                                    points: [
-                                        'Cannot fake the actual sky state',
-                                        'Star positions are deterministic and verifiable',
-                                        'Requires precise attitude and timing',
-                                        'Physical observation acts as cryptographic witness',
-                                    ],
-                                },
-                                {
-                                    title: 'Additive Security Layer',
-                                    points: [
-                                        'Does not replace existing command & control',
-                                        'Works alongside RF/optical uplinks',
-                                        'Adds physics-based authorization condition',
-                                        'Graceful degradation if star tracker unavailable',
-                                    ],
-                                },
-                            ].map((section) => (
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                            {techPillars.map((pillar) => (
                                 <div
-                                    key={section.title}
-                                    className="glass p-8 rounded-3xl space-y-6 border-white/5"
+                                    key={pillar.label}
+                                    className="glass p-6 rounded-3xl space-y-3 border-white/5 hover:border-cosmic-blue/30 transition-all duration-500 group text-center"
                                 >
-                                    <h4 className="font-serif text-2xl text-foreground">{section.title}</h4>
-                                    <ul className="space-y-3">
-                                        {section.points.map((point) => (
-                                            <li key={point} className="flex items-start gap-3 text-muted-foreground text-sm">
-                                                <CheckCircle2 className="w-4 h-4 text-cosmic-blue flex-shrink-0 mt-0.5" />
-                                                <span>{point}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <div className="text-3xl">{pillar.icon}</div>
+                                    <div className="font-serif text-2xl font-bold text-gradient-gold">{pillar.stat}</div>
+                                    <div className="text-sm font-semibold text-foreground">{pillar.label}</div>
+                                    <div className="text-xs text-muted-foreground leading-relaxed">{pillar.sub}</div>
                                 </div>
                             ))}
                         </div>
                     </section>
                 </ScrollReveal>
 
-                {/* Use Cases */}
+                {/* Target Applications — visual icon tiles */}
                 <ScrollReveal delay={500}>
-                    <section className="space-y-12">
-                        <div className="text-center space-y-4">
-                            <h3 className="font-serif text-4xl md:text-5xl text-foreground">
-                                Target Applications
-                            </h3>
+                    <section className="space-y-10">
+                        <div className="text-center space-y-2">
+                            <h3 className="font-serif text-3xl md:text-4xl text-foreground">Target Applications</h3>
                         </div>
 
-                        <div className="grid md:grid-cols-3 gap-8">
-                            {[
-                                {
-                                    title: 'CubeSats',
-                                    description: 'Low-cost missions requiring autonomous command authorization without expensive ground infrastructure.',
-                                },
-                                {
-                                    title: 'Autonomous Spacecraft',
-                                    description: 'Long-duration missions where real-time ground contact is impractical or impossible.',
-                                },
-                                {
-                                    title: 'Deep-Space Missions',
-                                    description: 'Missions beyond Earth orbit where light delays make real-time authorization infeasible.',
-                                },
-                            ].map((useCase) => (
-                                <div
-                                    key={useCase.title}
-                                    className="p-8 rounded-3xl border border-cosmic-blue/20 bg-cosmic-blue/5 space-y-4 hover:border-cosmic-blue/40 transition-all duration-500"
-                                >
-                                    <h4 className="font-serif text-2xl text-foreground">{useCase.title}</h4>
-                                    <p className="text-muted-foreground leading-relaxed">{useCase.description}</p>
-                                </div>
-                            ))}
+                        <div className="grid md:grid-cols-3 gap-5">
+                            {applications.map((app) => {
+                                const Icon = app.icon;
+                                return (
+                                    <div
+                                        key={app.label}
+                                        className="p-7 rounded-3xl border border-cosmic-blue/20 bg-cosmic-blue/5 hover:border-cosmic-blue/50 hover:bg-cosmic-blue/10 transition-all duration-500 group space-y-4"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="w-12 h-12 rounded-2xl bg-cosmic-blue/15 flex items-center justify-center group-hover:bg-cosmic-blue/25 transition-colors">
+                                                <Icon className="w-6 h-6 text-cosmic-blue" />
+                                            </div>
+                                            <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-cosmic-blue/20 text-cosmic-blue bg-cosmic-blue/5">
+                                                {app.tag}
+                                            </span>
+                                        </div>
+                                        <h4 className="font-serif text-xl text-foreground">{app.label}</h4>
+                                        <p className="text-muted-foreground text-sm leading-relaxed">{app.desc}</p>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </section>
                 </ScrollReveal>
 
-                {/* Important Clarification */}
+                {/* Compact Clarification Banner */}
                 <ScrollReveal delay={600}>
-                    <section className="glass p-12 rounded-[3rem] border-amber-500/20 bg-amber-500/5">
-                        <div className="space-y-6 max-w-4xl mx-auto">
-                            <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                                    <Shield className="w-6 h-6 text-amber-500" />
-                                </div>
-                                <div className="space-y-4">
-                                    <h3 className="font-serif text-2xl text-foreground">
-                                        Important: Verification Witness, Not Control
-                                    </h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        Starhold does <strong>not</strong> control satellites with stars. Stars act as <strong>verification witnesses</strong>—
-                                        a physics-based condition that must be met for command authorization. The satellite's star tracker
-                                        observes the sky autonomously, and if the observed star matches the expected parameters,
-                                        the command is authorized for execution.
-                                    </p>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        This is an <strong>information infrastructure</strong>, not a novelty. It adds a non-spoofable
-                                        physical authorization layer to existing satellite command systems.
-                                    </p>
-                                </div>
-                            </div>
+                    <div className="flex items-center gap-6 p-6 rounded-2xl border border-amber-500/20 bg-amber-500/5">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                            <Shield className="w-5 h-5 text-amber-500" />
                         </div>
-                    </section>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                            <span className="text-amber-400 font-semibold">Verification Witness, Not Control — </span>
+                            Stars don't command satellites. They act as{' '}
+                            <strong className="text-foreground">non-spoofable physical authorization keys</strong>.
+                            The star tracker observes, the onboard system verifies, the command executes — no ground contact needed.
+                        </p>
+                    </div>
                 </ScrollReveal>
+
             </div>
         </section>
     );

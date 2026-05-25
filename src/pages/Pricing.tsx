@@ -112,22 +112,7 @@ const Pricing = () => {
           <section className="px-4 pb-16 text-center relative">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-cosmic-purple/10 rounded-full blur-[120px] pointer-events-none" />
             <div className="relative max-w-3xl mx-auto space-y-6">
-              <ScrollReveal>
-                <p className="text-xs font-mono uppercase tracking-[0.4em] text-muted-foreground">Transparent Processing</p>
-                <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light leading-tight mt-2">
-                  Pricing for the <span className="text-gradient-gold italic text-glow">Cosmos</span>
-                </h1>
-              </ScrollReveal>
-               <ScrollReveal delay={150}>
-                 {/* Original B2C description:
-                 <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-                   Build your memory payload. You only pay for the exact data and media you choose to preserve. Select a currency to view our data rates.
-                 </p>
-                 */}
-                 <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-                   Secure your orbital assets. We offer tailored deployment architectures for high-assurance command authorization.
-                 </p>
-               </ScrollReveal>
+
                
                {/* Toggle Switch deactivated for B2B */}
                {/*
