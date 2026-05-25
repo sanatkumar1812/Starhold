@@ -19,7 +19,7 @@ export const Navigation = () => {
       const timer = setTimeout(() => {
         setIsVisible(true);
         setHasEntered(true);
-      }, 2000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [isHomePage]);
@@ -45,17 +45,11 @@ export const Navigation = () => {
 
   const NavLinks = () => (
     <>
-      <Link to="/for-you" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-cosmic-purple hover:text-cosmic-purple/80 transition-colors">
-        For You
-      </Link>
-      <Link to="/for-missions" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-cosmic-blue hover:text-cosmic-blue/80 transition-colors">
-        For Missions
+      <Link to="/techdocs" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+        Protocol Docs
       </Link>
       <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
         Pricing
-      </Link>
-      <Link to="/techdocs" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
-        Tech Docs
       </Link>
       <Link to="/mission" onClick={() => setIsMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
         Our Mission
@@ -70,7 +64,7 @@ export const Navigation = () => {
   );
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 glass transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 glass transition-transform duration-300 font-space-mono ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="w-full px-6 py-4 flex items-center justify-between">
 
         {/* Left Section: Mobile Menu + Logo + Nav */}

@@ -169,7 +169,7 @@ const TechDocsPage = () => {
                                         <div className="space-y-6">
                                             <h4 className="text-2xl font-serif text-primary">Deterministic Unlocking</h4>
                                             <p className="text-muted-foreground leading-relaxed">
-                                                V3.1 moves beyond "Yes/No" authentication. Commands are sent mathematically **incomplete**—missing the physical variables of the universe. Decryption only occurs if the receiver captures live physical data that perfectly completes the cryptographic puzzle.
+                                                V3.1 moves beyond "Yes/No" authentication. Commands are sent mathematically **incomplete**—missing the physical variables of the universe. Decryption only occurs if the receiver captures live physical data that accurately completes the cryptographic puzzle.
                                             </p>
                                             <div className="glass p-6 rounded-2xl border-white/5 space-y-4">
                                                 <h5 className="font-mono text-[10px] uppercase tracking-widest text-primary">Rip-and-Burn Protocol</h5>
@@ -247,9 +247,9 @@ const TechDocsPage = () => {
                                         </div>
                                         <div className="grid md:grid-cols-3 gap-8">
                                             {[
-                                                { icon: Binary, title: "Unforgeable Seed", desc: "Dependent on exact satellite orientation, impossible to spoof terrestrially." },
+                                                { icon: Binary, title: "Unforgeable Seed", desc: "Dependent on exact satellite orientation, highly resistant to terrestrial spoofing." },
                                                 { icon: Activity, title: "Fuzzy Binning", desc: "Resilient to minor atmospheric jitter by dividing space into 0.5° increments." },
-                                                { icon: Lock, title: "Deterministic Convergence", desc: "Ground Station and Satellite converge perfectly on the same mathematical seed." }
+                                                { icon: Lock, title: "Deterministic Convergence", desc: "Ground Station and Satellite deterministically converge on the same mathematical seed." }
                                             ].map(item => (
                                                 <div key={item.title} className="p-8 rounded-2xl bg-white/5 border border-white/5 space-y-4">
                                                     <item.icon className="w-5 h-5 text-primary" />

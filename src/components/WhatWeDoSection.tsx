@@ -24,7 +24,8 @@ export const WhatWeDoSection = () => {
                 {/* Cards + Central Graphic */}
                 <div className="grid lg:grid-cols-[1fr_220px_1fr] gap-6 items-center">
 
-                    {/* ── B2C Card ── */}
+                    {/* ── B2C Card (Deactivated for B2B) ── */}
+                    {/*
                     <div className="glass p-8 rounded-[2.5rem] border border-primary/10 hover:border-primary/25 transition-all duration-300 hover:-translate-y-1 space-y-6 h-full">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -50,6 +51,7 @@ export const WhatWeDoSection = () => {
                             ))}
                         </ul>
                     </div>
+                    */}
 
                     {/* ── Central Orbital Graphic ── */}
                     <div className="hidden lg:flex items-center justify-center">

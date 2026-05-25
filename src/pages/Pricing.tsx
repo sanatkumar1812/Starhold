@@ -118,208 +118,206 @@ const Pricing = () => {
                   Pricing for the <span className="text-gradient-gold italic text-glow">Cosmos</span>
                 </h1>
               </ScrollReveal>
-              <ScrollReveal delay={150}>
-                <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-                  Build your memory payload. You only pay for the exact data and media you choose to preserve. Select a currency to view our data rates.
-                </p>
-              </ScrollReveal>
-              
-              {/* Toggle Switch */}
-              <ScrollReveal delay={200}>
-                <div className="mt-8 inline-flex items-center p-1.5 bg-slate-900/50 border border-border/30 rounded-full backdrop-blur-sm shadow-xl">
-                    <button 
-                        onClick={() => setCurrency('USD')}
-                        className={`px-8 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-300 ${currency === 'USD' ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(234,179,8,0.3)]' : 'text-muted-foreground hover:text-foreground'}`}
-                    >
-                        USD ($)
-                    </button>
-                    <button 
-                        onClick={() => setCurrency('INR')}
-                        className={`px-8 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-300 ${currency === 'INR' ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(234,179,8,0.3)]' : 'text-muted-foreground hover:text-foreground'}`}
-                    >
-                        INR (₹)
-                    </button>
-                </div>
-              </ScrollReveal>
+               <ScrollReveal delay={150}>
+                 {/* Original B2C description:
+                 <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
+                   Build your memory payload. You only pay for the exact data and media you choose to preserve. Select a currency to view our data rates.
+                 </p>
+                 */}
+                 <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
+                   Secure your orbital assets. We offer tailored deployment architectures for high-assurance command authorization.
+                 </p>
+               </ScrollReveal>
+               
+               {/* Toggle Switch deactivated for B2B */}
+               {/*
+               <ScrollReveal delay={200}>
+                 <div className="mt-8 inline-flex items-center p-1.5 bg-slate-900/50 border border-border/30 rounded-full backdrop-blur-sm shadow-xl">
+                     <button 
+                         onClick={() => setCurrency('USD')}
+                         className={`px-8 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-300 ${currency === 'USD' ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(234,179,8,0.3)]' : 'text-muted-foreground hover:text-foreground'}`}
+                     >
+                         USD ($)
+                     </button>
+                     <button 
+                         onClick={() => setCurrency('INR')}
+                         className={`px-8 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-300 ${currency === 'INR' ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(234,179,8,0.3)]' : 'text-muted-foreground hover:text-foreground'}`}
+                     >
+                         INR (₹)
+                     </button>
+                 </div>
+               </ScrollReveal>
+               */}
             </div>
           </section>
 
-          {/* ── B2C Pricing "For You" ── */}
+          {/* ── B2C Pricing "For You" (Deactivated for B2B) ── */}
+          {/*
           <section className="px-4 pb-24 relative z-20">
-            <div className="max-w-4xl mx-auto space-y-12">
-              
-              <ScrollReveal>
-                  <div className="text-center space-y-2 mb-8">
-                      <h2 className="font-serif text-3xl md:text-4xl text-foreground">For You — Cosmic Memory Archive</h2>
-                      <p className="text-muted-foreground max-w-lg mx-auto">
-                        Your memory is a single cosmic artifact. Start with your text message, then enrich it by attaching any media. Your final price depends on the components inside your payload.
-                      </p>
-                  </div>
-              </ScrollReveal>
+             <div className="max-w-4xl mx-auto space-y-12">
+               
+               <ScrollReveal>
+                   <div className="text-center space-y-2 mb-8">
+                       <h2 className="font-serif text-3xl md:text-4xl text-foreground">For You — Cosmic Memory Archive</h2>
+                       <p className="text-muted-foreground max-w-lg mx-auto">
+                         Your memory is a single cosmic artifact. Start with your text message, then enrich it by attaching any media. Your final price depends on the components inside your payload.
+                       </p>
+                   </div>
+               </ScrollReveal>
 
-              <ScrollReveal delay={100}>
-                <div className="glass-strong rounded-3xl border border-border/40 overflow-hidden shadow-2xl">
-                  {/* Table Header */}
-                  <div className="hidden md:flex items-center px-8 py-4 bg-slate-950/50 border-b border-border/30 text-xs font-mono uppercase tracking-widest text-muted-foreground">
-                    <div className="flex-[2]">Payload Component</div>
-                    <div className="flex-1 text-right">Base Rate</div>
-                    <div className="flex-1 text-right">Additional Rate</div>
-                  </div>
+               <ScrollReveal delay={100}>
+                 <div className="glass-strong rounded-3xl border border-border/40 overflow-hidden shadow-2xl">
+                   <div className="hidden md:flex items-center px-8 py-4 bg-slate-950/50 border-b border-border/30 text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                     <div className="flex-[2]">Payload Component</div>
+                     <div className="flex-1 text-right">Base Rate</div>
+                     <div className="flex-1 text-right">Additional Rate</div>
+                   </div>
 
-                  {/* Pricing Rows */}
-                  <div className="divide-y divide-border/20">
-                    {payloadRates.map((item, idx) => {
-                      const Icon = item.icon;
-                      const priceData = item.pricing[currency];
-                      const isFoundation = item.id === 'text';
+                   <div className="divide-y divide-border/20">
+                     {payloadRates.map((item, idx) => {
+                       const Icon = item.icon;
+                       const priceData = item.pricing[currency];
+                       const isFoundation = item.id === 'text';
 
-                      return (
-                        <div key={item.id} className={`flex flex-col md:flex-row md:items-center p-6 md:p-8 hover:bg-white/[0.02] transition-colors relative ${isFoundation ? 'bg-primary/[0.02]' : ''}`}>
-                          
-                          {/* Visual Connector for Add-ons */}
-                          {!isFoundation && (
-                            <div className="hidden md:flex absolute left-8 top-0 -mt-2 w-px h-6 bg-border/40" />
-                          )}
-                          {!isFoundation && (
-                            <div className="hidden md:flex absolute left-6 top-4 w-4 h-4 text-border/40">
-                                <Plus className="w-full h-full" />
-                            </div>
-                          )}
+                       return (
+                         <div key={item.id} className={`flex flex-col md:flex-row md:items-center p-6 md:p-8 hover:bg-white/[0.02] transition-colors relative ${isFoundation ? 'bg-primary/[0.02]' : ''}`}>
+                           
+                           {!isFoundation && (
+                             <div className="hidden md:flex absolute left-8 top-0 -mt-2 w-px h-6 bg-border/40" />
+                           )}
+                           {!isFoundation && (
+                             <div className="hidden md:flex absolute left-6 top-4 w-4 h-4 text-border/40">
+                                 <Plus className="w-full h-full" />
+                             </div>
+                           )}
 
-                          {/* Info Column */}
-                          <div className={`flex-[2] flex items-start gap-4 ${!isFoundation ? 'md:pl-6' : ''}`}>
-                            <div className={`w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center ${item.bgClass}`}>
-                              <Icon className={`w-6 h-6 ${item.accentClass}`} />
-                            </div>
-                            <div>
-                              <h3 className={`font-serif text-xl ${isFoundation ? 'text-primary' : 'text-foreground'}`}>
-                                {item.name}
-                              </h3>
-                              <p className="text-sm text-muted-foreground leading-relaxed pr-4 mt-1">
-                                {item.description}
-                              </p>
-                            </div>
-                          </div>
+                           <div className={`flex-[2] flex items-start gap-4 ${!isFoundation ? 'md:pl-6' : ''}`}>
+                             <div className={`w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center ${item.bgClass}`}>
+                               <Icon className={`w-6 h-6 ${item.accentClass}`} />
+                             </div>
+                             <div>
+                               <h3 className={`font-serif text-xl ${isFoundation ? 'text-primary' : 'text-foreground'}`}>
+                                 {item.name}
+                               </h3>
+                               <p className="text-sm text-muted-foreground leading-relaxed pr-4 mt-1">
+                                 {item.description}
+                               </p>
+                             </div>
+                           </div>
 
-                          {/* Base Rate Column */}
-                          <div className="flex-1 md:text-right mt-6 md:mt-0 pt-6 md:pt-0 border-t border-border/10 md:border-0 flex md:flex-col items-baseline md:items-end justify-between md:justify-center">
-                            <span className="md:hidden text-xs font-mono text-muted-foreground uppercase tracking-widest">Base Rate</span>
-                            <div className="text-right">
-                              <span className={`font-serif text-2xl font-medium ${item.accentClass}`}>{priceData.base}</span>
-                              <p className="text-xs text-foreground/60 mt-0.5">{priceData.baseDesc}</p>
-                            </div>
-                          </div>
+                           <div className="flex-1 md:text-right mt-6 md:mt-0 pt-6 md:pt-0 border-t border-border/10 md:border-0 flex md:flex-col items-baseline md:items-end justify-between md:justify-center">
+                             <span className="md:hidden text-xs font-mono text-muted-foreground uppercase tracking-widest">Base Rate</span>
+                             <div className="text-right">
+                               <span className={`font-serif text-2xl font-medium ${item.accentClass}`}>{priceData.base}</span>
+                               <p className="text-xs text-foreground/60 mt-0.5">{priceData.baseDesc}</p>
+                             </div>
+                           </div>
 
-                          {/* Extra Rate Column */}
-                          <div className="flex-1 md:text-right mt-4 md:mt-0 flex md:flex-col items-baseline md:items-end justify-between md:justify-center">
-                            <span className="md:hidden text-xs font-mono text-muted-foreground uppercase tracking-widest">Additional</span>
-                            <div className="text-right">
-                              <span className="font-serif text-lg font-medium text-foreground">{priceData.extra}</span>
-                              <p className="text-xs text-foreground/60 mt-0.5">{priceData.extraDesc}</p>
-                            </div>
-                          </div>
+                           <div className="flex-1 md:text-right mt-4 md:mt-0 flex md:flex-col items-baseline md:items-end justify-between md:justify-center">
+                             <span className="md:hidden text-xs font-mono text-muted-foreground uppercase tracking-widest">Additional</span>
+                             <div className="text-right">
+                               <span className="font-serif text-lg font-medium text-foreground">{priceData.extra}</span>
+                               <p className="text-xs text-foreground/60 mt-0.5">{priceData.extraDesc}</p>
+                             </div>
+                           </div>
 
+                         </div>
+                       );
+                     })}
+                   </div>
+                   
+                   <div className="p-8 bg-slate-950/50 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-6">
+                     <p className="text-sm text-muted-foreground text-center sm:text-left">
+                       Ready to build your cosmic memory payload?
+                     </p>
+                     <Button
+                       variant="gold"
+                       size="lg"
+                       className="w-full sm:w-auto px-8 rounded-xl"
+                       onClick={() => navigate('/for-you')}
+                     >
+                       Start Designing <ChevronRight className="w-4 h-4 ml-1" />
+                     </Button>
+                   </div>
+                 </div>
+               </ScrollReveal>
+
+               <ScrollReveal delay={200}>
+                 <div className="glass-strong rounded-3xl border border-primary/20 overflow-hidden shadow-2xl mt-8">
+                   <div className="p-6 md:p-8 border-b border-border/20 bg-primary/[0.02]">
+                     <h3 className="font-serif text-2xl text-foreground flex items-center gap-2">
+                        <Calculator className="w-5 h-5 text-primary" /> Payload Cost Estimator
+                     </h3>
+                     <p className="text-muted-foreground mt-1 text-sm">Experiment with your expected payload size to estimate the final cost.</p>
+                   </div>
+                   
+                   <div className="p-6 md:p-8 grid md:grid-cols-5 gap-8 items-stretch relative bg-black/20">
+                     
+                     <div className="md:col-span-3 space-y-6">
+                        <div className="space-y-3">
+                           <label className="text-sm font-medium text-foreground flex justify-between">
+                             <span>Text (Words)</span>
+                             <span className="text-primary">{words} words</span>
+                           </label>
+                           <input type="range" min="0" max="2000" step="50" value={words} onChange={(e) => setWords(parseInt(e.target.value))} className="w-full accent-primary" />
                         </div>
-                      );
-                    })}
-                  </div>
-                  
-                  {/* Checkout CTA */}
-                  <div className="p-8 bg-slate-950/50 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-6">
-                    <p className="text-sm text-muted-foreground text-center sm:text-left">
-                      Ready to build your cosmic memory payload?
-                    </p>
-                    <Button
-                      variant="gold"
-                      size="lg"
-                      className="w-full sm:w-auto px-8 rounded-xl"
-                      onClick={() => navigate('/for-you')}
-                    >
-                      Start Designing <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </div>
-                </div>
-              </ScrollReveal>
+                        
+                        <div className="space-y-3">
+                           <label className="text-sm font-medium text-foreground flex justify-between">
+                             <span className="text-cosmic-purple">Voice Notes (Minutes)</span>
+                             <span className="text-cosmic-purple">{voice} mins</span>
+                           </label>
+                           <input type="range" min="0" max="30" step="1" value={voice} onChange={(e) => setVoice(parseInt(e.target.value))} className="w-full accent-cosmic-purple" />
+                        </div>
+                        
+                        <div className="space-y-3">
+                           <label className="text-sm font-medium text-foreground flex justify-between">
+                             <span className="text-cyan-400">Video Messages (Minutes)</span>
+                             <span className="text-cyan-400">{video} mins</span>
+                           </label>
+                           <input type="range" min="0" max="30" step="1" value={video} onChange={(e) => setVideo(parseInt(e.target.value))} className="w-full accent-cyan-400" />
+                        </div>
 
-              {/* Interactive Estimator */}
-              <ScrollReveal delay={200}>
-                <div className="glass-strong rounded-3xl border border-primary/20 overflow-hidden shadow-2xl mt-8">
-                  <div className="p-6 md:p-8 border-b border-border/20 bg-primary/[0.02]">
-                    <h3 className="font-serif text-2xl text-foreground flex items-center gap-2">
-                       <Calculator className="w-5 h-5 text-primary" /> Payload Cost Estimator
-                    </h3>
-                    <p className="text-muted-foreground mt-1 text-sm">Experiment with your expected payload size to estimate the final cost.</p>
-                  </div>
-                  
-                  <div className="p-6 md:p-8 grid md:grid-cols-5 gap-8 items-stretch relative bg-black/20">
-                    
-                    {/* Inputs */}
-                    <div className="md:col-span-3 space-y-6">
-                       <div className="space-y-3">
-                          <label className="text-sm font-medium text-foreground flex justify-between">
-                            <span>Text (Words)</span>
-                            <span className="text-primary">{words} words</span>
-                          </label>
-                          <input type="range" min="0" max="2000" step="50" value={words} onChange={(e) => setWords(parseInt(e.target.value))} className="w-full accent-primary" />
-                       </div>
+                        <div className="space-y-3">
+                           <label className="text-sm font-medium text-foreground flex justify-between">
+                             <span className="text-cosmic-blue">Images (Quantity)</span>
+                             <span className="text-cosmic-blue">{images} photos</span>
+                           </label>
+                           <input type="range" min="0" max="50" step="1" value={images} onChange={(e) => setImages(parseInt(e.target.value))} className="w-full accent-cosmic-blue" />
+                        </div>
+                     </div>
+                     
+                     <div className="md:col-span-2 flex flex-col items-center justify-center space-y-2 p-8 glass rounded-2xl border border-primary/20 relative overflow-hidden min-h-[200px]">
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
+                        <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground z-10 mb-2">Estimated Total</p>
+                        <span className="font-serif text-5xl md:text-6xl text-primary font-medium text-glow z-10 break-all text-center">
+                           {currency === 'INR' ? '₹' : '$'}{totalCost.toLocaleString(undefined, { minimumFractionDigits: currency==='USD'?2:0, maximumFractionDigits: currency==='USD'?2:0 })}
+                        </span>
+                     </div>
+                   </div>
+                 </div>
+               </ScrollReveal>
+               
+               <ScrollReveal delay={300}>
+                   <div className="glass rounded-2xl border border-border/30 p-8 md:p-12 mt-12 overflow-hidden relative">
+                       <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
                        
-                       <div className="space-y-3">
-                          <label className="text-sm font-medium text-foreground flex justify-between">
-                            <span className="text-cosmic-purple">Voice Notes (Minutes)</span>
-                            <span className="text-cosmic-purple">{voice} mins</span>
-                          </label>
-                          <input type="range" min="0" max="30" step="1" value={voice} onChange={(e) => setVoice(parseInt(e.target.value))} className="w-full accent-cosmic-purple" />
+                       <div className="grid md:grid-cols-3 gap-8 relative z-10">
+                           {b2cFeatures.map((feat, i) => (
+                               <div key={i} className="space-y-3 text-center md:text-left">
+                                   <div className="w-10 h-10 mx-auto md:mx-0 rounded-full bg-primary/10 flex items-center justify-center">
+                                       <feat.icon className="w-5 h-5 text-primary" />
+                                   </div>
+                                   <h4 className="font-medium text-foreground">{feat.title}</h4>
+                                   <p className="text-sm text-muted-foreground leading-relaxed">{feat.desc}</p>
+                               </div>
+                           ))}
                        </div>
-                       
-                       <div className="space-y-3">
-                          <label className="text-sm font-medium text-foreground flex justify-between">
-                            <span className="text-cyan-400">Video Messages (Minutes)</span>
-                            <span className="text-cyan-400">{video} mins</span>
-                          </label>
-                          <input type="range" min="0" max="30" step="1" value={video} onChange={(e) => setVideo(parseInt(e.target.value))} className="w-full accent-cyan-400" />
-                       </div>
-
-                       <div className="space-y-3">
-                          <label className="text-sm font-medium text-foreground flex justify-between">
-                            <span className="text-cosmic-blue">Images (Quantity)</span>
-                            <span className="text-cosmic-blue">{images} photos</span>
-                          </label>
-                          <input type="range" min="0" max="50" step="1" value={images} onChange={(e) => setImages(parseInt(e.target.value))} className="w-full accent-cosmic-blue" />
-                       </div>
-                    </div>
-                    
-                    {/* Result */}
-                    <div className="md:col-span-2 flex flex-col items-center justify-center space-y-2 p-8 glass rounded-2xl border border-primary/20 relative overflow-hidden min-h-[200px]">
-                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
-                       <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground z-10 mb-2">Estimated Total</p>
-                       <span className="font-serif text-5xl md:text-6xl text-primary font-medium text-glow z-10 break-all text-center">
-                          {currency === 'INR' ? '₹' : '$'}{totalCost.toLocaleString(undefined, { minimumFractionDigits: currency==='USD'?2:0, maximumFractionDigits: currency==='USD'?2:0 })}
-                       </span>
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-              
-              {/* Global Features Banner */}
-              <ScrollReveal delay={300}>
-                  <div className="glass rounded-2xl border border-border/30 p-8 md:p-12 mt-12 overflow-hidden relative">
-                      <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
-                      
-                      <div className="grid md:grid-cols-3 gap-8 relative z-10">
-                          {b2cFeatures.map((feat, i) => (
-                              <div key={i} className="space-y-3 text-center md:text-left">
-                                  <div className="w-10 h-10 mx-auto md:mx-0 rounded-full bg-primary/10 flex items-center justify-center">
-                                      <feat.icon className="w-5 h-5 text-primary" />
-                                  </div>
-                                  <h4 className="font-medium text-foreground">{feat.title}</h4>
-                                  <p className="text-sm text-muted-foreground leading-relaxed">{feat.desc}</p>
-                              </div>
-                          ))}
-                      </div>
-                  </div>
-              </ScrollReveal>
-            </div>
-          </section>
+                   </div>
+               </ScrollReveal>
+             </div>
+           </section>
+           */}
 
           {/* ── B2B Pricing "For Missions" ── */}
           <section className="px-4 py-24 relative overflow-hidden">

@@ -18,35 +18,37 @@ const Mission = () => {
                         {/* Hero Section */}
                         <ScrollReveal>
                             <div className="text-center space-y-6">
-                                <h1 className="font-serif text-5xl md:text-7xl text-foreground">A Dual Legacy</h1>
+                                <h1 className="font-serif text-5xl md:text-7xl text-foreground">A Secure Legacy</h1>
                                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                                    Bridging the gap between eternal human sentiment and the uncompromising security of deep-space mission systems.
+                                    Providing uncompromising security and cryptographic integrity for deep-space mission systems.
                                 </p>
                             </div>
                         </ScrollReveal>
 
                         {/* Content Sections */}
                         <div className="grid gap-20">
-                            {/* B2C Section */}
-                            <ScrollReveal delay={200}>
-                                <section className="grid md:grid-cols-2 gap-12 items-center">
-                                    <div className="space-y-6">
-                                        <div className="w-12 h-12 flex items-center justify-center">
-                                            <img src="logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
-                                        </div>
-                                        <h2 className="font-serif text-3xl text-foreground">The Memory Registry</h2>
-                                        <p className="text-muted-foreground leading-relaxed">
-                                            For individuals, Starhold is a celestial time capsule. We encode personal messages, photographs, and emotional artifacts into unique celestial coordinates. By tethering data to the stars, we ensure it survives digital obsolescence and physical decay.
-                                        </p>
-                                    </div>
-                                    <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 flex items-center justify-center p-8 group">
-                                        <div className="relative">
-                                            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 group-hover:scale-175 transition-transform duration-500" />
-                                            <img src="logo-small.svg" alt="Starhold Logo" className="w-32 h-32 object-contain relative animate-float" />
-                                        </div>
-                                    </div>
-                                </section>
-                            </ScrollReveal>
+                             {/* B2C Section (Deactivated for B2B) */}
+                             {/*
+                             <ScrollReveal delay={200}>
+                                 <section className="grid md:grid-cols-2 gap-12 items-center">
+                                     <div className="space-y-6">
+                                         <div className="w-12 h-12 flex items-center justify-center">
+                                             <img src="logo-small.svg" alt="Starhold Logo" className="w-full h-full object-contain" />
+                                         </div>
+                                         <h2 className="font-serif text-3xl text-foreground">The Memory Registry</h2>
+                                         <p className="text-muted-foreground leading-relaxed">
+                                             For individuals, Starhold is a celestial time capsule. We encode personal messages, photographs, and emotional artifacts into unique celestial coordinates. By tethering data to the stars, we ensure it survives digital obsolescence and physical decay.
+                                         </p>
+                                     </div>
+                                     <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 flex items-center justify-center p-8 group">
+                                         <div className="relative">
+                                             <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 group-hover:scale-175 transition-transform duration-500" />
+                                             <img src="logo-small.svg" alt="Starhold Logo" className="w-32 h-32 object-contain relative animate-float" />
+                                         </div>
+                                     </div>
+                                 </section>
+                             </ScrollReveal>
+                             */}
 
                             {/* B2B / Mission Systems Section */}
                             <ScrollReveal delay={400}>
@@ -74,7 +76,10 @@ const Mission = () => {
                                 <section className="text-center glass p-12 rounded-[3rem] border-white/5 space-y-6">
                                     <h2 className="font-serif text-3xl text-foreground">One Network, Infinite Security</h2>
                                     <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                                        {/* Original B2C/B2B description:
                                         Our infrastructure leverages the same celestial coordinate system to anchor both a child's letter to the future and a trillion-dollar satellite's corrective burn. Whether it's a personal legacy or a national security asset, the Stars provide the ultimate, immutable reference point.
+                                        */}
+                                        Our infrastructure leverages the celestial coordinate system to anchor mission-critical spacecraft payloads and command data. For aerospace systems demanding zero-trust validation, the Stars provide the ultimate, immutable reference point.
                                     </p>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 text-xs font-mono uppercase tracking-widest text-primary/60">
                                         <div className="p-4 border border-white/5 rounded-xl bg-white/[0.02]">AES-GCM 256</div>
@@ -102,10 +107,17 @@ const Mission = () => {
                                         </div>
                                         <h3 className="font-serif text-3xl text-foreground">Science Accelerator 2026</h3>
                                         <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
+                                            {/* Original:
                                             Starhold's B2C product won first place in the HolySpace Challenge — part of the
                                             <strong className="text-foreground"> Science Accelerator Class of 2026</strong> by
                                             Out of the Box Aerospace, a global programme for young space entrepreneurs aged 14–18.
                                             We are now <strong className="text-foreground">finalizing our dual-use platform</strong> with a clear goal: 
+                                            to win the upcoming finals and transition this project into a full-scale orbital infrastructure venture.
+                                            */}
+                                            Starhold won first place in the HolySpace Challenge — part of the
+                                            <strong className="text-foreground"> Science Accelerator Class of 2026</strong> by
+                                            Out of the Box Aerospace, a global programme for young space entrepreneurs aged 14–18.
+                                            We are now <strong className="text-foreground">finalizing our space-grade platform</strong> with a clear goal: 
                                             to win the upcoming finals and transition this project into a full-scale orbital infrastructure venture.
                                         </p>
                                     </div>
@@ -115,7 +127,7 @@ const Mission = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-wrap gap-3 pt-2">
-                                    {["B2C Product", "Deep-Space Cryptography", "Star-Addressed Memory", "Advancing to Finals"].map(tag => (
+                                    {["Space Security", "Deep-Space Cryptography", "Command Authorization", "Advancing to Finals"].map(tag => (
                                         <span key={tag} className="px-3 py-1 rounded-full border border-white/5 bg-white/[0.03] text-xs font-mono text-muted-foreground/60 uppercase tracking-wider">{tag}</span>
                                     ))}
                                 </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export const Footer = () => {
   return (
-    <footer className="border-t border-border/30 py-12 px-12">
+    <footer className="border-t border-border/30 py-12 px-12 font-space-mono">
       <div className="w-full">
         <div className="grid md:grid-cols-6 gap-12 mb-12">
           {/* Brand */}
@@ -15,7 +15,10 @@ export const Footer = () => {
               <img src="/logo2.png" alt="Starhold" className="h-5 sm:h-6 object-contain object-left" />
             </div>
             <p className="text-sm text-foreground/70 font-medium">
+              {/* Original B2C/B2B description:
               Information Secured by Space and Time. A star-addressed system for personal memories and mission-critical commands.
+              */}
+              Information Secured by Space and Time. A star-addressed system for secure mission-critical command authorization.
             </p>
             <div className="flex items-center gap-3 pt-4">
               <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm w-fit">
@@ -46,10 +49,8 @@ export const Footer = () => {
           <div className="space-y-4 md:pl-20">
             <h4 className="font-serif text-foreground">Products</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/for-you" className="hover:text-foreground transition-colors font-medium text-cosmic-purple/80">For You</Link></li>
-              <li><Link to="/for-missions" className="hover:text-foreground transition-colors font-medium text-cosmic-blue/80">For Missions</Link></li>
               <li><Link to="/pricing" className="hover:text-foreground transition-colors">Pricing</Link></li>
-              <li><Link to="/techdocs" className="hover:text-foreground transition-colors">Tech Docs</Link></li>
+              <li><Link to="/techdocs" className="hover:text-foreground transition-colors">Protocol Docs</Link></li>
             </ul>
           </div>
 

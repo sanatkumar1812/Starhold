@@ -18,21 +18,27 @@ const Privacy = () => {
                             <section className="space-y-4">
                                 <h2 className="text-xl font-medium text-foreground">1. Data Encryption</h2>
                                 <p>
-                                    At Starhold, we treat your memories with absolute reverence. All text, images, and videos uploaded to our servers are encrypted using AES-256 military-grade standards before being stored in the archival database.
+                                    At Starhold, we manage mission-critical data with the highest security standards. All text, images, and videos uploaded to our servers are encrypted using AES-256 military-grade standards before being stored in the archival database.
                                 </p>
                             </section>
 
                             <section className="space-y-4">
                                 <h2 className="text-xl font-medium text-foreground">2. Information Collection</h2>
                                 <p>
+                                    {/* Original B2C text:
                                     We only collect essential data required to maintain your account and deliver your memories: your email address, recipient names, and the celestial coordinates assigned to your memories.
+                                    */}
+                                    We only collect essential data required to maintain your account and authorize commands: your email address, organization credentials, and the celestial/temporal parameters assigned to your mission profiles.
                                 </p>
                             </section>
-
+ 
                             <section className="space-y-4">
-                                <h2 className="text-xl font-medium text-foreground">3. Memory Security</h2>
+                                <h2 className="text-xl font-medium text-foreground">3. Command Authorization Security</h2>
                                 <p>
+                                    {/* Original B2C text:
                                     Memories are "locked" until the reveal date you specify. Not even the Starhold administrative team has the capability to view unencrypted content without the unique user-side key generated at creation.
+                                    */}
+                                    Mission commands are cryptographically locked until the exact observational parameters and time-locks you specify are satisfied on-orbit. Not even the Starhold administrative team has the capability to view or execute unencrypted commands without the unique user-side key generated at creation.
                                 </p>
                             </section>
 

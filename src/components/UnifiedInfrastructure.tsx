@@ -18,8 +18,11 @@ export const UnifiedInfrastructure = () => {
                                 <span className="text-gradient-gold italic">Ledger of the Sky</span>
                             </h2>
                             <p className="text-muted-foreground text-lg leading-relaxed max-w-xl">
+                                {/* Original:
                                 Whether securing a personal legacy or authorizing a satellite maneuver,
                                 Starhold relies on the absolute precision of celestial mechanics.
+                                */}
+                                Starhold relies on the absolute precision of celestial mechanics to authorize satellite maneuvers and secure data channels.
                                 By binding data to Right Ascension and Declination, we create a
                                 globally observable verification layer that exists beyond earthly control.
                             </p>
@@ -67,7 +70,8 @@ export const UnifiedInfrastructure = () => {
                                         { label: 'Addressing Mode', value: 'RA/Dec Celestial Mapping' },
                                         { label: 'Security Layer', value: 'Time-Delayed Atomic Locking' },
                                         { label: 'Verification', value: 'Observable Star Trackers' },
-                                        { label: 'Domain', value: 'B2C Personal & B2B Mission' }
+                                        // Original: { label: 'Domain', value: 'B2C Personal & B2B Mission' }
+                                        { label: 'Domain', value: 'High-Assurance Aerospace Security' }
                                     ].map((spec) => (
                                         <div key={spec.label} className="flex justify-between items-center text-xs">
                                             <span className="text-white/40 font-mono italic">{spec.label}</span>

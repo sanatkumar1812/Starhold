@@ -6,21 +6,24 @@ export const UniversalFeatures = () => {
         {
             icon: Globe,
             title: "Orbit-Agnostic Access",
-            description: "From Low Earth Orbit to deep space trajectories, our network remains accessible. B2B mission data and personal memories share the same resilient infrastructure.",
+            // Original: "From Low Earth Orbit to deep space trajectories, our network remains accessible. B2B mission data and personal memories share the same resilient infrastructure."
+            description: "From Low Earth Orbit to deep space trajectories, our network remains accessible. Mission-critical telemetry and command protocols share the same resilient infrastructure.",
             gradient: "from-blue-500/20 to-purple-500/20",
             iconColor: "text-blue-400"
         },
         {
             icon: Clock,
             title: "Temporal Precision",
-            description: "Atomic-clock synchronization ensures your data is locked to the exact moment of transmission. Perfect for verifying mission timestamps or preserving a fleeting memory.",
+            // Original: "Atomic-clock synchronization ensures your data is locked to the exact moment of transmission. Perfect for verifying mission timestamps or preserving a fleeting memory."
+            description: "Atomic-clock synchronization ensures your data is locked to the exact moment of transmission. Perfect for verifying mission timestamps and telemetry synchronization.",
             gradient: "from-amber-500/20 to-orange-500/20",
             iconColor: "text-amber-400"
         },
         {
             icon: Eye,
             title: "Visual Confirmation",
-            description: "The stars themselves are your verification keys. Look up to confirm the coordinates of your data, whether it's a critical telemetry packet or a message to a loved one.",
+            // Original: "The stars themselves are your verification keys. Look up to confirm the coordinates of your data, whether it's a critical telemetry packet or a message to a loved one."
+            description: "The stars themselves are your verification keys. Star trackers confirm the coordinates of your data, establishing absolute security for critical telemetry packets.",
             gradient: "from-emerald-500/20 to-cyan-500/20",
             iconColor: "text-emerald-400"
         }
@@ -35,8 +38,12 @@ export const UniversalFeatures = () => {
                             Universal Capabilities
                         </h2>
                         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                            {/* Original:
                             The same physics that guide spacecraft guide your memories.
                             Our core technologies serve every user, on every horizon.
+                            */}
+                            The same physics that guide spacecraft secure your critical data.
+                            Our core technologies serve every mission, on every horizon.
                         </p>
                     </div>
                 </ScrollReveal>

@@ -19,7 +19,10 @@ const About = () => {
                             <div className="text-center space-y-4 mb-16">
                                 <h1 className="font-serif text-5xl md:text-7xl text-foreground">Meet the Visionaries</h1>
                                 <p className="text-muted-foreground text-xl max-w-xl mx-auto">
+                                    {/* Original B2C subtitle:
                                     The team of young innovators dedicated to making space accessible and memories eternal.
+                                    */}
+                                    The team of young innovators dedicated to making space accessible and securing orbital assets.
                                 </p>
                             </div>
                         </ScrollReveal>
@@ -137,6 +140,24 @@ const About = () => {
                                 </div>
                             </ScrollReveal>
                         </div>
+
+                         {/* Future Horizons (Deactivated for B2B) */}
+                         {/*
+                         <ScrollReveal delay={800}>
+                             <div className="mt-32 p-10 md:p-16 rounded-[3rem] border border-white/5 bg-slate-900/40 glass relative overflow-hidden">
+                                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
+                                 <div className="relative z-10 max-w-3xl mx-auto text-center space-y-6">
+                                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-[10px] font-mono text-primary uppercase tracking-[0.2em]">
+                                         Future Horizons
+                                     </div>
+                                     <h2 className="text-3xl md:text-5xl font-serif text-foreground">The Consumer Memory Archive</h2>
+                                     <p className="text-muted-foreground text-lg leading-relaxed">
+                                         While our current focus remains strictly on securing critical aerospace infrastructure, our long-term vision includes making space accessible to everyone. In the future, we plan to adapt our high-assurance backend to offer a <strong>B2C Consumer Memory Archive</strong>—allowing individuals to cryptographically lock their personal memories and media directly into celestial coordinates.
+                                     </p>
+                                 </div>
+                             </div>
+                         </ScrollReveal>
+                         */}
                     </div>
                 </main>
 
