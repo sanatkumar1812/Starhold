@@ -12,12 +12,14 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { Footer } from '@/components/Footer';
 import { Quote } from 'lucide-react';
 import { ForMissionsSection } from '@/components/ForMissionsSection';
+import { ProblemSolutionSection } from '@/components/ProblemSolutionSection';
+import { StrategicBriefing } from '@/components/StrategicBriefing';
 
 const Index = () => {
   const navigate = useNavigate();
 
   const scrollToHowItWorks = () => {
-    const element = document.getElementById('for-missions');
+    const element = document.getElementById('problem-statement');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -36,6 +38,10 @@ const Index = () => {
           }}
           onLearnMore={scrollToHowItWorks}
         />
+
+        <ProblemSolutionSection />
+
+        <StrategicBriefing />
 
         {/* Universal capabilities deactivated per user request */}
         {/*
