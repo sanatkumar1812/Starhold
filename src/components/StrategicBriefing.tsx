@@ -126,30 +126,27 @@ export const StrategicBriefing = () => {
               
               {/* TAB 1: MARKET OPPORTUNITY */}
               {activeTab === 'market' && (
-                <div className="grid md:grid-cols-2 gap-12 w-full animate-in fade-in duration-300">
-                  <div className="space-y-6">
-                    <h3 className="font-serif text-3xl text-foreground font-bold">
-                      The Cybersecurity Crisis in Orbit
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed text-sm">
-                      STARHOLD's market opportunity is anchored in a record **$613 Billion** global space economy currently facing a **118% surge in reported cyber incidents** involving space assets, necessitating a move away from legacy "security through obscurity" toward the physical verification STARHOLD provides.
-                    </p>
-                    <div className="space-y-4 pt-2">
-                      <h4 className="font-serif text-lg text-primary">Key Strategic Expansion Corridors:</h4>
-                      <ul className="space-y-3 font-mono text-xs text-muted-foreground">
-                        <li className="flex items-start gap-2.5">
-                          <ChevronRight className="w-4 h-4 text-cosmic-blue flex-shrink-0 mt-0.5" />
-                          <span><strong>Orbital Mesh Resilience:</strong> Inter-satellite mesh routing via Optical Inter-Satellite Links (OISL).</span>
-                        </li>
-                        <li className="flex items-start gap-2.5">
-                          <ChevronRight className="w-4 h-4 text-cosmic-blue flex-shrink-0 mt-0.5" />
-                          <span><strong>Star-Addressed Routing:</strong> Routing anchored to fixed celestial constants rather than vulnerable IP addresses.</span>
-                        </li>
-                      </ul>
-                    </div>
+                <div className="grid md:grid-cols-2 gap-10 w-full animate-in fade-in duration-300">
+
+                  {/* Left: visual corridor cards */}
+                  <div className="space-y-4">
+                    <h3 className="font-serif text-2xl text-foreground font-bold">Strategic Expansion Corridors</h3>
+                    {[
+                      { emoji: '🛰️', title: 'Orbital Mesh Resilience', sub: 'Inter-satellite routing via Optical Inter-Satellite Links (OISL)' },
+                      { emoji: '⭐', title: 'Star-Addressed Routing',   sub: 'Celestial constants replace vulnerable IP-based addressing' },
+                      { emoji: '🇮🇳', title: 'India-Led Expansion',     sub: 'Fastest-growing digital asset corridor in the Asiatic region' },
+                    ].map((item) => (
+                      <div key={item.title} className="flex items-start gap-4 p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-cosmic-blue/20 transition-all duration-300">
+                        <span className="text-2xl flex-shrink-0">{item.emoji}</span>
+                        <div>
+                          <p className="text-sm font-bold text-foreground">{item.title}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.sub}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
 
-                  {/* Market Stats Grid */}
+                  {/* Right: stat cards */}
                   <div className="grid gap-4">
                     {marketDrivers.map((stat, i) => (
                       <div key={i} className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] flex items-center justify-between hover:border-cosmic-blue/20 transition-all duration-300 group">
@@ -157,11 +154,12 @@ export const StrategicBriefing = () => {
                         <span className="text-xl font-bold font-mono text-gradient-gold text-glow">{stat.value}</span>
                       </div>
                     ))}
-                    <div className="p-6 rounded-2xl border border-dashed border-cosmic-blue/30 bg-cosmic-blue/5 text-center space-y-2">
-                      <p className="text-xs font-mono uppercase tracking-widest text-cosmic-blue font-bold">Geopolitical Tailwind</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        The Asiatic region, led by **India**, is the fastest-growing frontier for digital asset protection, driven by rapid digitisation.
-                      </p>
+                    <div className="p-5 rounded-2xl border border-dashed border-cosmic-blue/30 bg-cosmic-blue/5 flex items-center gap-3">
+                      <span className="text-2xl">📈</span>
+                      <div>
+                        <p className="text-xs font-mono uppercase tracking-widest text-cosmic-blue font-bold">Geopolitical Tailwind</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">India-led Asiatic region — fastest-growing frontier for space asset protection</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -205,13 +203,14 @@ export const StrategicBriefing = () => {
                       Traction & Validation
                     </h3>
                     <p className="text-muted-foreground leading-relaxed text-sm">
-                      Our astronomical math, star sensor configurations, and coordinate-derivation cryptography are validated against real-world aerospace architectures.
+                      Astronomical math, star sensor config, and coordinate-derivation cryptography validated against real-world aerospace architectures.
                     </p>
-                    <div className="p-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 space-y-3">
-                      <h4 className="font-serif text-sm font-bold text-amber-300 uppercase tracking-wider">💡 Physical Actuation Validation</h4>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        We developed a **Hardware-in-the-Loop (HIL)** prototype utilizing an Arduino actuator setup. It provides physical confirmation via LEDs and telemetry feedback, bridging complex celestial math to physical thuster or command-lock actuation.
-                      </p>
+                    <div className="p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
+                      <span className="text-2xl flex-shrink-0">💡</span>
+                      <div>
+                        <p className="text-sm font-bold text-amber-300">Hardware-in-the-Loop (HIL) Prototype</p>
+                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">Arduino actuator setup with LED telemetry — bridges celestial math to physical thruster command-lock actuation.</p>
+                      </div>
                     </div>
                   </div>
 

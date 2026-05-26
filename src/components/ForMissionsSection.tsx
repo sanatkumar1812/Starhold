@@ -54,28 +54,6 @@ export const ForMissionsSection = () => {
         <section id="for-missions" className="py-20 px-4 relative overflow-hidden">
             <div className="max-w-7xl mx-auto space-y-28">
 
-                {/* CTA Buttons — title already introduced above */}
-                <ScrollReveal>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Button
-                            variant="outline"
-                            size="lg"
-                            onClick={() => navigate('/techdocs')}
-                            className="px-8 py-6 text-lg rounded-xl border-cosmic-blue/30 text-cosmic-blue hover:bg-cosmic-blue/10"
-                        >
-                            <Cpu className="w-5 h-5 mr-2" />
-                            View Technical Docs
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="lg"
-                            onClick={() => document.getElementById('simulation')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="px-8 py-6 text-lg rounded-xl text-muted-foreground hover:text-foreground"
-                        >
-                            See Live Simulation →
-                        </Button>
-                    </div>
-                </ScrollReveal>
 
                 {/* Key Value Propositions */}
                 <ScrollReveal delay={100}>

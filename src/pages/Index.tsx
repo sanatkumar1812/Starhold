@@ -13,6 +13,7 @@ import { Footer } from '@/components/Footer';
 import { Quote } from 'lucide-react';
 import { ForMissionsSection } from '@/components/ForMissionsSection';
 import { ProblemSolutionSection } from '@/components/ProblemSolutionSection';
+import { InfographicSection } from '@/components/InfographicSection';
 import { StrategicBriefing } from '@/components/StrategicBriefing';
 
 const Index = () => {
@@ -40,6 +41,8 @@ const Index = () => {
         />
 
         <ProblemSolutionSection />
+
+        <InfographicSection />
 
         <StrategicBriefing />
 

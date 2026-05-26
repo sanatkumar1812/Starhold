@@ -106,35 +106,7 @@ const Pricing = () => {
       <div className="relative z-10">
         <Navigation />
 
-        <main className="pt-32 pb-20">
-
-          {/* ── HERO ── */}
-          <section className="px-4 pb-16 text-center relative">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-cosmic-purple/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="relative max-w-3xl mx-auto space-y-6">
-
-               
-               {/* Toggle Switch deactivated for B2B */}
-               {/*
-               <ScrollReveal delay={200}>
-                 <div className="mt-8 inline-flex items-center p-1.5 bg-slate-900/50 border border-border/30 rounded-full backdrop-blur-sm shadow-xl">
-                     <button 
-                         onClick={() => setCurrency('USD')}
-                         className={`px-8 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-300 ${currency === 'USD' ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(234,179,8,0.3)]' : 'text-muted-foreground hover:text-foreground'}`}
-                     >
-                         USD ($)
-                     </button>
-                     <button 
-                         onClick={() => setCurrency('INR')}
-                         className={`px-8 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-300 ${currency === 'INR' ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(234,179,8,0.3)]' : 'text-muted-foreground hover:text-foreground'}`}
-                     >
-                         INR (₹)
-                     </button>
-                 </div>
-               </ScrollReveal>
-               */}
-            </div>
-          </section>
+        <main className="pt-20 pb-20">
 
           {/* ── B2C Pricing "For You" (Deactivated for B2B) ── */}
           {/*

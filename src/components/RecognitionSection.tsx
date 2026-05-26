@@ -25,7 +25,7 @@ export const RecognitionSection = () => {
                         part of the <strong className="text-foreground">Science Accelerator Class of 2026</strong> by <br/>Out of the Box Aerospace.
                         We are now advancing to the Finals.
                         */}
-                        Our space-grade protocol won <strong className="text-foreground">1st Place</strong> in the HolySpace Challenge — part of the <strong className="text-foreground">Science Accelerator Class of 2026</strong> by Out of the Box Aerospace.<br className="hidden md:inline" />We are now advancing to the Finals.
+                        We won <strong className="text-foreground">1st Place</strong> in the HolySpace Challenge — part of the <strong className="text-foreground">Science Accelerator Class of 2026</strong> by Out of the Box Aerospace.<br className="hidden md:inline" />After passing the Semi-finals, we are now advancing to the Finals.
                     </p>
                     <a
                         href="https://outoftheboxedu.space"

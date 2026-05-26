@@ -17,38 +17,26 @@ export const UnifiedInfrastructure = () => {
                                 The Immutable <br />
                                 <span className="text-gradient-gold italic">Ledger of the Sky</span>
                             </h2>
-                            <p className="text-muted-foreground text-lg leading-relaxed max-w-xl">
-                                {/* Original:
-                                Whether securing a personal legacy or authorizing a satellite maneuver,
-                                Starhold relies on the absolute precision of celestial mechanics.
-                                */}
-                                Starhold relies on the absolute precision of celestial mechanics to authorize satellite maneuvers and secure data channels.
-                                By binding data to Right Ascension and Declination, we create a
-                                globally observable verification layer that exists beyond earthly control.
-                            </p>
 
-                            <div className="grid sm:grid-cols-2 gap-8 pt-4">
-                                <div className="space-y-3">
-                                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                        <Star className="w-5 h-5 text-primary" />
+                            <div className="grid grid-cols-2 gap-4 pt-2">
+                                {[
+                                    { icon: Star,   color: 'text-primary',     bg: 'bg-primary/10',     label: 'Fixed Celestial Reference', sub: 'Permanent — cannot be faked or jammed' },
+                                    { icon: Cpu,    color: 'text-cosmic-blue', bg: 'bg-cosmic-blue/10', label: 'Physics-Based Auth',         sub: 'Tied to real astronomical events, not software' },
+                                    { icon: Globe,  color: 'text-emerald-400', bg: 'bg-emerald-500/10', label: 'Globally Observable',         sub: 'Universe is the verification layer' },
+                                    { icon: Lock,   color: 'text-amber-400',   bg: 'bg-amber-500/10',  label: 'RA/Dec Bound Keys',           sub: 'Right Ascension & Declination as address' },
+                                ].map((item) => (
+                                    <div key={item.label} className="glass p-5 rounded-2xl border-white/5 space-y-2 hover:border-cosmic-blue/20 transition-all duration-300">
+                                        <div className={`w-9 h-9 rounded-xl ${item.bg} flex items-center justify-center`}>
+                                            <item.icon className={`w-4 h-4 ${item.color}`} />
+                                        </div>
+                                        <p className="text-sm font-semibold text-foreground leading-tight">{item.label}</p>
+                                        <p className="text-xs text-muted-foreground leading-relaxed">{item.sub}</p>
                                     </div>
-                                    <h3 className="font-serif text-xl text-foreground">Fixed Reference</h3>
-                                    <p className="text-muted-foreground text-sm leading-relaxed">
-                                        Stars provide a permanent, non-spoofable reference system available to any observer with clear sight.
-                                    </p>
-                                </div>
-                                <div className="space-y-3">
-                                    <div className="w-10 h-10 rounded-xl bg-cosmic-blue/10 flex items-center justify-center">
-                                        <Cpu className="w-5 h-5 text-cosmic-blue" />
-                                    </div>
-                                    <h3 className="font-serif text-xl text-foreground">Physics-Based</h3>
-                                    <p className="text-muted-foreground text-sm leading-relaxed">
-                                        Our authorization logic is tied to real-world astronomical events, not just digital keys.
-                                    </p>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </ScrollReveal>
+
 
                     <ScrollReveal delay={200}>
                         <div className="relative group p-1 glass rounded-[3rem] overflow-hidden">
